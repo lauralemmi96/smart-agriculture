@@ -6,7 +6,9 @@
 # Build directories
 /build
 **/build
+**/run
 
 # Files to be ignored
 *.cooja
 *.properties
+
