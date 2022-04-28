@@ -1,0 +1,11 @@
+.DS_Store
+
+.*
+!.gitignore
+
+# Build directories
+**/build
+
+# Files to be ignored
+*.cooja
+*.properties
