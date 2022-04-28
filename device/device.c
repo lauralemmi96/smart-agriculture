@@ -42,7 +42,7 @@ void client_chunk_handler(coap_message_t *response) {
 	registration_status = true;
 
 	int len = coap_get_payload(response, &chunk);
-	printf("RESPONSE LEN: %i\nCONTENT: %s\n", len, chunk); 
+	LOG_INFO("RESPONSE LEN: %i\nCONTENT: %s\n", len, chunk); 
 
 }
 
@@ -65,9 +65,10 @@ PROCESS_THREAD(device_process, ev, data){
 	// Populate the coap_endpoint_t data structure
 	coap_endpoint_parse(SERVER_EP, strlen(SERVER_EP), &server_ep);
 	// Prepare the message
-	coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
+	coap_init_message(request, COAP_TYPE_CON, COAP_GET, 0);
 	coap_set_header_uri_path(request, reg_service_url);
 
+	//printf("SERVER_EP %s\nRequest: %s\n",server_ep, request); 
 	while(!registration_status){
 		LOG_INFO("Sending registration request to the server\n");
 		COAP_BLOCKING_REQUEST(&server_ep, request, client_chunk_handler);

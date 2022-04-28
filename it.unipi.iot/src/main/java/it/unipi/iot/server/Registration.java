@@ -18,20 +18,34 @@ public class Registration extends CoapResource{
 	public void handleGET(CoapExchange exchange) {
 		
 		System.out.println("[SERVER]: Handling Registration Request");
+		//exchange.respond("REGISTERED");
+		
 		exchange.accept();
 		
-		/*	Get node address	*/ 
+		//	Get node address	 
 		String source_address = exchange.getSourceAddress().getHostAddress();
 		System.out.println("SRC ADDR: " + source_address + "\n");
 		
-		/* Create CoapClient Object	and get information	*/
+		// Create CoapClient Object	and get node information
 		
 		CoapClient client = new CoapClient("coap://[" + source_address + "]:5683/.well-known/core");
 		CoapResponse response = client.get(MediaTypeRegistry.APPLICATION_JSON);
 		
-		System.out.println("Client response: " + response.getResponseText());
 		
-
+		String responseText = response.getResponseText();
+		System.out.println("Client response: " + responseText);
+		
+		/*
+		 * Client response: </.well-known/core>;ct=40,
+		 * </humidity>;title="Humidity Sensor";rt="humidity";if="sensor";obs
+		 * 
+		 */
+		
+		String []fragment = responseText.split(",");
+		
+		//Check the return code: Success 2.xx
+		System.out.println("Response Code: " + response.getCode());
+		
 		
 	}
 	

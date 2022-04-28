@@ -1,5 +1,8 @@
 package it.unipi.iot;
 
+import org.eclipse.californium.core.CoapClient;
+import org.eclipse.californium.core.CoapResponse;
+
 import it.unipi.iot.server.Server;
 
 public class MyClient {
@@ -16,5 +19,7 @@ public class MyClient {
 				server.start();
 			}
 		}.start();
+		
+		
 	}
 }
