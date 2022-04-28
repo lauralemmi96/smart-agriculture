@@ -6,6 +6,7 @@
 #include "coap-blocking-api.h"
 #include "sys/etimer.h"
 #include "dev/leds.h"
+#include "os/dev/serial-line.h"
 
 /* Log configuration */
 #include "sys/log.h"
@@ -23,6 +24,8 @@ extern coap_resource_t res_sprinkler;
 static struct etimer e_timer;	//Timer
 char *reg_service_url = "/registration";	//Resource URL for registration
 static bool registration_status = false;
+static int device_type = 0;	//0: sensor;	1: sprinkler
+
 
 /* Declare and auto-start this file's process */
 PROCESS(device_process, "Sensor/Actuator Device");
@@ -57,14 +60,29 @@ PROCESS_THREAD(device_process, ev, data){
 
 	PROCESS_BEGIN();
 
-	//Activate RED led - sprinkler off
-	leds_set(LEDS_NUM_TO_MASK(LEDS_RED));
+	/*	Get device type from command line and activate the related resources	*/
+	while(1){
+		PROCESS_WAIT_EVENT_UNTIL(ev == serial_line_event_message);
+		if(strcmp(data, "sensor") == 0){
+			//No led needed
+			device_type = 0;
 
-	/*	Resource activation	*/
-	coap_activate_resource(&res_humidity, "humidity");
-	coap_activate_resource(&res_sprinkler, "sprinkler");
+			/*	Resource activation	*/
+			coap_activate_resource(&res_humidity, "humidity");
+			break;
+		}
+		else if(strcmp(data, "actuator") == 0){
+			device_type = 1;
 
+			/*	Resource activation	*/
+			coap_activate_resource(&res_sprinkler, "sprinkler");
+			//Activate RED led - sprinkler off
+			leds_set(LEDS_NUM_TO_MASK(LEDS_RED));
+			break;
+		}
+	}
 
+	
 	/*	Node Registration	*/
 
 	// Populate the coap_endpoint_t data structure
