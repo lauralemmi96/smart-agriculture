@@ -1,7 +1,5 @@
 package it.unipi.iot;
 
-import org.eclipse.californium.core.CoapClient;
-import org.eclipse.californium.core.CoapResponse;
 
 import it.unipi.iot.server.Server;
 
@@ -14,6 +12,8 @@ public class MyClient {
 		System.out.println("---- CLIENT STARTED ----");
 		
 		server = new Server();
+		
+		//new thread to let server running 
 		new Thread() {
 			public void run() {
 				server.start();

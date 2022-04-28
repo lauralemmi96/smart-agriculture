@@ -37,7 +37,9 @@ public class Registration extends CoapResource{
 		
 		/*
 		 * Client response: </.well-known/core>;ct=40,
-		 * </humidity>;title="Humidity Sensor";rt="humidity";if="sensor";obs
+		 * </humidity>;title="Humidity Sensor";rt="humidity";if="sensor";obs,
+		 * </sprinkler>;title="Humidity Sensor";rt="humidity";if="sensor";obs
+
 		 * 
 		 */
 		

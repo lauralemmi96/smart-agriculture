@@ -5,6 +5,7 @@
 #include "coap-engine.h"
 #include "coap-blocking-api.h"
 #include "sys/etimer.h"
+#include "dev/leds.h"
 
 /* Log configuration */
 #include "sys/log.h"
@@ -16,6 +17,7 @@
 
 /*	Declare external resources to be activated	*/
 extern coap_resource_t res_humidity;
+extern coap_resource_t res_sprinkler;
 
 
 static struct etimer e_timer;	//Timer
@@ -54,10 +56,13 @@ PROCESS_THREAD(device_process, ev, data){
   	static coap_message_t request[1];  /* the packet can be treated as pointer */
 
 	PROCESS_BEGIN();
-	PROCESS_PAUSE();
+
+	//Activate RED led - sprinkler off
+	leds_set(LEDS_NUM_TO_MASK(LEDS_RED));
 
 	/*	Resource activation	*/
 	coap_activate_resource(&res_humidity, "humidity");
+	coap_activate_resource(&res_sprinkler, "sprinkler");
 
 
 	/*	Node Registration	*/
@@ -86,6 +91,7 @@ PROCESS_THREAD(device_process, ev, data){
 		    printf("Event triggered\n");
 		  
 			res_humidity.trigger();
+			res_sprinkler.trigger();
 			
 			etimer_reset(&e_timer);
 		}

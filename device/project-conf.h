@@ -8,7 +8,7 @@
 
 // Set the maximum number of CoAP concurrent transactions:
 #undef COAP_MAX_OPEN_TRANSACTIONS
-#define COAP_MAX_OPEN_TRANSACTIONS   4
+#define COAP_MAX_OPEN_TRANSACTIONS   100
 
 #undef NBR_TABLE_CONF_MAX_NEIGHBORS
 #define NBR_TABLE_CONF_MAX_NEIGHBORS     10
