@@ -19,12 +19,14 @@
 /*	Declare external resources to be activated	*/
 extern coap_resource_t res_humidity;
 extern coap_resource_t res_sprinkler;
+extern coap_resource_t res_temp;
+extern coap_resource_t res_light;
 
 
 static struct etimer e_timer;	//Timer
 char *reg_service_url = "/registration";	//Resource URL for registration
 static bool registration_status = false;
-static int device_type = 0;	//0: sensor;	1: sprinkler
+static int device_type = 0;	//0: sensor;	1: actuator
 
 
 /* Declare and auto-start this file's process */
@@ -69,6 +71,7 @@ PROCESS_THREAD(device_process, ev, data){
 
 			/*	Resource activation	*/
 			coap_activate_resource(&res_humidity, "humidity");
+			coap_activate_resource(&res_temp, "temperature");
 			break;
 		}
 		else if(strcmp(data, "actuator") == 0){
@@ -76,7 +79,8 @@ PROCESS_THREAD(device_process, ev, data){
 
 			/*	Resource activation	*/
 			coap_activate_resource(&res_sprinkler, "sprinkler");
-			//Activate RED led - sprinkler off
+			coap_activate_resource(&res_light, "light");
+			//Activate RED led - sprinkler && light off 
 			leds_set(LEDS_NUM_TO_MASK(LEDS_RED));
 			break;
 		}
@@ -107,9 +111,13 @@ PROCESS_THREAD(device_process, ev, data){
 		PROCESS_WAIT_EVENT();
 		if(ev == PROCESS_EVENT_TIMER){
 		    printf("Event triggered\n");
-		  
-			res_humidity.trigger();
-			res_sprinkler.trigger();
+		  	if(device_type == 0){
+				res_humidity.trigger();
+				res_temp.trigger();
+			}else{
+				res_sprinkler.trigger();
+				res_light.trigger();
+			}
 			
 			etimer_reset(&e_timer);
 		}
