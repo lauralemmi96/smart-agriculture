@@ -1,5 +1,7 @@
 package it.unipi.iot.server;
 
+import java.util.HashMap;
+
 import org.eclipse.californium.core.CoapClient;
 import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.CoapResponse;
@@ -38,15 +40,46 @@ public class Registration extends CoapResource{
 		/*
 		 * Client response: </.well-known/core>;ct=40,
 		 * </humidity>;title="Humidity Sensor";rt="humidity";if="sensor";obs,
-		 * </sprinkler>;title="Humidity Sensor";rt="humidity";if="sensor";obs
+		 * </temperature>;"title=\"Temperature Sensor\";rt=\"temperature\";if=\"sensor\";obs"
 
 		 * 
 		 */
-		
+		HashMap<String, String> resource = new HashMap<String, String>();
 		String []fragment = responseText.split(",");
+		for(int i = 1; i < fragment.length; i++) {
+			resource = info(fragment[i]);
+			
+		}
 		
 		//Check the return code: Success 2.xx
 		System.out.println("Response Code: " + response.getCode());
+		
+		
+	}
+	
+	private HashMap<String, String> info(String resource) {
+		
+		HashMap<String, String> info = new HashMap<String, String>();
+		String []splitSemicolon = resource.split(";");
+		
+		//Take the resource name
+		String resType = splitSemicolon[2].substring(splitSemicolon[2].indexOf("\"") + 1 , splitSemicolon[2].length()-1);
+		info.put("Resource", resType);
+		System.out.println("Resource: " + info.get("Resource"));
+		
+		//Take the device type (sensor/actuator)
+		String deviceType = splitSemicolon[2].substring(splitSemicolon[3].indexOf("\"") + 1 , splitSemicolon[3].length()-1);
+		info.put("Device", deviceType);
+		System.out.println("Device Type: " + info.get("Device"));
+		
+		//Check if it is observable
+		String obs = splitSemicolon[splitSemicolon.length-1];
+		if(obs.contains("obs"))
+			info.put("obs", "y");
+		else
+			info.put("obs", "n");
+		System.out.println("OBS: " + info.get("obs"));
+		return info;
 		
 		
 	}

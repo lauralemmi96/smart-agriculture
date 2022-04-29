@@ -1,6 +1,7 @@
 package it.unipi.iot;
 
 
+import it.unipi.iot.server.ResourceDeviceHandler;
 import it.unipi.iot.server.Server;
 
 public class MyClient {
@@ -19,6 +20,8 @@ public class MyClient {
 				server.start();
 			}
 		}.start();
+		
+		
 		
 		
 	}
