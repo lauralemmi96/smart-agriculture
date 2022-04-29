@@ -10,6 +10,9 @@ import org.eclipse.californium.core.coap.MediaTypeRegistry;
 import org.eclipse.californium.core.coap.Response;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 
+import it.unipi.iot.resource_devices.Actuator;
+import it.unipi.iot.resource_devices.Sensor;
+
 public class Registration extends CoapResource{
 
 	public Registration(String name) {
@@ -37,6 +40,14 @@ public class Registration extends CoapResource{
 		String responseText = response.getResponseText();
 		System.out.println("Client response: " + responseText);
 		
+		//Check the return code: Success 2.xx
+		//System.out.println("Response Code: " + response.getCode());
+		if(!response.getCode().toString().startsWith("2")) {
+			System.out.println("Error code: " + response.getCode().toString());
+			return;
+		}
+		
+		
 		/*
 		 * Client response: </.well-known/core>;ct=40,
 		 * </humidity>;title="Humidity Sensor";rt="humidity";if="sensor";obs,
@@ -44,20 +55,26 @@ public class Registration extends CoapResource{
 
 		 * 
 		 */
+		boolean registrationStatus = false;
 		String []fragment = responseText.split(",");
 		for(int i = 1; i < fragment.length; i++) {
-			deviceRegistration(fragment[i]);
+			registrationStatus = deviceRegistration(source_address, fragment[i]);
 			
 		}
 		
-		//Check the return code: Success 2.xx
-		System.out.println("Response Code: " + response.getCode());
+		
+		if(!registrationStatus) {
+			System.out.println("Error in registering the device\n");
+			return;
+		}
+			
 		
 		
 	}
 	
-	private void deviceRegistration(String resource) {
+	private boolean deviceRegistration(String sourceAddress, String resource) {
 		
+		boolean registered = false;
 		
 		String []splitSemicolon = resource.split(";");
 		
@@ -71,10 +88,46 @@ public class Registration extends CoapResource{
 		
 		//Check if it is observable
 		String obs = splitSemicolon[splitSemicolon.length-1];
+		boolean observable = (obs.compareTo("obs") == 0);
 		System.out.println("OBS: " + obs);
-		
-		 
+			
 		ResourceDeviceHandler handler = ResourceDeviceHandler.getInstance();
+		
+		//	Switch sensor/actuator. I instantiate a Sensor/Actuator. 
+		//	Add it to the data structure base on the res
+		if(deviceType.compareTo("sensor") == 0) {
+			
+			Sensor sensor = new Sensor(sourceAddress, deviceType, resType, observable);
+			
+			//	add the sensor in the ResourceDeviceHandler map
+			if(resType.compareTo("humidity") == 0)
+				handler.addHumiditySens(sourceAddress, sensor);
+			else if(resType.compareTo("temperature") == 0)
+				handler.addTempSens(sourceAddress, sensor);
+			
+			if(observable)
+				sensor.observeResource();
+			registered = true;
+			
+		}else if(deviceType.compareTo("actuator") == 0) {
+			
+			Actuator actuator = new Actuator(sourceAddress, deviceType, resType, observable);
+			
+//			add the actuator in the ResourceDeviceHandler map
+			if(resType.compareTo("sprinkler") == 0)
+				handler.addSprinklers(sourceAddress, actuator);
+			else if(resType.compareTo("light") == 0)
+				handler.addLights(sourceAddress, actuator);
+			
+			if(observable)
+				actuator.observeResource();
+			
+			registered = true;
+		}
+		
+		return registered;
+		
+		
 		
 		
 		
