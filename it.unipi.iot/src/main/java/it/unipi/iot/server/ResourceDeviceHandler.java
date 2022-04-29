@@ -91,6 +91,38 @@ public class ResourceDeviceHandler {
 		}
 	}
 	
+	public void getSensorsTemperatures() {
+		for(String addr: tempSensors.keySet()) {
+			Sensor s = tempSensors.get(addr);
+			System.out.println("Sensor Address: " + addr + 
+					"Average Temperatures: " + s.getLastAvgObservation());
+		}
+	}
+	
+	public void getSensorsHumidities() {
+		for(String addr: humiditySensors.keySet()) {
+			Sensor s = humiditySensors.get(addr);
+			System.out.println("Sensor Address: " + addr + 
+					"Average Humidities: " + s.getLastAvgObservation());
+		}
+	}
+	
+	public void getSprinklersStatus() {
+		for(String addr: sprinklers.keySet()) {
+			Actuator act = sprinklers.get(addr);
+			System.out.println("Actuator Address: " + addr + 
+					"Status: " + act.getStatus());
+		}
+	}
+	
+	public void getLightsStatus() {
+		for(String addr: lights.keySet()) {
+			Actuator act = lights.get(addr);
+			System.out.println("Actuator Address: " + addr + 
+					"Status: " + act.getStatus());
+		}
+	}
+	
 	
 	
 	

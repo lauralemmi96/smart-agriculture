@@ -52,6 +52,18 @@ public class MyClient {
 					case "!getActuators":
 						getActuators();
 						
+					case "!getAvgTemperature":
+						getAvgTemperature();
+					
+					case "!getAvgHumidity":
+						getAvgHumidity();
+						
+					case "!getSprinklerStatus":
+						getSprinklerStatus();
+						
+					case "getLightStatus":
+						getLightStatus();
+						
 					default:
 						System.out.println("Command not defined\n");
 				}
@@ -78,8 +90,8 @@ public class MyClient {
 		System.out.println("!help 	-->	Get the list of the available commands");
 		System.out.println("!getSensors 	--> Get the list of registered sensors");
 		System.out.println("!getActuators 	--> Get the list of registered actuators");
-		System.out.println("!getAvgTemperature		-->	Get the Average temperature of the last 10 measurements");
-		System.out.println("!getAvgHumidity		-->	Get the Average humidity of the last 10 measurements");
+		System.out.println("!getAvgTemperature		-->	Get the Average temperature of the last 10 measurements for all the sensors");
+		System.out.println("!getAvgHumidity		-->	Get the Average humidity of the last 10 measurements for all the sensors");
 		System.out.println("!getSprinklerStatus		-->	Get the status of a sprinkler");
 		System.out.println("!getLightStatus		-->	Get the status of a light");
 
@@ -87,6 +99,11 @@ public class MyClient {
 	
 	private static void getSensors() {
 		
+		if(handler.getHumiditySensors().isEmpty() && handler.getTempSensors().isEmpty()) {
+			System.out.println("No Sensor Registered");
+			return;
+		}
+	
 		System.out.println(" 	--	Sensors List	--	");
 		handler.getHumiditySensors();
 		handler.getTempSensors();
@@ -94,10 +111,38 @@ public class MyClient {
 	
 	private static void getActuators() {
 		
+		if(handler.getSprinklers().isEmpty() && handler.getLights().isEmpty()) {
+			System.out.println("No Actuator Registered");
+			return;
+		}
+		
 		System.out.println(" 	--	Actuators List	--	");
 		handler.getSprinklers();
 		handler.getLights();
 	}
+	
+	private static void getAvgTemperature() {
+		
+		System.out.println("	--	Last Average Temperatures Detected	--	");
+		handler.getSensorsTemperatures();
+	}
+	
+	private static void getAvgHumidity() {
+		
+		System.out.println("	--	Last Average Humidities Detected	--	");
+		handler.getSensorsHumidities();
+	}
+	
+	private static void getSprinklerStatus() {
+		System.out.println("	--	Get Sprinklers Status	--	");
+		handler.getSprinklersStatus();;
+	}
+	
+	private static void getLightStatus() {
+		System.out.println("	--	Get Lights Status	--	");
+		handler.getLightsStatus();;
+	}
+	
 	
 	
 }
