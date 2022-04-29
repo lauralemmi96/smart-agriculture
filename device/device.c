@@ -14,7 +14,7 @@
 #define LOG_LEVEL LOG_LEVEL_APP
 /*	Declare server IP	*/
 #define SERVER_EP "coap://[fd00::1]:5683" 
-#define REQ_INTERVAL 20
+#define REQ_INTERVAL 10
 
 /*	Declare external resources to be activated	*/
 extern coap_resource_t res_humidity;
@@ -104,13 +104,12 @@ PROCESS_THREAD(device_process, ev, data){
 	printf("STATUS: %s\n", registration_status ? "true" : "false");
 	etimer_set(&e_timer, CLOCK_SECOND * REQ_INTERVAL);
 	
-	printf("Periodical request of humidity level\n");
 
 	while(1){
 
 		PROCESS_WAIT_EVENT();
 		if(ev == PROCESS_EVENT_TIMER){
-		    printf("Event triggered\n");
+		    printf("Triggered resource observation\n");
 		  	if(device_type == 0){
 				res_humidity.trigger();
 				res_temp.trigger();

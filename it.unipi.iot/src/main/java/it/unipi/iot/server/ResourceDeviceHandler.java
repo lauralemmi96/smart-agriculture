@@ -42,4 +42,56 @@ public class ResourceDeviceHandler {
 	public void addHumiditySens(String address, Sensor sensor) {
 		humiditySensors.put(address, sensor);
 	}
+
+	public HashMap<String, Actuator> getSprinklers() {
+		return sprinklers;
+	}
+
+	public HashMap<String, Actuator> getLights() {
+		return lights;
+	}
+
+	public HashMap<String, Sensor> getTempSensors() {
+		return tempSensors;
+	}
+
+	public HashMap<String, Sensor> getHumiditySensors() {
+		return humiditySensors;
+	}
+	
+	public void sprinklerList() {
+		for(String addr: sprinklers.keySet()) {
+			Actuator act = sprinklers.get(addr);
+			System.out.println("ADDR: " + addr + ", DeviceType: " + act.getDeviceType() + 
+					", Resource: " + act.getResourceType() + ", Status: " + act.getStatus());
+		}
+	}
+	
+	public void lightList() {
+		for(String addr: lights.keySet()) {
+			Actuator act = lights.get(addr);
+			System.out.println("ADDR: " + addr + ", DeviceType: " + act.getDeviceType() + 
+					", Resource: " + act.getResourceType() + ", Status: " + act.getStatus());
+		}
+	}
+	
+	public void tempList() {
+		for(String addr: tempSensors.keySet()) {
+			Sensor s = tempSensors.get(addr);
+			System.out.println("ADDR: " + addr + ", DeviceType: " + s.getDeviceType() + 
+					", Resource: " + s.getResourceType());
+		}
+	}
+	
+	public void humidityList() {
+		for(String addr: humiditySensors.keySet()) {
+			Sensor s = tempSensors.get(addr);
+			System.out.println("ADDR: " + addr + ", DeviceType: " + s.getDeviceType() + 
+					", Resource: " + s.getResourceType());
+		}
+	}
+	
+	
+	
+	
 }

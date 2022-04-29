@@ -10,7 +10,7 @@
 
 bool light_status = false;
 extern bool sprinkler_status;
-//static unsigned int accept = -1;
+static unsigned int accept = -1;
 
 static void res_get_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
 static void res_post_put_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
@@ -38,7 +38,7 @@ static void res_event_handler(void) {
 
 
 static void res_get_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset){
-	/*
+	
 	char response_message[COAP_MAX_CHUNK_SIZE];
 
 	coap_get_header_accept(request, &accept);
@@ -48,8 +48,8 @@ static void res_get_handler(coap_message_t *request, coap_message_t *response, u
 		
 		int len = snprintf(response_message, COAP_MAX_CHUNK_SIZE, "{\"Light Status\":%s}", light_status ? "ON" : "OFF");
 		if(len > 0){
-			memcpy(buffer, (uint8_t*)response_message, length);
-            		coap_set_payload(response, buffer, length); 
+			memcpy(buffer, (uint8_t*)response_message, len);
+            		coap_set_payload(response, buffer, len); 
 		}else
 			LOG_INFO("Error: Response message not formed\n");
 	}else{
@@ -57,9 +57,9 @@ static void res_get_handler(coap_message_t *request, coap_message_t *response, u
 	   	const char *msg = "Supported content-types:application/json";
 	    	coap_set_payload(response, msg, strlen(msg));
 	}
-	*/
-	coap_set_header_content_format(response, TEXT_PLAIN);
-	coap_set_payload(response, buffer, snprintf((char *)buffer, preferred_size, "LIGHT STATUS: %s\n", light_status ? "ON" : "OFF"));
+	
+	//coap_set_header_content_format(response, TEXT_PLAIN);
+	//coap_set_payload(response, buffer, snprintf((char *)buffer, preferred_size, "LIGHT STATUS: %s\n", light_status ? "ON" : "OFF"));
 	
 
 }

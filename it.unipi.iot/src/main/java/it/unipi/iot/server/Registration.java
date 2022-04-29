@@ -23,7 +23,6 @@ public class Registration extends CoapResource{
 	public void handleGET(CoapExchange exchange) {
 		
 		System.out.println("[SERVER]: Handling Registration Request");
-		//exchange.respond("REGISTERED");
 		
 		exchange.accept();
 		
@@ -38,10 +37,9 @@ public class Registration extends CoapResource{
 		
 		
 		String responseText = response.getResponseText();
-		System.out.println("Client response: " + responseText);
+		//System.out.println("Client response: " + responseText);
 		
 		//Check the return code: Success 2.xx
-		//System.out.println("Response Code: " + response.getCode());
 		if(!response.getCode().toString().startsWith("2")) {
 			System.out.println("Error code: " + response.getCode().toString());
 			return;
@@ -51,9 +49,7 @@ public class Registration extends CoapResource{
 		/*
 		 * Client response: </.well-known/core>;ct=40,
 		 * </humidity>;title="Humidity Sensor";rt="humidity";if="sensor";obs,
-		 * </temperature>;"title=\"Temperature Sensor\";rt=\"temperature\";if=\"sensor\";obs"
-
-		 * 
+		 * </temperature>;"title=\"Temperature Sensor\";rt=\"temperature\";if=\"sensor\";obs 
 		 */
 		boolean registrationStatus = false;
 		String []fragment = responseText.split(",");
@@ -67,6 +63,7 @@ public class Registration extends CoapResource{
 			System.out.println("Error in registering the device\n");
 			return;
 		}
+		System.out.println("[SERVER]: Device Registered");
 			
 		
 		
@@ -80,16 +77,16 @@ public class Registration extends CoapResource{
 		
 		//Take the resource name
 		String resType = splitSemicolon[2].substring(splitSemicolon[2].indexOf("\"") + 1 , splitSemicolon[2].length()-1);
-		System.out.println("Resource: " + resType);
+		//System.out.println("Resource: " + resType);
 		
 		//Take the device type (sensor/actuator)
 		String deviceType = splitSemicolon[3].substring(splitSemicolon[3].indexOf("\"") + 1 , splitSemicolon[3].length()-1);
-		System.out.println("Device Type: " + deviceType);
+		//System.out.println("Device Type: " + deviceType);
 		
 		//Check if it is observable
 		String obs = splitSemicolon[splitSemicolon.length-1];
 		boolean observable = (obs.compareTo("obs") == 0);
-		System.out.println("OBS: " + obs);
+		//System.out.println("OBS: " + obs);
 			
 		ResourceDeviceHandler handler = ResourceDeviceHandler.getInstance();
 		
@@ -107,6 +104,7 @@ public class Registration extends CoapResource{
 			
 			if(observable)
 				sensor.observeResource();
+			
 			registered = true;
 			
 		}else if(deviceType.compareTo("actuator") == 0) {
