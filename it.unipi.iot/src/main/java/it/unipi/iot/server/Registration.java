@@ -44,10 +44,9 @@ public class Registration extends CoapResource{
 
 		 * 
 		 */
-		HashMap<String, String> resource = new HashMap<String, String>();
 		String []fragment = responseText.split(",");
 		for(int i = 1; i < fragment.length; i++) {
-			resource = info(fragment[i]);
+			deviceRegistration(fragment[i]);
 			
 		}
 		
@@ -57,29 +56,26 @@ public class Registration extends CoapResource{
 		
 	}
 	
-	private HashMap<String, String> info(String resource) {
+	private void deviceRegistration(String resource) {
 		
-		HashMap<String, String> info = new HashMap<String, String>();
+		
 		String []splitSemicolon = resource.split(";");
 		
 		//Take the resource name
 		String resType = splitSemicolon[2].substring(splitSemicolon[2].indexOf("\"") + 1 , splitSemicolon[2].length()-1);
-		info.put("Resource", resType);
-		System.out.println("Resource: " + info.get("Resource"));
+		System.out.println("Resource: " + resType);
 		
 		//Take the device type (sensor/actuator)
-		String deviceType = splitSemicolon[2].substring(splitSemicolon[3].indexOf("\"") + 1 , splitSemicolon[3].length()-1);
-		info.put("Device", deviceType);
-		System.out.println("Device Type: " + info.get("Device"));
+		String deviceType = splitSemicolon[3].substring(splitSemicolon[3].indexOf("\"") + 1 , splitSemicolon[3].length()-1);
+		System.out.println("Device Type: " + deviceType);
 		
 		//Check if it is observable
 		String obs = splitSemicolon[splitSemicolon.length-1];
-		if(obs.contains("obs"))
-			info.put("obs", "y");
-		else
-			info.put("obs", "n");
-		System.out.println("OBS: " + info.get("obs"));
-		return info;
+		System.out.println("OBS: " + obs);
+		
+		 
+		ResourceDeviceHandler handler = ResourceDeviceHandler.getInstance();
+		
 		
 		
 	}
