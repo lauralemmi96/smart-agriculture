@@ -23,7 +23,7 @@ public class Actuator extends ResourceDevice{
 		
 		if(observable) {
 			System.out.println("Sto osservando il mio stato");
-			client.observeAndWait(
+			client.observe(
 					new CoapHandler() {
 						public void onLoad(CoapResponse response) {
 							JSONObject responseJSON = new JSONObject(response.getResponseText());
@@ -38,6 +38,12 @@ public class Actuator extends ResourceDevice{
 								System.err.println("--- Orbservation Failed ---"); 
 							}
 					}, MediaTypeRegistry.APPLICATION_JSON);
+			try {
+				Thread.sleep(5 * 1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}else {
 			System.out.println("The resource " + resourceType + " is not observable");
 			return;

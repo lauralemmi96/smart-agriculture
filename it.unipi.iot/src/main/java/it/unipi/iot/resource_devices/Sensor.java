@@ -59,6 +59,12 @@ public class Sensor extends ResourceDevice{
 								System.err.println("--- Orbservation Failed ---"); 
 							}
 					});
+			try {
+				Thread.sleep(5 * 1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}else {
 			System.out.println("The resource " + resourceType + " is not observable");
 			return;
