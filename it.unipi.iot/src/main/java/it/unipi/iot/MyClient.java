@@ -80,6 +80,14 @@ public class MyClient {
 						getLightStatus();
 						break;
 						
+					case "!setSprinklerStatus":
+						setSprinklerStatus();
+						break;
+						
+					case "!setLightStatus":
+						setLightStatus();
+						break;
+						
 					default:
 						System.out.println("Command not defined\n");
 						break;
@@ -104,6 +112,7 @@ public class MyClient {
 	
 	private static void showCommands() {
 		
+		System.out.println("");
 		System.out.println("	--	This is the list of accepted command	--	\n");
 		System.out.println("!help 			-->	Get the list of the available commands\n");
 		/*
@@ -121,8 +130,8 @@ public class MyClient {
 		
 		System.out.println("");
 		System.out.println("	--	POST COMMANDS	--	");
-		System.out.println("!setSprinklerStatus		-->	Get the status of a sprinkler");
-		System.out.println("!setLightStatus		-->	Get the status of a light");
+		System.out.println("!setSprinklerStatus	-->	Set the status of a sprinkler");
+		System.out.println("!setLightStatus		-->	Set the status of a light");
 		System.out.println("");
 
 	}
@@ -232,7 +241,7 @@ public class MyClient {
 	
 	private static void setLightStatus() {
 		System.out.println("Type the address of the light you want to switch");
-		System.out.println("Available Lighta: ");
+		System.out.println("Available Lights: ");
 		handler.lightActuatorList();
 		try {
 			String address = reader.readLine();

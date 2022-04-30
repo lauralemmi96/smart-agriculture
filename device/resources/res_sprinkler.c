@@ -75,12 +75,39 @@ static void res_post_put_handler(coap_message_t *request, coap_message_t *respon
 		return;
 	}
 
-	size_t len = 0;
+	size_t pay_len = 0;
 	const char *new_status = NULL;
+	const char *var = NULL;
 	bool good_req = false;
 
-	if((len = coap_get_query_variable(request, "status", &new_status))) {
-		if(strncmp(new_status, "ON", len) == 0 && !sprinkler_status) {
+	pay_len = coap_get_payload(request, message);
+	//LOG_INFO("Message received: %s\n", (char *)*msg);
+
+	if(pay_len > 0){
+		
+		//Splitting the payload
+		char *split;
+
+		//Take the variable
+		split = strtok((char*)*message, "=");
+		if(split && strcmp(split, "status") == 0)
+			var = split;
+
+		//Take the value
+		split = strtok(NULL, "=");
+		if(split && (strcmp(split, "ON") == 0 || strcmp(split, "OFF")==0))
+			new_status = split;
+
+		//Payload lenght wrong!
+		if(pay_len != strlen(new_status) + strlen(var) + 1)
+			new_status = var = NULL;
+
+	}
+
+	LOG_INFO("VAR: %s, STATUS: %s\n", var, new_status);
+
+	if(var != NULL && new_status != NULL){	
+		if(strcmp(new_status, "ON") == 0 && !sprinkler_status) {
 			good_req = true;
 			sprinkler_status = true;
 
@@ -94,7 +121,7 @@ static void res_post_put_handler(coap_message_t *request, coap_message_t *respon
 				leds_set(LEDS_NUM_TO_MASK(LEDS_GREEN) | LEDS_NUM_TO_MASK(LEDS_RED));
 			
 			LOG_DBG("Sprinkler switched ON\n");		
-		}else if(strncmp(new_status, "OFF", len) == 0 && sprinkler_status) {
+		}else if(strcmp(new_status, "OFF") == 0 && sprinkler_status) {
 			good_req = true;
 			sprinkler_status = false;
 

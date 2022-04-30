@@ -109,7 +109,7 @@ public class Registration extends CoapResource{
 				}.start();
 				
 			}
-			System.out.println("Resource: " + resType + ", Device observable: " + observable);
+			System.out.println("Resource: " + resType + ", Resource observable: " + observable);
 			registered = true;
 			
 		}else if(deviceType.compareTo("actuator") == 0) {
@@ -125,7 +125,7 @@ public class Registration extends CoapResource{
 			if(observable)
 				actuator.observeResource();
 			
-			System.out.println("Device observable: " + observable);
+			System.out.println("Resource: " + resType + ", Resource observable: " + observable);
 			
 			registered = true;
 		}

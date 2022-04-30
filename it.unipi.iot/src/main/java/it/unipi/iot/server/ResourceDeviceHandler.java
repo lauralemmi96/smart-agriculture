@@ -179,6 +179,7 @@ public class ResourceDeviceHandler {
 		//send post request
 		CoapResponse response = c.post(requestAttribute, MediaTypeRegistry.TEXT_PLAIN);
 		
+		System.out.println(response.getResponseText()); 
 		//Check the return code: Success 2.xx
 		if(!response.getCode().toString().startsWith("2")) {
 			System.out.println("Error code: " + response.getCode().toString());
@@ -200,7 +201,7 @@ public class ResourceDeviceHandler {
 		
 		//send post request
 		CoapResponse response = c.post(requestAttribute, MediaTypeRegistry.TEXT_PLAIN);
-		
+		System.out.println(response.getResponseText());
 		//Check the return code: Success 2.xx
 		if(!response.getCode().toString().startsWith("2")) {
 			System.out.println("Error code: " + response.getCode().toString());
