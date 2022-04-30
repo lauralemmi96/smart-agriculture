@@ -36,6 +36,7 @@ public class MyClient {
 		showCommands();
 		
 		while(true) {
+			System.out.println("Type a command\n");
 			
 			try {
 				
@@ -104,17 +105,24 @@ public class MyClient {
 	private static void showCommands() {
 		
 		System.out.println("	--	This is the list of accepted command	--	\n");
-		System.out.println("!help 			-->	Get the list of the available commands");
+		System.out.println("!help 			-->	Get the list of the available commands\n");
 		/*
 		System.out.println("!getSensors 		-->	Get the list of registered sensors");
 		System.out.println("!getActuators 		-->	Get the list of registered actuators");	
 		*/
+		System.out.println("	--	GET COMMANDS	--	");
 		System.out.println("!getLastTemp		-->	Get the list of the last temp measurements");
 		System.out.println("!getLastHum		-->	Get the list of the last humidity measurements");
 		System.out.println("!getAvgTemperature	-->	Get the Avg temperature of the last 10 measurements for all the sensors");
 		System.out.println("!getAvgHumidity		-->	Get the Avg humidity of the last 10 measurements for all the sensors");
 		System.out.println("!getSprinklerStatus	-->	Get the status of the sprinklers");
 		System.out.println("!getLightStatus		-->	Get the status of the lights");
+		System.out.println("!getSprinklerStatus	-->	Get the status of the sprinklers");
+		
+		System.out.println("");
+		System.out.println("	--	POST COMMANDS	--	");
+		System.out.println("!setSprinklerStatus		-->	Get the status of a sprinkler");
+		System.out.println("!setLightStatus		-->	Get the status of a light");
 		System.out.println("");
 
 	}
@@ -181,6 +189,84 @@ public class MyClient {
 		System.out.println("	--	Get Lights Status	--	");
 		handler.getLightsStatus();
 		System.out.println("");
+	}
+	
+	private static void setSprinklerStatus() {
+		System.out.println("Type the address of the sprinkler you want to switch");
+		System.out.println("Available Sprinklers: ");
+		handler.sprinklerActuatorList();
+		try {
+			String address = reader.readLine();
+			boolean valid = true;
+			
+			if(!handler.getSprinklers().containsKey(address)) {
+				System.out.println("Error! This is not a sprinkler address.\n ");
+				return;
+			}	
+			
+			System.out.println("Type the new status: ON or OFF");
+			String status = reader.readLine().toUpperCase();
+			
+			while((status.compareTo("ON")!= 0) && (status.compareTo("OFF")!= 0)) {
+					System.out.println("Error! Invalid status.\n "
+							+ "Retry or type \"!Exit\" for a new operation");
+					
+					status = reader.readLine().toUpperCase();
+					if(address.compareTo("!Exit") == 0) {
+						valid = false;
+						break;
+					}
+				}
+			if(valid) {
+				if(!handler.setSprinklerStatus(address, status))
+					System.out.println("Something went wrong!\n");
+				else
+					System.out.println("Status Changed\n");
+			}
+				
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private static void setLightStatus() {
+		System.out.println("Type the address of the light you want to switch");
+		System.out.println("Available Lighta: ");
+		handler.lightActuatorList();
+		try {
+			String address = reader.readLine();
+			boolean valid = true;
+			
+			if(!handler.getLights().containsKey(address)) {
+				System.out.println("Error! This is not a light address.\n ");
+				return;
+			}	
+			
+			System.out.println("Type the new status: ON or OFF");
+			String status = reader.readLine().toUpperCase();
+			
+			while((status.compareTo("ON")!= 0) && (status.compareTo("OFF")!= 0)) {
+					System.out.println("Error! Invalid status.\n "
+							+ "Retry or type \"!Exit\" for a new operation");
+					
+					status = reader.readLine().toUpperCase();
+					if(address.compareTo("!Exit") == 0) {
+						valid = false;
+						break;
+					}
+				}
+			if(valid) {
+				if(!handler.setLightStatus(address, status))
+					System.out.println("Something went wrong!\n");
+				else
+					System.out.println("Status Changed\n");
+			}
+				
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	

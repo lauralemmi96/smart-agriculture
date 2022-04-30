@@ -2,6 +2,10 @@ package it.unipi.iot.server;
 
 import java.util.HashMap;
 
+import org.eclipse.californium.core.CoapClient;
+import org.eclipse.californium.core.CoapResponse;
+import org.eclipse.californium.core.coap.MediaTypeRegistry;
+
 import it.unipi.iot.resource_devices.Actuator;
 import it.unipi.iot.resource_devices.Sensor;
 
@@ -62,32 +66,28 @@ public class ResourceDeviceHandler {
 	public void sprinklerActuatorList() {
 		for(String addr: sprinklers.keySet()) {
 			Actuator act = sprinklers.get(addr);
-			System.out.println("ADDR: " + addr + ", DeviceType: " + act.getDeviceType() + 
-					", Resource: " + act.getResourceType() + ", Status: " + act.getStatus());
+			System.out.println("ADDR: " + addr + ", Status: " + act.getStatus());
 		}
 	}
 	
 	public void lightActuatorList() {
 		for(String addr: lights.keySet()) {
 			Actuator act = lights.get(addr);
-			System.out.println("ADDR: " + addr + ", DeviceType: " + act.getDeviceType() + 
-					", Resource: " + act.getResourceType() + ", Status: " + act.getStatus());
+			System.out.println("ADDR: " + addr + ", Status: " + act.getStatus());
 		}
 	}
 	
 	public void tempSensorList() {
 		for(String addr: tempSensors.keySet()) {
 			Sensor s = tempSensors.get(addr);
-			System.out.println("ADDR: " + addr + ", DeviceType: " + s.getDeviceType() + 
-					", Resource: " + s.getResourceType());
+			System.out.println("ADDR: " + addr + ", Resource: " + s.getResourceType());
 		}
 	}
 	
 	public void humiditySensorList() {
 		for(String addr: humiditySensors.keySet()) {
 			Sensor s = humiditySensors.get(addr);
-			System.out.println("ADDR: " + addr + ", DeviceType: " + s.getDeviceType() + 
-					", Resource: " + s.getResourceType());
+			System.out.println("ADDR: " + addr + ", Resource: " + s.getResourceType());
 		}
 	}
 	
@@ -167,6 +167,50 @@ public class ResourceDeviceHandler {
 			}
 		}
 		
+	}
+	
+	public boolean setSprinklerStatus(String address, String newStatus) {
+		
+		CoapClient c = sprinklers.get(address).getClient();
+		
+		//Prepare post payload
+		String requestAttribute = "{\"status\":\"" + newStatus + "\"}";
+		
+		//send post request
+		CoapResponse response = c.post(requestAttribute, MediaTypeRegistry.APPLICATION_JSON);
+		
+		//Check the return code: Success 2.xx
+		if(!response.getCode().toString().startsWith("2")) {
+			System.out.println("Error code: " + response.getCode().toString());
+			return false;
+		}
+		
+		return true;
+		
+		
+	
+	}
+	
+	public boolean setLightStatus(String address, String newStatus) {
+		
+		CoapClient c = lights.get(address).getClient();
+		
+		//Prepare post payload
+		String requestAttribute = "{\"status\":\"" + newStatus + "\"}";
+		
+		//send post request
+		CoapResponse response = c.post(requestAttribute, MediaTypeRegistry.APPLICATION_JSON);
+		
+		//Check the return code: Success 2.xx
+		if(!response.getCode().toString().startsWith("2")) {
+			System.out.println("Error code: " + response.getCode().toString());
+			return false;
+		}
+		
+		return true;
+		
+		
+	
 	}
 	
 	
