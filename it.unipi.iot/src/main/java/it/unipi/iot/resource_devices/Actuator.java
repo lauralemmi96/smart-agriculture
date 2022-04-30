@@ -22,6 +22,7 @@ public class Actuator extends ResourceDevice{
 	public void observeResource() {
 		
 		if(observable) {
+			
 			client.observe(
 					new CoapHandler() {
 						public void onLoad(CoapResponse response) {
@@ -29,7 +30,7 @@ public class Actuator extends ResourceDevice{
 							
 							//read and store the value in the array
 							status = responseJSON.getString(resourceType);
-							System.out.println("Device type: " + deviceType + ", status: " + status);
+							//System.out.println("Device type: " + deviceType + ", status: " + status);
 
 							
 						}

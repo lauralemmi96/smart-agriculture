@@ -58,6 +58,14 @@ public class MyClient {
 					case "!getAvgTemperature":
 						getAvgTemperature();
 						break;
+						
+					case "!getLastTemp":
+						getLastTemp();
+						break;
+					
+					case "!getLastHum":
+						getLastHum();
+						break;
 					
 					case "!getAvgHumidity":
 						getAvgHumidity();
@@ -67,7 +75,7 @@ public class MyClient {
 						getSprinklerStatus();
 						break;
 						
-					case "getLightStatus":
+					case "!getLightStatus":
 						getLightStatus();
 						break;
 						
@@ -97,12 +105,16 @@ public class MyClient {
 		
 		System.out.println("	--	This is the list of accepted command	--	\n");
 		System.out.println("!help 			-->	Get the list of the available commands");
+		/*
 		System.out.println("!getSensors 		-->	Get the list of registered sensors");
-		System.out.println("!getActuators 		-->	Get the list of registered actuators");
-		System.out.println("!getAvgTemperature	-->	Get the Average temperature of the last 10 measurements for all the sensors");
-		System.out.println("!getAvgHumidity		-->	Get the Average humidity of the last 10 measurements for all the sensors");
-		System.out.println("!getSprinklerStatus	-->	Get the status of a sprinkler");
-		System.out.println("!getLightStatus		-->	Get the status of a light");
+		System.out.println("!getActuators 		-->	Get the list of registered actuators");	
+		*/
+		System.out.println("!getLastTemp		-->	Get the list of the last temp measurements");
+		System.out.println("!getLastHum		-->	Get the list of the last humidity measurements");
+		System.out.println("!getAvgTemperature	-->	Get the Avg temperature of the last 10 measurements for all the sensors");
+		System.out.println("!getAvgHumidity		-->	Get the Avg humidity of the last 10 measurements for all the sensors");
+		System.out.println("!getSprinklerStatus	-->	Get the status of the sprinklers");
+		System.out.println("!getLightStatus		-->	Get the status of the lights");
 		System.out.println("");
 
 	}
@@ -130,6 +142,18 @@ public class MyClient {
 		System.out.println(" 	--	Actuators List	--	");
 		handler.sprinklerActuatorList();
 		handler.lightActuatorList();
+		System.out.println("");
+	}
+	
+	private static void getLastTemp() {
+		System.out.println("	--	Last Temperatures Detected	--	");
+		handler.getLastSensorsTemperatures();
+		System.out.println("");
+	}
+	
+	private static void getLastHum() {
+		System.out.println("	--	Last Humidities Detected	--	");
+		handler.getLastSensorsHumidities();
 		System.out.println("");
 	}
 	

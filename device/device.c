@@ -40,7 +40,7 @@ AUTOSTART_PROCESSES(&device_process);
 
 void client_chunk_handler(coap_message_t *response) {
  
-	const uint8_t *chunk;
+	//const uint8_t *chunk;
 	if(response == NULL) { 
 		printf("Request timed out\n"); 
 		return;
@@ -48,8 +48,8 @@ void client_chunk_handler(coap_message_t *response) {
 
 	registration_status = true;
 
-	int len = coap_get_payload(response, &chunk);
-	LOG_DBG("RESPONSE LEN: %i\nCONTENT: %s\n", len, chunk); 
+	//int len = coap_get_payload(response, &chunk);
+	//LOG_DBG("RESPONSE LEN: %i\nCONTENT: %s\n", len, chunk); 
 
 }
 
@@ -101,7 +101,7 @@ PROCESS_THREAD(device_process, ev, data){
 		COAP_BLOCKING_REQUEST(&server_ep, request, client_chunk_handler);
 	}
 
-	printf("STATUS: %s\n", registration_status ? "true" : "false");
+	printf("Registration status: %s\n", registration_status ? "true" : "false");
 	etimer_set(&e_timer, CLOCK_SECOND * REQ_INTERVAL);
 	
 

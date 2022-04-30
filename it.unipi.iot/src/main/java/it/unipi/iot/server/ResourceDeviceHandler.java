@@ -7,7 +7,7 @@ import it.unipi.iot.resource_devices.Sensor;
 
 public class ResourceDeviceHandler {
 	
-	//A single instance of this class is needed to maintain the devices info
+	//A single instance of this class is needed to maintain shared and consistent info of the devices
 	private static ResourceDeviceHandler single_instance = null;
 	
 	protected HashMap<String, Actuator> sprinklers = new HashMap<String, Actuator>();
@@ -121,6 +121,52 @@ public class ResourceDeviceHandler {
 			System.out.println("Actuator Address: " + addr + 
 					", Status: " + act.getStatus());
 		}
+	}
+
+	public void getLastSensorsTemperatures() {
+
+		for(String addr: tempSensors.keySet()) {
+			
+			Sensor s = tempSensors.get(addr);
+
+			System.out.print("Sensor Address: " + addr); 
+			if(!s.getFull() && s.getIndex() == 0)
+				System.out.println(", No observation available");
+			else {
+				System.out.print(", Last Temperatures: [ ");
+				if(s.getFull()) {
+					for(int i = 0; i < s.getLastObservations().length; i++)
+						System.out.print(s.getLastObservations()[i] + " ");
+				}else {
+					for(int i = 0; i < s.getIndex(); i++)
+						System.out.print(s.getLastObservations()[i] + " ");
+				}
+				System.out.println("]");
+			}
+			
+		}
+		
+	}
+
+	public void getLastSensorsHumidities() {
+		for(String addr: humiditySensors.keySet()) {
+			Sensor s = humiditySensors.get(addr);
+			System.out.print("Sensor Address: " + addr); 
+			if(!s.getFull() && s.getIndex() == 0)
+				System.out.println(", No observation available");
+			else {
+				System.out.print(", Last Humidities: [ ");
+				if(s.getFull()) {
+					for(int i = 0; i < s.getLastObservations().length; i++)
+						System.out.print(s.getLastObservations()[i] + " ");
+				}else {
+					for(int i = 0; i < s.getIndex(); i++)
+						System.out.print(s.getLastObservations()[i] + " ");
+				}
+				System.out.println("]");
+			}
+		}
+		
 	}
 	
 	

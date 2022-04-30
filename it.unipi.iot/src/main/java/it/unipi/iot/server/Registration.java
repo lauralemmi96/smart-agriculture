@@ -86,7 +86,6 @@ public class Registration extends CoapResource{
 		//Check if it is observable
 		String obs = splitSemicolon[splitSemicolon.length-1];
 		boolean observable = (obs.compareTo("obs") == 0);
-		System.out.println("OBS: " + obs);
 			
 		ResourceDeviceHandler handler = ResourceDeviceHandler.getInstance();
 		
@@ -108,9 +107,9 @@ public class Registration extends CoapResource{
 						sensor.observeResource();
 					}
 				}.start();
-				//sensor.observeResource();
+				
 			}
-			System.out.println("Device observable: " + observable);
+			System.out.println("Resource: " + resType + ", Device observable: " + observable);
 			registered = true;
 			
 		}else if(deviceType.compareTo("actuator") == 0) {

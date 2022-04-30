@@ -21,6 +21,15 @@ public class Sensor extends ResourceDevice{
 		observed_values = new int[max_observations];
 	}
 	
+	
+	public int getIndex() {
+		return index;
+	}
+	
+	public boolean getFull() {
+		return full;
+	}
+	
 	public int[] getLastObservations() {
 		return observed_values;
 	}
@@ -39,16 +48,16 @@ public class Sensor extends ResourceDevice{
 	public void observeResource() {
 		
 		if(observable) {
-			System.out.println("TYPE: " + MediaTypeRegistry.APPLICATION_JSON);
+			
 			client.observe(
 					new CoapHandler() {
 						public void onLoad(CoapResponse response) {
 							JSONObject responseJSON = new JSONObject(response.getResponseText());
 							
-							System.out.println("Received a JSON response from sensor\n " + responseJSON + "\n");
+	
 							//read and store the value in the array
 							observed_values[index] = responseJSON.getInt(resourceType);
-							System.out.println("Device type: " + deviceType + ", status: " + observed_values[index]);
+							//System.out.println("Device type: " + deviceType + ", status: " + observed_values[index]);
 
 							//update the index
 							index = (index+1)%max_observations;
