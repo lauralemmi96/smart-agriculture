@@ -46,7 +46,7 @@ static void res_get_handler(coap_message_t *request, coap_message_t *response, u
 		
 		coap_set_header_content_format(response, APPLICATION_JSON);
 		
-		int len = snprintf(response_message, COAP_MAX_CHUNK_SIZE, "{\"Light Status\":%s}", light_status ? "ON" : "OFF");
+		int len = snprintf(response_message, COAP_MAX_CHUNK_SIZE, "{\"light\":%s}", light_status ? "ON" : "OFF");
 		if(len > 0){
 			memcpy(buffer, (uint8_t*)response_message, len);
             		coap_set_payload(response, buffer, len); 

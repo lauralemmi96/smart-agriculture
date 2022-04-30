@@ -46,7 +46,7 @@ static void res_get_handler(coap_message_t *request, coap_message_t *response, u
 		
 		coap_set_header_content_format(response, APPLICATION_JSON);
 		
-		int len = snprintf(response_message, COAP_MAX_CHUNK_SIZE, "{\"Humidity\":%d}", humidity_value);
+		int len = snprintf(response_message, COAP_MAX_CHUNK_SIZE, "{\"humidity\":%d}", humidity_value);
 		if(len > 0){
 			memcpy(buffer, (uint8_t*)response_message, len);
             		coap_set_payload(response, buffer, len); 

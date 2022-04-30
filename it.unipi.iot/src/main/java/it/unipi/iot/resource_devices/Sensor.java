@@ -2,6 +2,7 @@ package it.unipi.iot.resource_devices;
 
 import org.eclipse.californium.core.CoapHandler;
 import org.eclipse.californium.core.CoapResponse;
+import org.eclipse.californium.core.coap.MediaTypeRegistry;
 import org.json.JSONObject;
 
 public class Sensor extends ResourceDevice{
@@ -38,11 +39,13 @@ public class Sensor extends ResourceDevice{
 	public void observeResource() {
 		
 		if(observable) {
+			System.out.println("TYPE: " + MediaTypeRegistry.APPLICATION_JSON);
 			client.observe(
 					new CoapHandler() {
 						public void onLoad(CoapResponse response) {
 							JSONObject responseJSON = new JSONObject(response.getResponseText());
 							
+							System.out.println("Received a JSON response from sensor\n " + responseJSON + "\n");
 							//read and store the value in the array
 							observed_values[index] = responseJSON.getInt(resourceType);
 							System.out.println("Device type: " + deviceType + ", status: " + observed_values[index]);
@@ -58,13 +61,15 @@ public class Sensor extends ResourceDevice{
 							public void onError() {
 								System.err.println("--- Orbservation Failed ---"); 
 							}
-					});
+					}, MediaTypeRegistry.APPLICATION_JSON);
+			/*
 			try {
 				Thread.sleep(5 * 1000);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			*/
 		}else {
 			System.out.println("The resource " + resourceType + " is not observable");
 			return;

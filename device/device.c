@@ -109,7 +109,7 @@ PROCESS_THREAD(device_process, ev, data){
 
 		PROCESS_WAIT_EVENT();
 		if(ev == PROCESS_EVENT_TIMER){
-		    printf("Triggered resource observation\n");
+		    //printf("Triggered resource observation\n");
 		  	if(device_type == 0){
 				res_humidity.trigger();
 				res_temp.trigger();

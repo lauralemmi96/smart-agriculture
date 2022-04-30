@@ -94,7 +94,7 @@ public class Registration extends CoapResource{
 		//	Add it to the data structure base on the res
 		if(deviceType.compareTo("sensor") == 0) {
 			
-			Sensor sensor = new Sensor(sourceAddress, deviceType, resType, observable);
+			final Sensor sensor = new Sensor(sourceAddress, deviceType, resType, observable);
 			
 			//	add the sensor in the ResourceDeviceHandler map
 			if(resType.compareTo("humidity") == 0)
@@ -102,8 +102,14 @@ public class Registration extends CoapResource{
 			else if(resType.compareTo("temperature") == 0)
 				handler.addTempSens(sourceAddress, sensor);
 			
-			if(observable)
-				sensor.observeResource();
+			if(observable) {
+				new Thread() {
+					public void run() {
+						sensor.observeResource();
+					}
+				}.start();
+				//sensor.observeResource();
+			}
 			System.out.println("Device observable: " + observable);
 			registered = true;
 			

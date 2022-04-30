@@ -29,7 +29,6 @@ EVENT_RESOURCE(res_temp,
 
 static void res_event_handler(void) {
  
-    temp_value = (rand() % (max_temp_value - min_temp_value + 1)) + min_temp_value;
     coap_notify_observers(&res_temp);
 }
 
@@ -40,16 +39,23 @@ static void res_event_handler(void) {
 static void res_get_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset){
 	
 	char response_message[COAP_MAX_CHUNK_SIZE];
+	 temp_value = (rand() % (max_temp_value - min_temp_value + 1)) + min_temp_value;
 
 	coap_get_header_accept(request, &accept);
+	
+	printf("Sono dentro res_get_handler, accept value = %i\n", accept, APPLICATION_JSON);
+
+	//if(accept == -1)
+	//	accept = APPLICATION_JSON;
 	if(accept == APPLICATION_JSON){
-		
+
 		coap_set_header_content_format(response, APPLICATION_JSON);
 		
-		int len = snprintf(response_message, COAP_MAX_CHUNK_SIZE, "{\"Temperature\":%d}", temp_value);
+		int len = snprintf(response_message, COAP_MAX_CHUNK_SIZE, "{\"temperature\":%d}", temp_value);
 		if(len > 0){
 			memcpy(buffer, (uint8_t*)response_message, len);
             		coap_set_payload(response, buffer, len); 
+
 		}else
 			LOG_INFO("Error: Response message not formed\n");
 	}else{
