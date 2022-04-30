@@ -59,7 +59,7 @@ public class ResourceDeviceHandler {
 		return humiditySensors;
 	}
 	
-	public void sprinklerList() {
+	public void sprinklerActuatorList() {
 		for(String addr: sprinklers.keySet()) {
 			Actuator act = sprinklers.get(addr);
 			System.out.println("ADDR: " + addr + ", DeviceType: " + act.getDeviceType() + 
@@ -67,7 +67,7 @@ public class ResourceDeviceHandler {
 		}
 	}
 	
-	public void lightList() {
+	public void lightActuatorList() {
 		for(String addr: lights.keySet()) {
 			Actuator act = lights.get(addr);
 			System.out.println("ADDR: " + addr + ", DeviceType: " + act.getDeviceType() + 
@@ -75,7 +75,7 @@ public class ResourceDeviceHandler {
 		}
 	}
 	
-	public void tempList() {
+	public void tempSensorList() {
 		for(String addr: tempSensors.keySet()) {
 			Sensor s = tempSensors.get(addr);
 			System.out.println("ADDR: " + addr + ", DeviceType: " + s.getDeviceType() + 
@@ -83,9 +83,9 @@ public class ResourceDeviceHandler {
 		}
 	}
 	
-	public void humidityList() {
+	public void humiditySensorList() {
 		for(String addr: humiditySensors.keySet()) {
-			Sensor s = tempSensors.get(addr);
+			Sensor s = humiditySensors.get(addr);
 			System.out.println("ADDR: " + addr + ", DeviceType: " + s.getDeviceType() + 
 					", Resource: " + s.getResourceType());
 		}
@@ -95,7 +95,7 @@ public class ResourceDeviceHandler {
 		for(String addr: tempSensors.keySet()) {
 			Sensor s = tempSensors.get(addr);
 			System.out.println("Sensor Address: " + addr + 
-					"Average Temperatures: " + s.getLastAvgObservation());
+					", Average Temperatures: " + s.getLastAvgObservation());
 		}
 	}
 	
@@ -103,7 +103,7 @@ public class ResourceDeviceHandler {
 		for(String addr: humiditySensors.keySet()) {
 			Sensor s = humiditySensors.get(addr);
 			System.out.println("Sensor Address: " + addr + 
-					"Average Humidities: " + s.getLastAvgObservation());
+					", Average Humidities: " + s.getLastAvgObservation());
 		}
 	}
 	
@@ -111,7 +111,7 @@ public class ResourceDeviceHandler {
 		for(String addr: sprinklers.keySet()) {
 			Actuator act = sprinklers.get(addr);
 			System.out.println("Actuator Address: " + addr + 
-					"Status: " + act.getStatus());
+					", Status: " + act.getStatus());
 		}
 	}
 	
@@ -119,7 +119,7 @@ public class ResourceDeviceHandler {
 		for(String addr: lights.keySet()) {
 			Actuator act = lights.get(addr);
 			System.out.println("Actuator Address: " + addr + 
-					"Status: " + act.getStatus());
+					", Status: " + act.getStatus());
 		}
 	}
 	

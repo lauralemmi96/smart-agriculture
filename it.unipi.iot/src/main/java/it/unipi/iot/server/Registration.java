@@ -28,7 +28,7 @@ public class Registration extends CoapResource{
 		
 		//	Get node address	 
 		String source_address = exchange.getSourceAddress().getHostAddress();
-		System.out.println("SRC ADDR: " + source_address + "\n");
+		System.out.println("SRC ADDR: " + source_address);
 		
 		// Create CoapClient Object	and get node information
 		
@@ -63,7 +63,7 @@ public class Registration extends CoapResource{
 			System.out.println("Error in registering the device\n");
 			return;
 		}
-		System.out.println("[SERVER]: Device Registered");
+		System.out.println("[SERVER]: Device Registered\n");
 			
 		
 		
@@ -86,7 +86,7 @@ public class Registration extends CoapResource{
 		//Check if it is observable
 		String obs = splitSemicolon[splitSemicolon.length-1];
 		boolean observable = (obs.compareTo("obs") == 0);
-		//System.out.println("OBS: " + obs);
+		System.out.println("OBS: " + obs);
 			
 		ResourceDeviceHandler handler = ResourceDeviceHandler.getInstance();
 		
@@ -104,7 +104,7 @@ public class Registration extends CoapResource{
 			
 			if(observable)
 				sensor.observeResource();
-			
+			System.out.println("Device observable: " + observable);
 			registered = true;
 			
 		}else if(deviceType.compareTo("actuator") == 0) {
@@ -119,6 +119,8 @@ public class Registration extends CoapResource{
 			
 			if(observable)
 				actuator.observeResource();
+			
+			System.out.println("Device observable: " + observable);
 			
 			registered = true;
 		}

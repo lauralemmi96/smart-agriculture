@@ -1,7 +1,9 @@
 package it.unipi.iot.resource_devices;
 
 import org.eclipse.californium.core.CoapHandler;
+import org.eclipse.californium.core.CoapObserveRelation;
 import org.eclipse.californium.core.CoapResponse;
+import org.eclipse.californium.core.coap.MediaTypeRegistry;
 import org.json.JSONObject;
 
 public class Actuator extends ResourceDevice{
@@ -20,7 +22,8 @@ public class Actuator extends ResourceDevice{
 	public void observeResource() {
 		
 		if(observable) {
-			client.observe(
+			System.out.println("Sto osservando il mio stato");
+			client.observeAndWait(
 					new CoapHandler() {
 						public void onLoad(CoapResponse response) {
 							JSONObject responseJSON = new JSONObject(response.getResponseText());
@@ -34,11 +37,11 @@ public class Actuator extends ResourceDevice{
 							public void onError() {
 								System.err.println("--- Orbservation Failed ---"); 
 							}
-					});
+					}, MediaTypeRegistry.APPLICATION_JSON);
 		}else {
 			System.out.println("The resource " + resourceType + " is not observable");
 			return;
 		}
 	}
-
+	
 }

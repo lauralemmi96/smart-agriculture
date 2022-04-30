@@ -14,7 +14,7 @@
 #define LOG_LEVEL LOG_LEVEL_APP
 /*	Declare server IP	*/
 #define SERVER_EP "coap://[fd00::1]:5683" 
-#define REQ_INTERVAL 10
+#define REQ_INTERVAL 5
 
 /*	Declare external resources to be activated	*/
 extern coap_resource_t res_humidity;
@@ -49,7 +49,7 @@ void client_chunk_handler(coap_message_t *response) {
 	registration_status = true;
 
 	int len = coap_get_payload(response, &chunk);
-	LOG_INFO("RESPONSE LEN: %i\nCONTENT: %s\n", len, chunk); 
+	LOG_DBG("RESPONSE LEN: %i\nCONTENT: %s\n", len, chunk); 
 
 }
 

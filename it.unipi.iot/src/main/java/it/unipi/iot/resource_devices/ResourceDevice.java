@@ -16,7 +16,7 @@ public class ResourceDevice {
 		this.deviceType = deviceType;
 		this.resourceType = resourceType;
 		this.observable = observable;
-		
+		//System.out.println("coap://[" + this.hostAddress + "]:5683/"+ this.resourceType);
 		this.client = new CoapClient("coap://[" + this.hostAddress + "]:5683/"+ this.resourceType);
 	}
 
