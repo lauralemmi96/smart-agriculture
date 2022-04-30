@@ -174,10 +174,10 @@ public class ResourceDeviceHandler {
 		CoapClient c = sprinklers.get(address).getClient();
 		
 		//Prepare post payload
-		String requestAttribute = "{\"status\":\"" + newStatus + "\"}";
+		String requestAttribute = "status=" + newStatus;
 		
 		//send post request
-		CoapResponse response = c.post(requestAttribute, MediaTypeRegistry.APPLICATION_JSON);
+		CoapResponse response = c.post(requestAttribute, MediaTypeRegistry.TEXT_PLAIN);
 		
 		//Check the return code: Success 2.xx
 		if(!response.getCode().toString().startsWith("2")) {
@@ -196,10 +196,10 @@ public class ResourceDeviceHandler {
 		CoapClient c = lights.get(address).getClient();
 		
 		//Prepare post payload
-		String requestAttribute = "{\"status\":\"" + newStatus + "\"}";
+		String requestAttribute = "status=" + newStatus;
 		
 		//send post request
-		CoapResponse response = c.post(requestAttribute, MediaTypeRegistry.APPLICATION_JSON);
+		CoapResponse response = c.post(requestAttribute, MediaTypeRegistry.TEXT_PLAIN);
 		
 		//Check the return code: Success 2.xx
 		if(!response.getCode().toString().startsWith("2")) {
