@@ -75,11 +75,9 @@ public class Registration extends CoapResource{
 		
 		//Take the resource name
 		String resType = splitSemicolon[2].substring(splitSemicolon[2].indexOf("\"") + 1 , splitSemicolon[2].length()-1);
-		//System.out.println("Resource: " + resType);
 		
 		//Take the device type (sensor/actuator)
 		String deviceType = splitSemicolon[3].substring(splitSemicolon[3].indexOf("\"") + 1 , splitSemicolon[3].length()-1);
-		//System.out.println("Device Type: " + deviceType);
 		
 		//Check if it is observable
 		String obs = splitSemicolon[splitSemicolon.length-1];
@@ -99,7 +97,6 @@ public class Registration extends CoapResource{
 			else if(resType.compareTo("temperature") == 0)
 				handler.addTempSens(sourceAddress, sensor);
 			
-			handler.addDevice(sourceAddress, sensor);
 			
 			if(observable) {
 				new Thread() {
@@ -122,7 +119,6 @@ public class Registration extends CoapResource{
 			else if(resType.compareTo("light") == 0)
 				handler.addLights(sourceAddress, actuator);
 			
-			handler.addDevice(sourceAddress, actuator);
 			
 			if(observable)
 				actuator.observeResource();

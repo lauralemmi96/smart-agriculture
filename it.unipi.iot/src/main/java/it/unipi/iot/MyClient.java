@@ -337,7 +337,7 @@ public class MyClient {
 		try {
 			String address = reader.readLine();
 			
-			if(!handler.getDevice().containsKey(address)) {
+			if(!handler.getDevice(address)) {
 				System.out.println("Error! This is not a device address.\n ");
 				return;
 			}
@@ -353,7 +353,7 @@ public class MyClient {
 		
 	}
 	
-	//Removo the area a device belongs to
+	//Remove the area a device belongs to
 	private static void removeDeviceArea() {
 		System.out.println("Type the address of the device");
 		System.out.println("Available Devices: ");
@@ -362,7 +362,7 @@ public class MyClient {
 		try {
 			String address = reader.readLine();
 			
-			if(!handler.getDevice().containsKey(address)) {
+			if(!handler.getDevice(address)) {
 				System.out.println("Error! This is not a device address.\n ");
 				return;
 			}

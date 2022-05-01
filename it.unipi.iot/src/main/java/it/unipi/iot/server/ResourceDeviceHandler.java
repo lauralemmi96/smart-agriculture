@@ -23,7 +23,7 @@ public class ResourceDeviceHandler {
 	protected HashMap<String, Sensor> humiditySensors = new HashMap<String, Sensor>();
 	
 	//Device Map
-	protected HashMap<String, ResourceDevice> devices = new HashMap<String, ResourceDevice>();
+	//protected HashMap<String, ResourceDevice> devices = new HashMap<String, ResourceDevice>();
 	
 	//Areas List
 	protected HashMap<String, ArrayList<ResourceDevice>> areas = new HashMap<String, ArrayList<ResourceDevice>>();
@@ -56,10 +56,6 @@ public class ResourceDeviceHandler {
 		humiditySensors.put(address, sensor);
 	}
 	
-	public void addDevice(String address, ResourceDevice rd) {
-		devices.put(address, rd);
-	}
-
 	public HashMap<String, Actuator> getSprinklers() {
 		return sprinklers;
 	}
@@ -77,19 +73,21 @@ public class ResourceDeviceHandler {
 	}
 	
 	
-	public HashMap<String, ResourceDevice> getDevice(){
-		return devices;
-	}
-	
 	public HashMap<String, ArrayList<ResourceDevice>> getAreas(){
 		return areas;
 	}
+	
+/*
+ * 
+ * 		RETURNS DEVICES LISTS
+ * 
+ */
 	
 	// PRINT THE LIST OF ALL THE SPRINKLER ACTUATORS
 	public void sprinklerActuatorList() {
 		for(String addr: sprinklers.keySet()) {
 			Actuator act = sprinklers.get(addr);
-			System.out.println("Area: " + act.getArea() + ", addr: " + addr + ", Resource: " + act.getResourceType() + ", Status: " + act.getStatus());
+			System.out.println("Area: " + act.getArea() + ", addr: " + addr + ", type: " + act.getDeviceType() + ", Resource: " + act.getResourceType() + ", Status: " + act.getStatus());
 		}
 	}
 	
@@ -97,7 +95,7 @@ public class ResourceDeviceHandler {
 	public void lightActuatorList() {
 		for(String addr: lights.keySet()) {
 			Actuator act = lights.get(addr);
-			System.out.println("Area: " + act.getArea() + ", addr: " + addr + ", Resource: " + act.getResourceType()+ ", Status: " + act.getStatus());
+			System.out.println("Area: " + act.getArea() + ", addr: " + addr + ", type: " + act.getDeviceType() + ", Resource: " + act.getResourceType()+ ", Status: " + act.getStatus());
 		}
 	}
 	
@@ -105,7 +103,7 @@ public class ResourceDeviceHandler {
 	public void tempSensorList() {
 		for(String addr: tempSensors.keySet()) {
 			Sensor s = tempSensors.get(addr);
-			System.out.println("Area: " + s.getArea() + ", addr: " + addr + ", Resource: " + s.getResourceType());
+			System.out.println("Area: " + s.getArea() + ", addr: " + addr + ", type: " + s.getDeviceType() + ", Resource: " + s.getResourceType());
 		}
 	}
 	
@@ -113,16 +111,64 @@ public class ResourceDeviceHandler {
 	public void humiditySensorList() {
 		for(String addr: humiditySensors.keySet()) {
 			Sensor s = humiditySensors.get(addr);
-			System.out.println("Area: " + s.getArea() + ", addr: " + addr + ", Resource: " + s.getResourceType());
+			System.out.println("Area: " + s.getArea() + ", addr: " + addr + ", type: " + s.getDeviceType() + ", Resource: " + s.getResourceType());
 		}
 	}
 	
 	//	PRINT THE LIST OF ALL THE DEVICES
 	public void devicesList() {
-		for(String addr: devices.keySet()) {
-			ResourceDevice rd = devices.get(addr);
-			System.out.println("ADDR: " + addr + ", Type: " + rd.getDeviceType());
+		
+		this.tempSensorList();
+		this.humiditySensorList();
+		this.sprinklerActuatorList();
+		this.lightActuatorList();
+		
+		
+	}
+	
+	// RETURNS IF A DEVICE WITH THAT ADDRESS IS PRESENT
+	public boolean getDevice(String address) {
+		
+		if(tempSensors.containsKey(address))
+			return true;
+		if(humiditySensors.containsKey(address))
+			return true;
+		if(sprinklers.containsKey(address))
+			return true;
+		if(lights.containsKey(address))
+			return true;
+		
+		return false;
+	}
+
+	// PRINT LIST OF AREAS WITH LIGHT DEVICES
+	public void getAreasList() {
+		
+		if(areas.isEmpty()) {
+			System.out.println("No Area defined yet\n");
+			return;
 		}
+		
+		for(String area: areas.keySet()) {
+			//print area name
+			System.out.print("[ " + area + " ] : [ ");
+			
+			//get device list
+			ArrayList<ResourceDevice> device = areas.get(area);
+			
+			for(ResourceDevice d: device) {
+					System.out.print("{IP: " + d.getHostAddress() + ", type: " 
+							+ d.getDeviceType() + ", res: " + d.getResourceType() + " } " );
+					
+
+			}
+			System.out.println(" ]");
+					
+			
+		}
+		
+			
+		
 	}
 	
 /*
@@ -167,7 +213,7 @@ public class ResourceDeviceHandler {
 		}
 	}
 
-	// GET LAST TTEMP MEAS. FOR ALL THE SENSORS 
+	// GET LAST TEMP MEAS. FOR ALL THE SENSORS 
 	public void getLastSensorsTemperatures() {
 
 		for(String addr: tempSensors.keySet()) {
@@ -215,35 +261,7 @@ public class ResourceDeviceHandler {
 		
 	}
 	
-	// PRINT LIST OF AREAS WITH LIGHT DEVICES
-	public void getAreasList() {
-		
-		if(areas.isEmpty()) {
-			System.out.println("No Area defined yet\n");
-			return;
-		}
-		
-		for(String area: areas.keySet()) {
-			//print area name
-			System.out.print("[ " + area + " ] : [ ");
-			
-			//get device list
-			ArrayList<ResourceDevice> device = areas.get(area);
-			
-			for(ResourceDevice d: device) {
-					System.out.print("{IP: " + d.getHostAddress() + ", type: " 
-							+ d.getDeviceType() + ", res: " + d.getResourceType() + " } " );
-					
 
-			}
-			System.out.println(" ]");
-					
-			
-		}
-		
-			
-		
-	}
 	
 /*
  * 
@@ -344,39 +362,41 @@ public class ResourceDeviceHandler {
 	// ADD DEVICE TO AREA
 	public void addDeviceArea(String address, String area) {
 		
-		ResourceDevice rd = null;
+		boolean find = false;
+		Sensor temp = null;
+		Sensor hum = null;
+		Actuator light = null;
+		Actuator sprinkler = null;
 		
-		rd = devices.get(address);
+		temp = tempSensors.get(address);
+		hum = tempSensors.get(address);
+		light = lights.get(address);
+		sprinkler = sprinklers.get(address);
+		
+		if(temp != null) {
+			addResourceArea(temp, area);
+			find = true;
+		}
+		
+		if(hum != null) {
+			addResourceArea(hum, area);
+			find = true;
+		}
+		
+		if(light != null) {
+			addResourceArea(light, area);
+			find = true;
+		}
+		
+		if(sprinkler != null) {
+			addResourceArea(sprinkler, area);
+			find = true;
+		}
 				
 		
-		if(rd != null) {
+		if(find) {
 			
-			//If a area was already set, remove the device from that list.
-			if(rd.getArea() != null) {
-				String old = rd.getArea();
-				areas.get(old).remove(rd);
-				
-				//If the area remains empty remove it 
-				if(areas.get(old).isEmpty())
-					areas.remove(old);
-			}
-			
-			
-			rd.setArea(area);
-
-			
-			if(!areas.containsKey(area)) {
-				ArrayList<ResourceDevice> list = new ArrayList<>();
-				list.add(rd);
-				areas.put(area, list);
-			}else {
-				if(!areas.get(area).contains(rd)) {
-					areas.get(area).add(rd);
-				}
-				
-				System.out.println("Device Area set\n");
-			}
-			
+			System.out.println("");
 			
 		}else {
 			System.out.println("No Device with that address\n");
@@ -387,36 +407,106 @@ public class ResourceDeviceHandler {
 		
 	}
 	
+	//Add the resource to the area
+	private void addResourceArea(ResourceDevice rd, String area) {
+		
+		
+			
+		//If a area was already set, remove the device from that list.
+		if(rd.getArea() != null) {
+			String old = rd.getArea();
+			areas.get(old).remove(rd);
+			
+			//If the area remains empty remove it 
+			if(areas.get(old).isEmpty())
+				areas.remove(old);
+		}
+		
+		
+		rd.setArea(area);
+
+		
+		if(!areas.containsKey(area)) {
+			ArrayList<ResourceDevice> list = new ArrayList<>();
+			list.add(rd);
+			areas.put(area, list);
+		}else {
+			if(!areas.get(area).contains(rd)) {
+				areas.get(area).add(rd);
+			}
+			
+			System.out.println("Device Area set for resource: " + rd.getResourceType());
+			}
+				
+		
+	}
+	
+	
+	
 	//REMOVE DEVICE FROM AREA
 	public void removeDeviceArea(String address) {
 		
-		ResourceDevice rd = null;
+		boolean find = false;
+		Sensor temp = null;
+		Sensor hum = null;
+		Actuator light = null;
+		Actuator sprinkler = null;
 		
-		rd = devices.get(address);
-				
+		temp = tempSensors.get(address);
+		hum = tempSensors.get(address);
+		light = lights.get(address);
+		sprinkler = sprinklers.get(address);
 		
-		if(rd != null) {
-			
-			//If a area was already set, remove the device from that list.
-			if(rd.getArea() != null) {
-				String old = rd.getArea();
-				areas.get(old).remove(rd);
-				
-				//If the area remains empty remove it 
-				if(areas.get(old).isEmpty())
-					areas.remove(old);
-				
-				System.out.println("Device removed from area " + old + "\n");
-				return;
-			}
-			
-			System.out.println("Device Area was not set\n");
-			return;
-			
+		if(temp != null) {
+			removeResourceArea(temp);
+			find = true;
 		}
-		System.out.println("No Device with that address");
+		
+		if(hum != null) {
+			removeResourceArea(hum);
+			find = true;
+		}
+		
+		if(light != null) {
+			removeResourceArea(light);
+			find = true;
+		}
+		
+		if(sprinkler != null) {
+			removeResourceArea(sprinkler);
+			find = true;
+		}
+				
+		
+		if(find) {
+			
+			System.out.println("");
+			
+		}else {
+			System.out.println("No Device with that address\n");
+		}
 		
 			
+	}
+	
+	// Remove resource from the area
+	private void removeResourceArea(ResourceDevice rd) {
+		
+		//If a area was already set, remove the device from that list.
+		if(rd.getArea() != null) {
+			String old = rd.getArea();
+			areas.get(old).remove(rd);
+			
+			//If the area remains empty remove it 
+			if(areas.get(old).isEmpty())
+				areas.remove(old);
+			
+			System.out.println("Resource Device: " + rd.getResourceType() + " removed from area " + old + "\n");
+			return;
+		}
+		
+		System.out.println("Resource Device " + rd.getResourceType() + ": Area was not set\n");
+		return;
 	}
 
 	// GET LIST OF AREAS WITH LIGHT DEVICES
