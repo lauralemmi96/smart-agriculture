@@ -7,6 +7,7 @@ public class ResourceDevice {
 	protected String hostAddress;
 	protected String deviceType;
 	protected String resourceType;
+	protected String area;
 	protected CoapClient client;
 	protected boolean observable;
 	
@@ -16,7 +17,7 @@ public class ResourceDevice {
 		this.deviceType = deviceType;
 		this.resourceType = resourceType;
 		this.observable = observable;
-		//System.out.println("coap://[" + this.hostAddress + "]:5683/"+ this.resourceType);
+		this.area = null;
 		this.client = new CoapClient("coap://[" + this.hostAddress + "]:5683/"+ this.resourceType);
 	}
 
@@ -34,6 +35,14 @@ public class ResourceDevice {
 
 	public boolean isObservable() {
 		return observable;
+	}
+
+	public String getArea() {
+		return area;
+	}
+
+	public void setArea(String area) {
+		this.area = area;
 	}
 	
 	

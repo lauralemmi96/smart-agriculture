@@ -1,5 +1,6 @@
 package it.unipi.iot.server;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.eclipse.californium.core.CoapClient;
@@ -7,6 +8,7 @@ import org.eclipse.californium.core.CoapResponse;
 import org.eclipse.californium.core.coap.MediaTypeRegistry;
 
 import it.unipi.iot.resource_devices.Actuator;
+import it.unipi.iot.resource_devices.ResourceDevice;
 import it.unipi.iot.resource_devices.Sensor;
 
 public class ResourceDeviceHandler {
@@ -18,6 +20,7 @@ public class ResourceDeviceHandler {
 	protected HashMap<String, Actuator> lights = new HashMap<String, Actuator>();
 	protected HashMap<String, Sensor> tempSensors = new HashMap<String, Sensor>();
 	protected HashMap<String, Sensor> humiditySensors = new HashMap<String, Sensor>();
+	protected ArrayList<String> areas = new ArrayList<String>(); 
 
 	private ResourceDeviceHandler()
     {
@@ -212,6 +215,24 @@ public class ResourceDeviceHandler {
 		
 		
 	
+	}
+	
+	public void addDeviceArea(String type, String address, String area) {
+		
+		switch(type) {
+		case "sensor":
+			
+			Sensor sensor = null;
+			if(tempSensors.containsKey(address))
+					tempSensors.get(address);
+			else if(humiditySensors.containsKey(address))
+				humiditySensors.get(address);
+			
+			
+		}
+		
+		
+		
 	}
 	
 	
