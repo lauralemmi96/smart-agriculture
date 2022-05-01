@@ -101,6 +101,8 @@ public class Registration extends CoapResource{
 			else if(resType.compareTo("temperature") == 0)
 				handler.addTempSens(sourceAddress, sensor);
 			
+			handler.addDevice(sourceAddress, sensor);
+			
 			if(observable) {
 				new Thread() {
 					public void run() {
@@ -121,6 +123,8 @@ public class Registration extends CoapResource{
 				handler.addSprinklers(sourceAddress, actuator);
 			else if(resType.compareTo("light") == 0)
 				handler.addLights(sourceAddress, actuator);
+			
+			handler.addDevice(sourceAddress, actuator);
 			
 			if(observable)
 				actuator.observeResource();

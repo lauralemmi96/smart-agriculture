@@ -20,6 +20,10 @@ public class ResourceDevice {
 		this.area = null;
 		this.client = new CoapClient("coap://[" + this.hostAddress + "]:5683/"+ this.resourceType);
 	}
+	
+	public String getHostAddress() {
+		return hostAddress;
+	}
 
 	public String getDeviceType() {
 		return deviceType;

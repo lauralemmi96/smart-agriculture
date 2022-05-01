@@ -56,6 +56,10 @@ public class MyClient {
 						getActuators();
 						break;
 						
+					case "!getAreasList":
+						getAreasList();
+						break;
+						
 					case "!getAvgTemperature":
 						getAvgTemperature();
 						break;
@@ -80,12 +84,16 @@ public class MyClient {
 						getLightStatus();
 						break;
 						
-					case "!setSprinklerStatus":
-						setSprinklerStatus();
+					case "!setAreaSprinklerStatus":
+						setAreaSprinklerStatus();
 						break;
 						
-					case "!setLightStatus":
-						setLightStatus();
+					case "!setAreaLightStatus":
+						setAreaLightStatus();
+						break;
+						
+					case "!setDeviceArea":
+						setDeviceArea();
 						break;
 						
 					default:
@@ -120,6 +128,7 @@ public class MyClient {
 		System.out.println("!getActuators 		-->	Get the list of registered actuators");	
 		*/
 		System.out.println("	--	GET COMMANDS	--	");
+		System.out.println("!getAreasList		--> Get the list of areas and their info");
 		System.out.println("!getLastTemp		-->	Get the list of the last temp measurements");
 		System.out.println("!getLastHum		-->	Get the list of the last humidity measurements");
 		System.out.println("!getAvgTemperature	-->	Get the Avg temperature of the last 10 measurements for all the sensors");
@@ -130,11 +139,22 @@ public class MyClient {
 		
 		System.out.println("");
 		System.out.println("	--	POST COMMANDS	--	");
-		System.out.println("!setSprinklerStatus	-->	Set the status of a sprinkler");
-		System.out.println("!setLightStatus		-->	Set the status of a light");
+		System.out.println("!setAreaSprinklerStatus	-->	Set the status of a sprinkler");
+		System.out.println("!setAreaLightStatus		-->	Set the status of lights in a area");
+		System.out.println("!setDeviceArea		-->	Set the area the device belongs to");
+		
+		
+		
 		System.out.println("");
+		
 
 	}
+	
+/*
+ * 
+ * 		GET METHODS
+ * 
+ */
 	
 	private static void getSensors() {
 		
@@ -200,16 +220,28 @@ public class MyClient {
 		System.out.println("");
 	}
 	
-	private static void setSprinklerStatus() {
-		System.out.println("Type the address of the sprinkler you want to switch");
+	private static void getAreasList() {
+		System.out.println("	--	Get Areas Info	--	");
+		handler.getAreasList();
+		System.out.println("");
+	}
+	
+/*
+ * 
+ * 		SET METHODS
+ * 
+ */
+	
+	private static void setAreaSprinklerStatus() {
+		System.out.println("Type the area of the sprinkler you want to switch");
 		System.out.println("Available Sprinklers: ");
-		handler.sprinklerActuatorList();
+		handler.sprinklerAreasList();
 		try {
-			String address = reader.readLine();
+			String area = reader.readLine();
 			boolean valid = true;
 			
-			if(!handler.getSprinklers().containsKey(address)) {
-				System.out.println("Error! This is not a sprinkler address.\n ");
+			if(!handler.getAreas().containsKey(area)) {
+				System.out.println("Error! This is not a valid area.\n ");
 				return;
 			}	
 			
@@ -221,13 +253,13 @@ public class MyClient {
 							+ "Retry or type \"!Exit\" for a new operation");
 					
 					status = reader.readLine().toUpperCase();
-					if(address.compareTo("!Exit") == 0) {
+					if(status.compareTo("!Exit") == 0) {
 						valid = false;
 						break;
 					}
 				}
 			if(valid) {
-				if(!handler.setSprinklerStatus(address, status))
+				if(!handler.setSprinklerStatus(area, status))
 					System.out.println("Something went wrong!\n");
 				else
 					System.out.println("Status Changed\n");
@@ -239,16 +271,16 @@ public class MyClient {
 		}
 	}
 	
-	private static void setLightStatus() {
-		System.out.println("Type the address of the light you want to switch");
-		System.out.println("Available Lights: ");
-		handler.lightActuatorList();
+	private static void setAreaLightStatus() {
+		System.out.println("Type the area of the lights you want to switch");
+		System.out.println("Available Areas with Lights: ");
+		handler.lightAreasList();
 		try {
-			String address = reader.readLine();
+			String area = reader.readLine();
 			boolean valid = true;
 			
-			if(!handler.getLights().containsKey(address)) {
-				System.out.println("Error! This is not a light address.\n ");
+			if(!handler.getAreas().containsKey(area)) {
+				System.out.println("Error! This is not a valid area.\n ");
 				return;
 			}	
 			
@@ -260,13 +292,13 @@ public class MyClient {
 							+ "Retry or type \"!Exit\" for a new operation");
 					
 					status = reader.readLine().toUpperCase();
-					if(address.compareTo("!Exit") == 0) {
+					if(status.compareTo("!Exit") == 0) {
 						valid = false;
 						break;
 					}
 				}
 			if(valid) {
-				if(!handler.setLightStatus(address, status))
+				if(!handler.setAreaLightStatus(area, status))
 					System.out.println("Something went wrong!\n");
 				else
 					System.out.println("Status Changed\n");
@@ -276,6 +308,30 @@ public class MyClient {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private static void setDeviceArea() {
+		System.out.println("Type the address of the device");
+		System.out.println("Available Devices: ");
+		handler.devicesList();
+		
+		try {
+			String address = reader.readLine();
+			
+			if(!handler.getDevice().containsKey(address)) {
+				System.out.println("Error! This is not a device address.\n ");
+				return;
+			}
+			
+			System.out.println("Type the area");
+			String area = reader.readLine().toLowerCase();
+			handler.addDeviceArea(address, area);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		
 	}
 	
 	
