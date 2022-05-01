@@ -422,12 +422,12 @@ public class ResourceDeviceHandler {
 	// GET LIST OF AREAS WITH LIGHT DEVICES
 	public void lightAreasList() {
 		
-		System.out.println("[ ");
+		System.out.print("[ ");
 		for(String area: areas.keySet()) {
 			ArrayList<ResourceDevice> device = areas.get(area);
 			for(ResourceDevice d: device) {
 				if(d.getResourceType().compareTo("light") == 0) {
-					System.out.println(area + " ");
+					System.out.print(area + " ");
 					break;
 				}
 					
@@ -441,18 +441,18 @@ public class ResourceDeviceHandler {
 	// GET LIST OF AREAS WITH SPRINKLER DEVICES
 	public void sprinklerAreasList() {
 		
-		System.out.println("[ ");
+		System.out.print("[ ");
 		for(String area: areas.keySet()) {
 			ArrayList<ResourceDevice> device = areas.get(area);
 			for(ResourceDevice d: device) {
 				if(d.getResourceType().compareTo("sprinkler") == 0) {
-					System.out.println(area + " ");
+					System.out.print(area + " ");
 					break;
 				}
 					
 			}
 		}
-		System.out.println("]");
+		System.out.print("]");
 			
 		
 	}

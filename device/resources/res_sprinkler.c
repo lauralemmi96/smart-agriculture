@@ -80,6 +80,15 @@ static void res_post_put_handler(coap_message_t *request, coap_message_t *respon
 	const char *var = NULL;
 	bool good_req = false;
 
+	const uint8_t **message;
+	message = malloc(request->payload_len);
+
+	if(message == NULL){
+		LOG_INFO("[LIGHT]: Empty payload\n");
+		return;
+	}
+
+
 	pay_len = coap_get_payload(request, message);
 	//LOG_INFO("Message received: %s\n", (char *)*msg);
 
