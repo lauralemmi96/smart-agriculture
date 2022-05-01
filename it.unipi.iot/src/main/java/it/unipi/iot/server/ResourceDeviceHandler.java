@@ -435,8 +435,9 @@ public class ResourceDeviceHandler {
 				areas.get(area).add(rd);
 			}
 			
-			System.out.println("Device Area set for resource: " + rd.getResourceType());
-			}
+			
+		}
+		System.out.println("Device Area set for resource: " + rd.getResourceType());
 				
 		
 	}
@@ -542,7 +543,7 @@ public class ResourceDeviceHandler {
 					
 			}
 		}
-		System.out.print("]");
+		System.out.println("]");
 			
 		
 	}

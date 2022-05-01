@@ -133,7 +133,7 @@ public class MyClient {
 		
 		System.out.println("!getSensors 		-->	Get the list of registered sensors");
 		System.out.println("!getActuators 		-->	Get the list of registered actuators");	
-		System.out.println("!getAreasList		--> Get the list of areas and their info");
+		System.out.println("!getAreasList			--> Get the list of areas and their info");
 		System.out.println("!getLastTemp		-->	Get the list of the last temp measurements");
 		System.out.println("!getLastHum		-->	Get the list of the last humidity measurements");
 		System.out.println("!getAvgTemperature	-->	Get the Avg temperature of the last 10 measurements for all the sensors");
@@ -276,7 +276,7 @@ public class MyClient {
 					}
 				}
 			if(valid) {
-				if(!handler.setSprinklerStatus(area, status))
+				if(!handler.setAreaSprinklerStatus(area, status))
 					System.out.println("Something went wrong!\n");
 				else
 					System.out.println("Status Changed\n");
