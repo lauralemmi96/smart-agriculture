@@ -1,13 +1,10 @@
 package it.unipi.iot.server;
 
-import java.util.HashMap;
 
 import org.eclipse.californium.core.CoapClient;
 import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.CoapResponse;
-import org.eclipse.californium.core.coap.CoAP.ResponseCode;
 import org.eclipse.californium.core.coap.MediaTypeRegistry;
-import org.eclipse.californium.core.coap.Response;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 
 import it.unipi.iot.resource_devices.Actuator;
@@ -69,6 +66,7 @@ public class Registration extends CoapResource{
 		
 	}
 	
+	//For each resource, register the device
 	private boolean deviceRegistration(String sourceAddress, String resource) {
 		
 		boolean registered = false;

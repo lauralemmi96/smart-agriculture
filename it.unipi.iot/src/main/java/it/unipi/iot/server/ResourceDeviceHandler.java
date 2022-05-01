@@ -89,7 +89,7 @@ public class ResourceDeviceHandler {
 	public void sprinklerActuatorList() {
 		for(String addr: sprinklers.keySet()) {
 			Actuator act = sprinklers.get(addr);
-			System.out.println("Area: " + act.getArea() + ", addr: " + addr + ", Status: " + act.getStatus());
+			System.out.println("Area: " + act.getArea() + ", addr: " + addr + ", Resource: " + act.getResourceType() + ", Status: " + act.getStatus());
 		}
 	}
 	
@@ -97,7 +97,7 @@ public class ResourceDeviceHandler {
 	public void lightActuatorList() {
 		for(String addr: lights.keySet()) {
 			Actuator act = lights.get(addr);
-			System.out.println("Area: " + act.getArea() + ", addr: " + addr + ", Status: " + act.getStatus());
+			System.out.println("Area: " + act.getArea() + ", addr: " + addr + ", Resource: " + act.getResourceType()+ ", Status: " + act.getStatus());
 		}
 	}
 	
@@ -350,10 +350,22 @@ public class ResourceDeviceHandler {
 				
 		
 		if(rd != null) {
+			
+			//If a area was already set, remove the device from that list.
+			if(rd.getArea() != null) {
+				String old = rd.getArea();
+				areas.get(old).remove(rd);
+				
+				//If the area remains empty remove it 
+				if(areas.get(old).isEmpty())
+					areas.remove(old);
+			}
+			
+			
 			rd.setArea(area);
 
 			
-			if(!areas.containsKey(areas)) {
+			if(!areas.containsKey(area)) {
 				ArrayList<ResourceDevice> list = new ArrayList<>();
 				list.add(rd);
 				areas.put(area, list);
@@ -373,6 +385,38 @@ public class ResourceDeviceHandler {
 		
 		
 		
+	}
+	
+	//REMOVE DEVICE FROM AREA
+	public void removeDeviceArea(String address) {
+		
+		ResourceDevice rd = null;
+		
+		rd = devices.get(address);
+				
+		
+		if(rd != null) {
+			
+			//If a area was already set, remove the device from that list.
+			if(rd.getArea() != null) {
+				String old = rd.getArea();
+				areas.get(old).remove(rd);
+				
+				//If the area remains empty remove it 
+				if(areas.get(old).isEmpty())
+					areas.remove(old);
+				
+				System.out.println("Device removed from area " + old + "\n");
+				return;
+			}
+			
+			System.out.println("Device Area was not set\n");
+			return;
+			
+		}
+		System.out.println("No Device with that address");
+		
+			
 	}
 
 	// GET LIST OF AREAS WITH LIGHT DEVICES

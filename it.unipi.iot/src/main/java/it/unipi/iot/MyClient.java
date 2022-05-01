@@ -96,6 +96,10 @@ public class MyClient {
 						setDeviceArea();
 						break;
 						
+					case "!removeDeviceArea":
+						removeDeviceArea();
+						break;
+						
 					default:
 						System.out.println("Command not defined\n");
 						break;
@@ -123,11 +127,12 @@ public class MyClient {
 		System.out.println("");
 		System.out.println("	--	This is the list of accepted command	--	\n");
 		System.out.println("!help 			-->	Get the list of the available commands\n");
-		/*
+		
+		
+		System.out.println("	--	GET COMMANDS	--	");
+		
 		System.out.println("!getSensors 		-->	Get the list of registered sensors");
 		System.out.println("!getActuators 		-->	Get the list of registered actuators");	
-		*/
-		System.out.println("	--	GET COMMANDS	--	");
 		System.out.println("!getAreasList		--> Get the list of areas and their info");
 		System.out.println("!getLastTemp		-->	Get the list of the last temp measurements");
 		System.out.println("!getLastHum		-->	Get the list of the last humidity measurements");
@@ -142,6 +147,8 @@ public class MyClient {
 		System.out.println("!setAreaSprinklerStatus	-->	Set the status of a sprinkler");
 		System.out.println("!setAreaLightStatus		-->	Set the status of lights in a area");
 		System.out.println("!setDeviceArea		-->	Set the area the device belongs to");
+		System.out.println("!removeDeviceArea		-->	Remove the area the device belongs to");
+
 		
 		
 		
@@ -156,6 +163,7 @@ public class MyClient {
  * 
  */
 	
+	//Get the list of the sensors (area, address, resType)
 	private static void getSensors() {
 		
 		if(handler.getHumiditySensors().isEmpty() && handler.getTempSensors().isEmpty()) {
@@ -169,6 +177,7 @@ public class MyClient {
 		System.out.println("");
 	}
 	
+	//Get the list of the actuators (area, address, resType, status)
 	private static void getActuators() {
 		
 		if(handler.getSprinklers().isEmpty() && handler.getLights().isEmpty()) {
@@ -182,18 +191,21 @@ public class MyClient {
 		System.out.println("");
 	}
 	
+	//For all the temp sensors, get the last (max 10) measurements
 	private static void getLastTemp() {
 		System.out.println("	--	Last Temperatures Detected	--	");
 		handler.getLastSensorsTemperatures();
 		System.out.println("");
 	}
 	
+	//For all the hum sensors, get the last (max 10) measurements
 	private static void getLastHum() {
 		System.out.println("	--	Last Humidities Detected	--	");
 		handler.getLastSensorsHumidities();
 		System.out.println("");
 	}
 	
+	//For all the temp sensors, get the avg of the last 10 measurements
 	private static void getAvgTemperature() {
 		
 		System.out.println("	--	Last Average Temperatures Detected	--	");
@@ -201,6 +213,7 @@ public class MyClient {
 		System.out.println("");
 	}
 	
+	//For all the hum sensors, get the avg of the last 10 measurements
 	private static void getAvgHumidity() {
 		
 		System.out.println("	--	Last Average Humidities Detected	--	");
@@ -208,18 +221,21 @@ public class MyClient {
 		System.out.println("");
 	}
 	
+	//Get the status of all the sprinklers
 	private static void getSprinklerStatus() {
 		System.out.println("	--	Get Sprinklers Status	--	");
 		handler.getSprinklersStatus();
 		System.out.println("");
 	}
 	
+	//Get the status of all the lights
 	private static void getLightStatus() {
 		System.out.println("	--	Get Lights Status	--	");
 		handler.getLightsStatus();
 		System.out.println("");
 	}
 	
+	//Get the list of the areas with their devices
 	private static void getAreasList() {
 		System.out.println("	--	Get Areas Info	--	");
 		handler.getAreasList();
@@ -232,6 +248,7 @@ public class MyClient {
  * 
  */
 	
+	//Get the status of sprinklers within the area
 	private static void setAreaSprinklerStatus() {
 		System.out.println("Type the area of the sprinkler you want to switch");
 		System.out.println("Available Sprinklers: ");
@@ -271,6 +288,7 @@ public class MyClient {
 		}
 	}
 	
+	//Get the status of the Lights within the area
 	private static void setAreaLightStatus() {
 		System.out.println("Type the area of the lights you want to switch");
 		System.out.println("Available Areas with Lights: ");
@@ -310,6 +328,7 @@ public class MyClient {
 		}
 	}
 	
+	//Set the area a device belongs to
 	private static void setDeviceArea() {
 		System.out.println("Type the address of the device");
 		System.out.println("Available Devices: ");
@@ -332,6 +351,27 @@ public class MyClient {
 		}
 
 		
+	}
+	
+	//Removo the area a device belongs to
+	private static void removeDeviceArea() {
+		System.out.println("Type the address of the device");
+		System.out.println("Available Devices: ");
+		handler.devicesList();
+		
+		try {
+			String address = reader.readLine();
+			
+			if(!handler.getDevice().containsKey(address)) {
+				System.out.println("Error! This is not a device address.\n ");
+				return;
+			}
+			
+			handler.removeDeviceArea(address);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	
