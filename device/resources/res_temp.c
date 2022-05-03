@@ -39,7 +39,7 @@ static void res_event_handler(void) {
 static void res_get_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset){
 	
 	char response_message[COAP_MAX_CHUNK_SIZE];
-	 temp_value = (rand() % (max_temp_value - min_temp_value + 1)) + min_temp_value;
+	temp_value = (rand() % (max_temp_value - min_temp_value + 1)) + min_temp_value;
 
 	coap_get_header_accept(request, &accept);
 	

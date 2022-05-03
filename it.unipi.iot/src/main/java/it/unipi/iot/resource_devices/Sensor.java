@@ -16,10 +16,6 @@ public class Sensor extends ResourceDevice{
 	protected int []observed_values;
 	protected int index = 0;
 	
-	//Min and Max th values for the observed resources
-	protected int min_threashold = 0;
-	protected int max_threashold = 0;
-	
 	//Count the number of obs above/under threasholds
 	protected int above = 0;
 	protected int below = 0;
@@ -28,13 +24,12 @@ public class Sensor extends ResourceDevice{
 	
 	
 	
-	public Sensor(String hostAddress, String deviceType, String resourceType, boolean observable, Integer min, Integer max) {
+	public Sensor(String hostAddress, String deviceType, String resourceType, boolean observable) {
 		super(hostAddress, deviceType, resourceType, observable);
 		
 		//set vector dimension
 		observed_values = new int[max_observations];
-		this.min_threashold = min;
-		this.max_threashold = max;
+		
 	}
 	
 	
@@ -73,7 +68,11 @@ public class Sensor extends ResourceDevice{
 	
 							//read and store the value in the array
 							observed_values[index] = responseJSON.getInt(resourceType);
-							//System.out.println("Device type: " + deviceType + ", status: " + observed_values[index]);
+							int min_threashold = responseJSON.getInt("min");
+							int max_threashold = responseJSON.getInt("max");
+							
+							System.out.println("res: " + resourceType + ", Value: " + observed_values[index] + ", min: " + min_threashold 
+									+ ", max: " + max_threashold);
 
 							//check if under/above tolerance
 							if(observed_values[index] > max_threashold) {

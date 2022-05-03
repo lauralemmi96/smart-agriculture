@@ -1,5 +1,8 @@
 package it.unipi.iot.server;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -8,6 +11,7 @@ import org.eclipse.californium.core.CoapResponse;
 import org.eclipse.californium.core.coap.MediaTypeRegistry;
 
 import it.unipi.iot.resource_devices.Actuator;
+import it.unipi.iot.resource_devices.Area;
 import it.unipi.iot.resource_devices.ResourceDevice;
 import it.unipi.iot.resource_devices.Sensor;
 
@@ -17,18 +21,17 @@ public class ResourceDeviceHandler {
 	private static ResourceDeviceHandler single_instance = null;
 	
 	private static int deviceID = 0;
-	//Map for each resouce 
-	protected HashMap<String, Actuator> sprinklers = new HashMap<String, Actuator>();
-	protected HashMap<String, Actuator> lights = new HashMap<String, Actuator>();
-	protected HashMap<String, Sensor> tempSensors = new HashMap<String, Sensor>();
-	protected HashMap<String, Sensor> humiditySensors = new HashMap<String, Sensor>();
-	protected HashMap<Integer, ResourceDevice> idDeviceMap = new HashMap<Integer, ResourceDevice>();
 	
-	//Device Area
-	protected HashMap<Integer, String> idArea = new HashMap<Integer, String>();
+	protected HashMap<String, Actuator> sprinklers = new HashMap<String, Actuator>();	//address - sprinkler
+	protected HashMap<String, Actuator> lights = new HashMap<String, Actuator>();		//address - light
+	protected HashMap<String, Sensor> tempSensors = new HashMap<String, Sensor>();		//address - temp
+	protected HashMap<String, Sensor> humiditySensors = new HashMap<String, Sensor>();	//address - humidity
+	protected HashMap<Integer, ResourceDevice> idDeviceMap = new HashMap<Integer, ResourceDevice>();	//id - Device
 	
-	//Areas List
-	protected HashMap<String, ArrayList<ResourceDevice>> areas = new HashMap<String, ArrayList<ResourceDevice>>();
+	
+	//Areas List 
+	protected HashMap<String, Area> idArea = new HashMap<String, Area>();
+	protected HashMap<Area, ArrayList<ResourceDevice>> areas = new HashMap<Area, ArrayList<ResourceDevice>>();
 
 	private ResourceDeviceHandler()
     {
@@ -66,9 +69,6 @@ public class ResourceDeviceHandler {
 		humiditySensors.put(address, sensor);
 	}
 	
-	public void addidArea(Integer id, String area) {
-		idArea.put(id,  area);
-	}
 	
 	public HashMap<String, Actuator> getSprinklers() {
 		return sprinklers;
@@ -86,11 +86,8 @@ public class ResourceDeviceHandler {
 		return humiditySensors;
 	}
 	
-	public String getIdArea(Integer id) {
-		return idArea.get(id);
-	}
 	
-	public HashMap<String, ArrayList<ResourceDevice>> getAreas(){
+	public HashMap<Area, ArrayList<ResourceDevice>> getAreas(){
 		return areas;
 	}
 	
@@ -176,12 +173,13 @@ public class ResourceDeviceHandler {
 			return;
 		}
 		
-		for(String area: areas.keySet()) {
+		for(Area area_obj: areas.keySet()) {
+			String area = area_obj.getId();
 			//print area name
 			System.out.print("[ " + area + " ] : [ ");
 			
 			//get device list
-			ArrayList<ResourceDevice> device = areas.get(area);
+			ArrayList<ResourceDevice> device = areas.get(area_obj);
 			
 			for(ResourceDevice d: device) {
 					System.out.print("{IP: " + d.getHostAddress() + ", type: " 
@@ -397,45 +395,10 @@ public class ResourceDeviceHandler {
 			find = true;
 		}
 		
-		/*
-		Sensor temp = null;
-		Sensor hum = null;
-		Actuator light = null;
-		Actuator sprinkler = null;
-		
-		temp = tempSensors.get(address);
-		hum = humiditySensors.get(address);
-		light = lights.get(address);
-		sprinkler = sprinklers.get(address);
-		
-		if(temp != null) {
-			addResourceArea(temp, area);
-			find = true;
-		}
-		
-		if(hum != null) {
-			addResourceArea(hum, area);
-			find = true;
-		}
-		
-		if(light != null) {
-			addResourceArea(light, area);
-			find = true;
-		}
-		
-		if(sprinkler != null) {
-			addResourceArea(sprinkler, area);
-			find = true;
-		}
-				
-		*/
-		if(find) {
+		if(!find) {
 			
-			idArea.put(id, area);
-			System.out.println("");
-			
-		}else {
 			System.out.println("No Device with that address\n");
+			
 		}
 		
 		
@@ -462,17 +425,18 @@ public class ResourceDeviceHandler {
 		rd.setArea(area);
 
 		
-		if(!areas.containsKey(area)) {
+		if(!areas.containsKey(idArea.get(area))) {
 			ArrayList<ResourceDevice> list = new ArrayList<>();
 			list.add(rd);
-			areas.put(area, list);
+			areas.put(idArea.get(area), list);
 		}else {
-			if(!areas.get(area).contains(rd)) {
-				areas.get(area).add(rd);
+			if(!areas.get(idArea.get(area)).contains(rd)) {
+				areas.get(idArea.get(area)).add(rd);
 			}
 			
 			
 		}
+		
 		System.out.println("Device Area set for resource: " + rd.getResourceType());
 				
 		
@@ -491,45 +455,10 @@ public class ResourceDeviceHandler {
 			find = true;
 		}
 		
-		/*
-		Sensor temp = null;
-		Sensor hum = null;
-		Actuator light = null;
-		Actuator sprinkler = null;
-		
-		
-		temp = tempSensors.get(address);
-		hum = tempSensors.get(address);
-		light = lights.get(address);
-		sprinkler = sprinklers.get(address);
-		
-		if(temp != null) {
-			removeResourceArea(temp);
-			find = true;
-		}
-		
-		if(hum != null) {
-			removeResourceArea(hum);
-			find = true;
-		}
-		
-		if(light != null) {
-			removeResourceArea(light);
-			find = true;
-		}
-		
-		if(sprinkler != null) {
-			removeResourceArea(sprinkler);
-			find = true;
-		}
-				
-		*/
-		if(find) {
-			idArea.remove(id);
-			System.out.println("");
-			
-		}else {
+	
+		if(!find) {
 			System.out.println("No Device with that id\n");
+			
 		}
 		
 			
@@ -559,11 +488,11 @@ public class ResourceDeviceHandler {
 	public void lightAreasList() {
 		
 		System.out.print("[ ");
-		for(String area: areas.keySet()) {
-			ArrayList<ResourceDevice> device = areas.get(area);
+		for(Area area_obj: areas.keySet()) {
+			ArrayList<ResourceDevice> device = areas.get(area_obj);
 			for(ResourceDevice d: device) {
 				if(d.getResourceType().compareTo("light") == 0) {
-					System.out.print(area + " ");
+					System.out.print(area_obj.getId() + " ");
 					break;
 				}
 					
@@ -578,11 +507,11 @@ public class ResourceDeviceHandler {
 	public void sprinklerAreasList() {
 		
 		System.out.print("[ ");
-		for(String area: areas.keySet()) {
-			ArrayList<ResourceDevice> device = areas.get(area);
+		for(Area area_obj: areas.keySet()) {
+			ArrayList<ResourceDevice> device = areas.get(area_obj);
 			for(ResourceDevice d: device) {
 				if(d.getResourceType().compareTo("sprinkler") == 0) {
-					System.out.print(area + " ");
+					System.out.print(area_obj.getId() + " ");
 					break;
 				}
 					
@@ -598,4 +527,40 @@ public class ResourceDeviceHandler {
 	
 	
 	
+
+
+
+	public Area generateArea(String id) {
+		if(!idArea.containsKey(id)) {
+			System.out.println("	--Generating Area " + id + "--	");
+			BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+			
+	
+			try {
+				
+				System.out.print("Insert max temperature tolerated in this area: ");
+				int max_t = Integer.valueOf(reader.readLine());
+				
+				System.out.print("Insert min temperature tolerated in this area: ");
+				int min_t = Integer.valueOf(reader.readLine());
+				
+				System.out.print("Insert max humidity tolerated in this area: ");
+				int max_h = Integer.valueOf(reader.readLine());
+				
+				System.out.print("Insert min humidity tolerated in this area: ");
+				int min_h = Integer.valueOf(reader.readLine());
+				
+				Area area = new Area(id, max_t, min_t, max_h, min_h);
+				idArea.put(id, area);
+				
+				return area;
+				
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return null;
+			
+	}
 }

@@ -24,8 +24,6 @@ public class Registration extends CoapResource{
 		exchange.accept();
 		
 
-		System.out.println("\nEXCHANGE: " + exchange.getRequestText() + "\n");
-
 		//	Get node address	 
 		String source_address = exchange.getSourceAddress().getHostAddress();
 		System.out.println("SRC ADDR: " + source_address);
@@ -89,7 +87,7 @@ public class Registration extends CoapResource{
 		//Check if it is observable
 		String obs = splitSemicolon[splitSemicolon.length-1];
 		boolean observable = (obs.compareTo("obs") == 0);
-		/*
+		
 		ResourceDeviceHandler handler = ResourceDeviceHandler.getInstance();
 
 		//	Switch sensor/actuator. I instantiate a Sensor/Actuator. 
@@ -104,7 +102,6 @@ public class Registration extends CoapResource{
 			sensor.setId(myId);
 			handler.setDeviceID(myId);
 			
-			handler.addidArea(myId, "default");
 
 			
 			//	add the sensor in the ResourceDeviceHandler map
@@ -154,7 +151,7 @@ public class Registration extends CoapResource{
 		}
 		
 		
-		*/
+		
 		return registered;
 		
 		
