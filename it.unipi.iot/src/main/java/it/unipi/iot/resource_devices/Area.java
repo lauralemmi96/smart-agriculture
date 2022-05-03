@@ -2,12 +2,15 @@ package it.unipi.iot.resource_devices;
 
 public class Area {
 	
-	String id;
-	int maxTemp = 0;
-	int minTemp = 0;
-	int maxHum = 0;
-	int minHum = 0;
+	protected String id;
+	protected int maxTemp = 0;
+	protected int minTemp = 0;
+	protected int maxHum = 0;
+	protected int minHum = 0;
+	protected boolean autoManage = false;
 	
+	
+
 	public Area(String id, int maxTemp, int minTemp, int maxHum, int minHum) {
 		this.id = id;
 		this.maxTemp = maxTemp;
@@ -54,6 +57,20 @@ public class Area {
 
 	public void setMinHum(int minHum) {
 		this.minHum = minHum;
+	}
+	
+	public boolean isAutoManage() {
+		return autoManage;
+	}
+
+	public void setAutoManage(boolean autoManage) {
+		this.autoManage = autoManage;
+	}
+	
+	public void printAreaInfo() {
+		System.out.println("Area: " + this.getId() + ", AutoMode: " + this.isAutoManage() + 
+				", Min Temp: " + this.getMinTemp() + ", Max Temp: " + this.getMaxTemp() + 
+				", Min Hum: " + this.getMinHum() + ", Max Hum: " + this.getMaxHum());
 	}
 	
 	

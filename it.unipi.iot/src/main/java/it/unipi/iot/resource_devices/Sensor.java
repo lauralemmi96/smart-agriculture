@@ -68,37 +68,78 @@ public class Sensor extends ResourceDevice{
 	
 							//read and store the value in the array
 							observed_values[index] = responseJSON.getInt(resourceType);
-							int min_threashold = responseJSON.getInt("min");
-							int max_threashold = responseJSON.getInt("max");
+						
 							
-							System.out.println("res: " + resourceType + ", Value: " + observed_values[index] + ", min: " + min_threashold 
-									+ ", max: " + max_threashold);
-
-							//check if under/above tolerance
-							if(observed_values[index] > max_threashold) {
-								System.out.println("Observed Value Above MAX!!");
-								above++;
-								if(above == 10) {
+							System.out.println("res: " + resourceType + ", Value: " + observed_values[index]);
+							
+							//Take the ResourceDeviceHandler instance
+							ResourceDeviceHandler handler = ResourceDeviceHandler.getInstance();
+							
+							/*
+							 * If the area is auto managed I must check 
+							 * temp/hum and activate/deactivate
+							 * lights and sprinklers in the same area
+							 */
+							
+							
+							if(handler.getIdArea().get(area).isAutoManage()) {
+								int max_threshold = 0, min_threshold = 0;
+								
+								
+								switch(resourceType) {
+								case "temperature":
+									max_threshold = handler.getIdArea().get(area).getMaxTemp();
+									min_threshold = handler.getIdArea().get(area).getMinTemp();
+									break;
+								case "humidity":
+									max_threshold = handler.getIdArea().get(area).getMaxHum();
+									min_threshold = handler.getIdArea().get(area).getMinHum();
+									break;
+								default:
+									System.out.println("Error: ResourceType not defined");
 									
-									if(resourceType == "temperature") {
-										//Find the lights in the same area and switch them off
-										ResourceDeviceHandler handler = ResourceDeviceHandler.getInstance();
-										ArrayList<ResourceDevice> deviceSameArea = handler.getAreas().get(area);
+								}
+								//check if under/above tolerance
+								if(observed_values[index] > max_threshold) {
+									System.out.println("Observed Value Above MAX!!");
+									above++;
+									if(above == 10) {
 										
+										
+										//Temperature too high, switch off the lights
+										if(resourceType.compareTo("temperature")==0) {
+					
+											handler.setAreaLightStatus(area, "OFF");
+											
+										//Humidity too high, switch off the sprinklers	
+										}else if(resourceType.compareTo("humidity")==0) {
+											handler.setAreaSprinklerStatus(area, "OFF");
+										}
+										
+										above = 0;
 									}
-									above = 0;
 								}
-							}
-							
-							if(observed_values[index] < min_threashold) {
-								System.out.println("Observed Value Below MIN!!");
-								below++;
-								if(below == 10) {
-									//DEACTIVATE THE ACTUATORS IN THE SAME AREA
-									below = 0;
+								
+								if(observed_values[index] < min_threshold) {
+									System.out.println("Observed Value Below MIN!!");
+									below++;
+									if(below == 10) {
+										
+										
+										//Temperature too low, switch on the lights
+										if(resourceType.compareTo("temperature")==0) {
+											
+											handler.setAreaLightStatus(area, "ON");
+											
+										//Humidity too low, switch on the sprinklers	
+										}else if(resourceType.compareTo("humidity")==0) {
+											
+											handler.setAreaSprinklerStatus(area, "ON");
+										}
+										below = 0;
+									}
 								}
-							}
-							
+							}	
 							//update the index
 							index = (index+1)%max_observations;
 							

@@ -106,9 +106,9 @@ public class Registration extends CoapResource{
 			
 			//	add the sensor in the ResourceDeviceHandler map
 			if(resType.compareTo("humidity") == 0)
-				handler.addHumiditySens(sourceAddress, sensor);
+				handler.addHumiditySens(myId, sensor);
 			else if(resType.compareTo("temperature") == 0)
-				handler.addTempSens(sourceAddress, sensor);
+				handler.addTempSens(myId, sensor);
 			
 			handler.addResourceArea(sensor, "default");
 			
@@ -136,9 +136,9 @@ public class Registration extends CoapResource{
 			
 //			add the actuator in the ResourceDeviceHandler map
 			if(resType.compareTo("sprinkler") == 0)
-				handler.addSprinklers(sourceAddress, actuator);
+				handler.addSprinklers(myId, actuator);
 			else if(resType.compareTo("light") == 0)
-				handler.addLights(sourceAddress, actuator);
+				handler.addLights(myId, actuator);
 			
 			handler.addResourceArea(actuator, "default");
 			

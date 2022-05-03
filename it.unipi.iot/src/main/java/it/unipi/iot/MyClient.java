@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import it.unipi.iot.resource_devices.Area;
 import it.unipi.iot.server.ResourceDeviceHandler;
 import it.unipi.iot.server.Server;
 
@@ -35,8 +36,10 @@ public class MyClient {
 		reader = new BufferedReader(new InputStreamReader(System.in));
 		
 
-		System.out.println("Assign an area to each device before starting!\n");
-		showCommands();
+		System.out.println("\nAssign an area to each device before starting!\n");
+		System.out.println("Type \"!help\" to know the commands\n");
+		
+		//showCommands();
 		
 		while(true) {
 			System.out.println("Type a command\n");
@@ -61,6 +64,10 @@ public class MyClient {
 						
 					case "!getAreasList":
 						getAreasList();
+						break;
+						
+					case "!getAreasInfo":
+						showAreasInfo();
 						break;
 						
 					case "!getAvgTemperature":
@@ -103,6 +110,10 @@ public class MyClient {
 						removeDeviceArea();
 						break;
 						
+					case "!switchAreaMode":
+						switchAreaMode();
+						break;
+						
 					default:
 						System.out.println("Command not defined\n");
 						break;
@@ -136,9 +147,10 @@ public class MyClient {
 		
 		System.out.println("!getSensors 		-->	Get the list of registered sensors");
 		System.out.println("!getActuators 		-->	Get the list of registered actuators");	
-		System.out.println("!getAreasList			--> Get the list of areas and their info");
-		System.out.println("!getLastTemp		-->	Get the list of the last temp measurements");
-		System.out.println("!getLastHum		-->	Get the list of the last humidity measurements");
+		System.out.println("!getAreasInfo			--> Get the list of areas and their info");
+		System.out.println("!getAreasList			--> Get the list of areas and their devices");
+		//System.out.println("!getLastTemp		-->	Get the list of the last temp measurements");
+		//System.out.println("!getLastHum		-->	Get the list of the last humidity measurements");
 		System.out.println("!getAvgTemperature	-->	Get the Avg temperature of the last 10 measurements for all the sensors");
 		System.out.println("!getAvgHumidity		-->	Get the Avg humidity of the last 10 measurements for all the sensors");
 		System.out.println("!getSprinklerStatus	-->	Get the status of the sprinklers");
@@ -147,10 +159,11 @@ public class MyClient {
 		
 		System.out.println("");
 		System.out.println("	--	POST COMMANDS	--	");
-		System.out.println("!setAreaSprinklerStatus	-->	Set the status of a sprinkler");
+		System.out.println("!setAreaSprinklerStatus	-->	Set the status of sprinklers in a area");
 		System.out.println("!setAreaLightStatus		-->	Set the status of lights in a area");
 		System.out.println("!setDeviceArea		-->	Set the area the device belongs to");
 		System.out.println("!removeDeviceArea		-->	Remove the area the device belongs to");
+		System.out.println("!switchAreaMode		-->	Set the management mode of an area");
 
 		
 		
@@ -375,6 +388,45 @@ public class MyClient {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private static void showAreasInfo() {
+		System.out.println("Available areas: ");
+		for(String areaId: handler.getIdArea().keySet()) {
+			handler.getIdArea().get(areaId).printAreaInfo();
+		}
+		System.out.println("");
+	}
+	
+	private static void switchAreaMode() {
+		
+		showAreasInfo();
+		try {
+			System.out.print("Type the area where management mode will be changed: ");
+			String area = reader.readLine();
+			if(handler.getIdArea().get(area) == null) {
+				System.out.println("Error! Area Id present in the system");
+				return;
+			}
+			
+			System.out.println("Type the new management mode (Auto[1] / Manual[0]):");
+			Integer auto = reader.read();
+			
+			if(auto == 0)
+				handler.getIdArea().get(area).setAutoManage(false);
+			if(auto == 1)
+				handler.getIdArea().get(area).setAutoManage(true);
+			else {
+				System.out.println("Error: value not valid\n");
+				return;
+			}
+
+				
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+		
+		System.out.println("");
 	}
 	
 	
