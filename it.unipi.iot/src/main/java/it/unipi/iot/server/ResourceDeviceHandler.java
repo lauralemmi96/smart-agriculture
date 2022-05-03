@@ -22,8 +22,8 @@ public class ResourceDeviceHandler {
 	protected HashMap<String, Sensor> tempSensors = new HashMap<String, Sensor>();
 	protected HashMap<String, Sensor> humiditySensors = new HashMap<String, Sensor>();
 	
-	//Device Map
-	//protected HashMap<String, ResourceDevice> devices = new HashMap<String, ResourceDevice>();
+	//Device Area
+	protected HashMap<String, String> addressArea = new HashMap<String, String>();
 	
 	//Areas List
 	protected HashMap<String, ArrayList<ResourceDevice>> areas = new HashMap<String, ArrayList<ResourceDevice>>();
@@ -56,6 +56,10 @@ public class ResourceDeviceHandler {
 		humiditySensors.put(address, sensor);
 	}
 	
+	public void addAddressArea(String addr, String area) {
+		addressArea.put(addr,  area);
+	}
+	
 	public HashMap<String, Actuator> getSprinklers() {
 		return sprinklers;
 	}
@@ -72,6 +76,9 @@ public class ResourceDeviceHandler {
 		return humiditySensors;
 	}
 	
+	public String getAddressArea(String address) {
+		return addressArea.get(address);
+	}
 	
 	public HashMap<String, ArrayList<ResourceDevice>> getAreas(){
 		return areas;
@@ -213,7 +220,7 @@ public class ResourceDeviceHandler {
 		}
 	}
 
-	// GET LAST TEMP MEAS. FOR ALL THE SENSORS 
+	// GET LAST TEMP MEASUR. FOR ALL THE SENSORS 
 	public void getLastSensorsTemperatures() {
 
 		for(String addr: tempSensors.keySet()) {
@@ -239,7 +246,7 @@ public class ResourceDeviceHandler {
 		
 	}
 
-	// GET LAST HUM MEAS. FOR ALL THE SENSORS 
+	// GET LAST HUM MEASUR. FOR ALL THE SENSORS 
 	public void getLastSensorsHumidities() {
 		for(String addr: humiditySensors.keySet()) {
 			Sensor s = humiditySensors.get(addr);
@@ -396,6 +403,7 @@ public class ResourceDeviceHandler {
 		
 		if(find) {
 			
+			addressArea.put(address, area);
 			System.out.println("");
 			
 		}else {
@@ -408,7 +416,7 @@ public class ResourceDeviceHandler {
 	}
 	
 	//Add the resource to the area
-	private void addResourceArea(ResourceDevice rd, String area) {
+	public void addResourceArea(ResourceDevice rd, String area) {
 		
 		
 			
@@ -480,7 +488,7 @@ public class ResourceDeviceHandler {
 				
 		
 		if(find) {
-			
+			addressArea.remove(address);
 			System.out.println("");
 			
 		}else {

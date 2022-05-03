@@ -23,6 +23,8 @@ public class Registration extends CoapResource{
 		
 		exchange.accept();
 		
+		System.out.println("Exchange message: " + exchange.getRequestText());
+		
 		//	Get node address	 
 		String source_address = exchange.getSourceAddress().getHostAddress();
 		System.out.println("SRC ADDR: " + source_address);
@@ -48,19 +50,26 @@ public class Registration extends CoapResource{
 		 * </humidity>;title="Humidity Sensor";rt="humidity";if="sensor";obs,
 		 * </temperature>;"title=\"Temperature Sensor\";rt=\"temperature\";if=\"sensor\";obs 
 		 */
-		boolean registrationStatus = false;
+
+		boolean registered = true;
+		
 		String []fragment = responseText.split(",");
 		for(int i = 1; i < fragment.length; i++) {
-			registrationStatus = deviceRegistration(source_address, fragment[i]);
+			
+			if(!deviceRegistration(source_address, fragment[i])) {
+				System.out.println("Error in registering a resource\n");
+				registered = false;
+			}
+
 			
 		}
 		
 		
-		if(!registrationStatus) {
-			System.out.println("Error in registering the device\n");
-			return;
-		}
-		System.out.println("[SERVER]: Device Registered\n");
+		ResourceDeviceHandler handler = ResourceDeviceHandler.getInstance();
+		handler.addAddressArea(source_address, "default");
+		
+		if(registered)
+			System.out.println("[SERVER]: Device Registered\n");
 			
 		
 		
@@ -97,6 +106,7 @@ public class Registration extends CoapResource{
 			else if(resType.compareTo("temperature") == 0)
 				handler.addTempSens(sourceAddress, sensor);
 			
+			handler.addResourceArea(sensor, "default");
 			
 			if(observable) {
 				new Thread() {
@@ -119,6 +129,7 @@ public class Registration extends CoapResource{
 			else if(resType.compareTo("light") == 0)
 				handler.addLights(sourceAddress, actuator);
 			
+			handler.addResourceArea(actuator, "default");
 			
 			if(observable)
 				actuator.observeResource();
