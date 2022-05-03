@@ -70,7 +70,7 @@ public class Sensor extends ResourceDevice{
 							observed_values[index] = responseJSON.getInt(resourceType);
 						
 							
-							System.out.println("res: " + resourceType + ", Value: " + observed_values[index]);
+							//System.out.println("res: " + resourceType + ", Value: " + observed_values[index]);
 							
 							//Take the ResourceDeviceHandler instance
 							ResourceDeviceHandler handler = ResourceDeviceHandler.getInstance();

@@ -35,12 +35,15 @@ public class ResourceDeviceHandler {
 
 	private ResourceDeviceHandler()
     {
+		Area area = new Area("default", 30, 0, 100, 0);
+        this.idArea.put("default", area);
       
     }
 	
 	public static ResourceDeviceHandler getInstance(){
-		if (single_instance == null)
+		if (single_instance == null) {
             single_instance = new ResourceDeviceHandler();
+		}
  
         return single_instance;
     }
@@ -91,12 +94,16 @@ public class ResourceDeviceHandler {
 		return areas;
 	}
 	
-	public ResourceDevice getAddressFromId(Integer id) {
+	public ResourceDevice getDeviceFromId(Integer id) {
 		return idDeviceMap.get(id);
 	}
 
-	public HashMap<Integer,ResourceDevice> getIdAddressMap(){
+	public HashMap<Integer,ResourceDevice> getIdDeviceMap(){
 		return this.idDeviceMap;
+	}
+	
+	public void setIdDeviceMap(Integer id, ResourceDevice rd){
+		this.idDeviceMap.put(id, rd);
 	}
 	
 	public HashMap<String, Area> getIdArea() {
@@ -155,15 +162,14 @@ public class ResourceDeviceHandler {
 	// RETURNS IF A DEVICE WITH THAT ADDRESS IS PRESENT
 	public boolean getDevice(Integer id) {
 		
-		String address = idDeviceMap.get(id).getHostAddress();
 		
-		if(tempSensors.containsKey(address))
+		if(tempSensors.containsKey(id))
 			return true;
-		if(humiditySensors.containsKey(address))
+		if(humiditySensors.containsKey(id))
 			return true;
-		if(sprinklers.containsKey(address))
+		if(sprinklers.containsKey(id))
 			return true;
-		if(lights.containsKey(address))
+		if(lights.containsKey(id))
 			return true;
 		
 		return false;
@@ -186,7 +192,7 @@ public class ResourceDeviceHandler {
 			ArrayList<ResourceDevice> device = areas.get(area_obj);
 			
 			for(ResourceDevice d: device) {
-					System.out.print("{IP: " + d.getHostAddress() + ", type: " 
+					System.out.print("{ID: " + d.getId() + ", IP: " + d.getHostAddress() + ", type: " 
 							+ d.getDeviceType() + ", res: " + d.getResourceType() + " } " );
 					
 
@@ -341,9 +347,9 @@ public class ResourceDeviceHandler {
 	
 	
 	// SET STATUS OF A LIGHT 
-	public boolean setLightStatus(String address, String newStatus) {
+	public boolean setLightStatus(Integer id, String newStatus) {
 		
-		CoapClient c = lights.get(address).getClient();
+		CoapClient c = lights.get(id).getClient();
 		
 		//Prepare post payload
 		String requestAttribute = "status=" + newStatus;
@@ -370,7 +376,7 @@ public class ResourceDeviceHandler {
 			ArrayList<ResourceDevice> device = areas.get(area);
 			for(ResourceDevice d: device) {
 				if(d.getResourceType().compareTo("light") == 0) {
-					if(!setLightStatus(d.getHostAddress(), status))
+					if(!setLightStatus(d.getId(), status))
 						return false;
 				}
 					
@@ -392,6 +398,8 @@ public class ResourceDeviceHandler {
 	public void addDeviceArea(Integer id, String area) {
 		
 		boolean find = false;
+		for(Integer ident: idDeviceMap.keySet())
+			System.out.println(ident);
 		
 		ResourceDevice rd = idDeviceMap.get(id);
 		if(rd != null) {
@@ -401,7 +409,7 @@ public class ResourceDeviceHandler {
 		
 		if(!find) {
 			
-			System.out.println("No Device with that address\n");
+			System.out.println("No Device with that id\n");
 			
 		}
 		

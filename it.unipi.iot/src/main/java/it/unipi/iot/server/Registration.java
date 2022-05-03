@@ -35,7 +35,7 @@ public class Registration extends CoapResource{
 		
 		
 		String responseText = response.getResponseText();
-		System.out.println("RESPONSE: " + responseText);
+		//System.out.println("RESPONSE: " + responseText);
 		
 		//Check the return code: Success 2.xx
 		if(!response.getCode().toString().startsWith("2")) {
@@ -110,6 +110,7 @@ public class Registration extends CoapResource{
 			else if(resType.compareTo("temperature") == 0)
 				handler.addTempSens(myId, sensor);
 			
+			handler.setIdDeviceMap(myId, sensor);
 			handler.addResourceArea(sensor, "default");
 			
 			if(observable) {
@@ -140,6 +141,7 @@ public class Registration extends CoapResource{
 			else if(resType.compareTo("light") == 0)
 				handler.addLights(myId, actuator);
 			
+			handler.setIdDeviceMap(myId, actuator);
 			handler.addResourceArea(actuator, "default");
 			
 			if(observable)

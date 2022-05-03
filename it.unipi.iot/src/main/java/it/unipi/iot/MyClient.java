@@ -390,42 +390,52 @@ public class MyClient {
 		}
 	}
 	
-	private static void showAreasInfo() {
+	private static boolean showAreasInfo() {
 		System.out.println("Available areas: ");
 		for(String areaId: handler.getIdArea().keySet()) {
+			System.out.print("[ ");
 			handler.getIdArea().get(areaId).printAreaInfo();
+			System.out.println(" ]");
 		}
 		System.out.println("");
+		
+		if(handler.getIdArea().keySet().size() == 0)
+			return false;
+		return true;
+		
 	}
 	
 	private static void switchAreaMode() {
 		
-		showAreasInfo();
-		try {
-			System.out.print("Type the area where management mode will be changed: ");
-			String area = reader.readLine();
-			if(handler.getIdArea().get(area) == null) {
-				System.out.println("Error! Area Id present in the system");
-				return;
-			}
-			
-			System.out.println("Type the new management mode (Auto[1] / Manual[0]):");
-			Integer auto = reader.read();
-			
-			if(auto == 0)
-				handler.getIdArea().get(area).setAutoManage(false);
-			if(auto == 1)
-				handler.getIdArea().get(area).setAutoManage(true);
-			else {
-				System.out.println("Error: value not valid\n");
-				return;
-			}
-
+		if(showAreasInfo()) {
+			try {
+				System.out.print("Type the area where management mode will be changed: ");
+				String area = reader.readLine();
+				if(handler.getIdArea().get(area) == null) {
+					System.out.println("Error! Area Id present in the system");
+					return;
+				}
 				
-		} catch(IOException e) {
-			e.printStackTrace();
-		}
+				System.out.println("Type the new management mode (Auto[1] / Manual[0]):");
+				Integer auto = reader.read();
+				
+				if(auto == 0)
+					handler.getIdArea().get(area).setAutoManage(false);
+				if(auto == 1)
+					handler.getIdArea().get(area).setAutoManage(true);
+				else {
+					System.out.println("Error: value not valid\n");
+					return;
+				}
 		
+					
+			} catch(IOException e) {
+				e.printStackTrace();
+			}
+		}else {
+			return;
+		}
+			
 		System.out.println("");
 	}
 	
