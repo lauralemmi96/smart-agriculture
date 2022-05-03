@@ -23,8 +23,9 @@ public class Registration extends CoapResource{
 		
 		exchange.accept();
 		
-		System.out.println("Exchange message: " + exchange.getRequestText());
-		
+
+		System.out.println("\nEXCHANGE: " + exchange.getRequestText() + "\n");
+
 		//	Get node address	 
 		String source_address = exchange.getSourceAddress().getHostAddress();
 		System.out.println("SRC ADDR: " + source_address);
@@ -36,7 +37,6 @@ public class Registration extends CoapResource{
 		
 		
 		String responseText = response.getResponseText();
-		//System.out.println("Client response: " + responseText);
 		
 		//Check the return code: Success 2.xx
 		if(!response.getCode().toString().startsWith("2")) {
@@ -64,10 +64,7 @@ public class Registration extends CoapResource{
 			
 		}
 		
-		
-		ResourceDeviceHandler handler = ResourceDeviceHandler.getInstance();
-		handler.addAddressArea(source_address, "default");
-		
+				
 		if(registered)
 			System.out.println("[SERVER]: Device Registered\n");
 			
@@ -91,14 +88,23 @@ public class Registration extends CoapResource{
 		//Check if it is observable
 		String obs = splitSemicolon[splitSemicolon.length-1];
 		boolean observable = (obs.compareTo("obs") == 0);
-			
-		ResourceDeviceHandler handler = ResourceDeviceHandler.getInstance();
 		
+		ResourceDeviceHandler handler = ResourceDeviceHandler.getInstance();
+
 		//	Switch sensor/actuator. I instantiate a Sensor/Actuator. 
 		//	Add it to the data structure base on the res
 		if(deviceType.compareTo("sensor") == 0) {
 			
+			
 			final Sensor sensor = new Sensor(sourceAddress, deviceType, resType, observable);
+			
+			//I take the last ID, I set mine, I increment the shared resource
+			int myId = handler.getDeviceID()+1;
+			sensor.setId(myId);
+			handler.setDeviceID(myId);
+			
+			handler.addidArea(myId, "default");
+
 			
 			//	add the sensor in the ResourceDeviceHandler map
 			if(resType.compareTo("humidity") == 0)
@@ -123,6 +129,13 @@ public class Registration extends CoapResource{
 			
 			Actuator actuator = new Actuator(sourceAddress, deviceType, resType, observable);
 			
+			
+			//I take the last ID, I set mine, I increment the shared resource
+			int myId = handler.getDeviceID()+1;
+			actuator.setId(myId);
+			handler.setDeviceID(myId);
+			
+			
 //			add the actuator in the ResourceDeviceHandler map
 			if(resType.compareTo("sprinkler") == 0)
 				handler.addSprinklers(sourceAddress, actuator);
@@ -138,6 +151,8 @@ public class Registration extends CoapResource{
 			
 			registered = true;
 		}
+		
+		
 		
 		return registered;
 		

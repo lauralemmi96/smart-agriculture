@@ -16,14 +16,16 @@ public class ResourceDeviceHandler {
 	//A single instance of this class is needed to maintain shared and consistent info of the devices
 	private static ResourceDeviceHandler single_instance = null;
 	
+	private static int deviceID = 0;
 	//Map for each resouce 
 	protected HashMap<String, Actuator> sprinklers = new HashMap<String, Actuator>();
 	protected HashMap<String, Actuator> lights = new HashMap<String, Actuator>();
 	protected HashMap<String, Sensor> tempSensors = new HashMap<String, Sensor>();
 	protected HashMap<String, Sensor> humiditySensors = new HashMap<String, Sensor>();
+	protected HashMap<Integer, ResourceDevice> idDeviceMap = new HashMap<Integer, ResourceDevice>();
 	
 	//Device Area
-	protected HashMap<String, String> addressArea = new HashMap<String, String>();
+	protected HashMap<Integer, String> idArea = new HashMap<Integer, String>();
 	
 	//Areas List
 	protected HashMap<String, ArrayList<ResourceDevice>> areas = new HashMap<String, ArrayList<ResourceDevice>>();
@@ -40,6 +42,14 @@ public class ResourceDeviceHandler {
         return single_instance;
     }
 	
+	public int getDeviceID() {
+		return deviceID;
+	}
+
+	public void setDeviceID(int deviceID) {
+		ResourceDeviceHandler.deviceID = deviceID;
+	}
+
 	public void addSprinklers(String address, Actuator actuator) {
 		sprinklers.put(address, actuator);
 	}
@@ -56,8 +66,8 @@ public class ResourceDeviceHandler {
 		humiditySensors.put(address, sensor);
 	}
 	
-	public void addAddressArea(String addr, String area) {
-		addressArea.put(addr,  area);
+	public void addidArea(Integer id, String area) {
+		idArea.put(id,  area);
 	}
 	
 	public HashMap<String, Actuator> getSprinklers() {
@@ -76,12 +86,20 @@ public class ResourceDeviceHandler {
 		return humiditySensors;
 	}
 	
-	public String getAddressArea(String address) {
-		return addressArea.get(address);
+	public String getIdArea(Integer id) {
+		return idArea.get(id);
 	}
 	
 	public HashMap<String, ArrayList<ResourceDevice>> getAreas(){
 		return areas;
+	}
+	
+	public ResourceDevice getAddressFromId(Integer id) {
+		return idDeviceMap.get(id);
+	}
+
+	public HashMap<Integer,ResourceDevice> getIdAddressMap(){
+		return this.idDeviceMap;
 	}
 	
 /*
@@ -94,7 +112,7 @@ public class ResourceDeviceHandler {
 	public void sprinklerActuatorList() {
 		for(String addr: sprinklers.keySet()) {
 			Actuator act = sprinklers.get(addr);
-			System.out.println("Area: " + act.getArea() + ", addr: " + addr + ", type: " + act.getDeviceType() + ", Resource: " + act.getResourceType() + ", Status: " + act.getStatus());
+			System.out.println("Area: " + act.getArea() + ", ID: " + act.getId() + ", addr: " + addr + ", type: " + act.getDeviceType() + ", Resource: " + act.getResourceType() + ", Status: " + act.getStatus());
 		}
 	}
 	
@@ -102,7 +120,7 @@ public class ResourceDeviceHandler {
 	public void lightActuatorList() {
 		for(String addr: lights.keySet()) {
 			Actuator act = lights.get(addr);
-			System.out.println("Area: " + act.getArea() + ", addr: " + addr + ", type: " + act.getDeviceType() + ", Resource: " + act.getResourceType()+ ", Status: " + act.getStatus());
+			System.out.println("Area: " + act.getArea() + ", ID: " + act.getId() + ", addr: " + addr + ", type: " + act.getDeviceType() + ", Resource: " + act.getResourceType()+ ", Status: " + act.getStatus());
 		}
 	}
 	
@@ -110,7 +128,7 @@ public class ResourceDeviceHandler {
 	public void tempSensorList() {
 		for(String addr: tempSensors.keySet()) {
 			Sensor s = tempSensors.get(addr);
-			System.out.println("Area: " + s.getArea() + ", addr: " + addr + ", type: " + s.getDeviceType() + ", Resource: " + s.getResourceType());
+			System.out.println("Area: " + s.getArea() + ", ID: " + s.getId() + ", addr: " + addr + ", type: " + s.getDeviceType() + ", Resource: " + s.getResourceType());
 		}
 	}
 	
@@ -118,7 +136,7 @@ public class ResourceDeviceHandler {
 	public void humiditySensorList() {
 		for(String addr: humiditySensors.keySet()) {
 			Sensor s = humiditySensors.get(addr);
-			System.out.println("Area: " + s.getArea() + ", addr: " + addr + ", type: " + s.getDeviceType() + ", Resource: " + s.getResourceType());
+			System.out.println("Area: " + s.getArea() + ", ID: " + s.getId() + ", addr: " + addr + ", type: " + s.getDeviceType() + ", Resource: " + s.getResourceType());
 		}
 	}
 	
@@ -134,7 +152,9 @@ public class ResourceDeviceHandler {
 	}
 	
 	// RETURNS IF A DEVICE WITH THAT ADDRESS IS PRESENT
-	public boolean getDevice(String address) {
+	public boolean getDevice(Integer id) {
+		
+		String address = idDeviceMap.get(id).getHostAddress();
 		
 		if(tempSensors.containsKey(address))
 			return true;
@@ -148,7 +168,7 @@ public class ResourceDeviceHandler {
 		return false;
 	}
 
-	// PRINT LIST OF AREAS WITH LIGHT DEVICES
+	// PRINT LIST OF AREAS
 	public void getAreasList() {
 		
 		if(areas.isEmpty()) {
@@ -367,16 +387,24 @@ public class ResourceDeviceHandler {
 	
 	
 	// ADD DEVICE TO AREA
-	public void addDeviceArea(String address, String area) {
+	public void addDeviceArea(Integer id, String area) {
 		
 		boolean find = false;
+		
+		ResourceDevice rd = idDeviceMap.get(id);
+		if(rd != null) {
+			addResourceArea(rd, area);
+			find = true;
+		}
+		
+		/*
 		Sensor temp = null;
 		Sensor hum = null;
 		Actuator light = null;
 		Actuator sprinkler = null;
 		
 		temp = tempSensors.get(address);
-		hum = tempSensors.get(address);
+		hum = humiditySensors.get(address);
 		light = lights.get(address);
 		sprinkler = sprinklers.get(address);
 		
@@ -400,10 +428,10 @@ public class ResourceDeviceHandler {
 			find = true;
 		}
 				
-		
+		*/
 		if(find) {
 			
-			addressArea.put(address, area);
+			idArea.put(id, area);
 			System.out.println("");
 			
 		}else {
@@ -453,13 +481,22 @@ public class ResourceDeviceHandler {
 	
 	
 	//REMOVE DEVICE FROM AREA
-	public void removeDeviceArea(String address) {
+	public void removeDeviceArea(Integer id) {
 		
 		boolean find = false;
+		
+		ResourceDevice rd = idDeviceMap.get(id);
+		if(rd != null) {
+			removeResourceArea(rd);
+			find = true;
+		}
+		
+		/*
 		Sensor temp = null;
 		Sensor hum = null;
 		Actuator light = null;
 		Actuator sprinkler = null;
+		
 		
 		temp = tempSensors.get(address);
 		hum = tempSensors.get(address);
@@ -486,13 +523,13 @@ public class ResourceDeviceHandler {
 			find = true;
 		}
 				
-		
+		*/
 		if(find) {
-			addressArea.remove(address);
+			idArea.remove(id);
 			System.out.println("");
 			
 		}else {
-			System.out.println("No Device with that address\n");
+			System.out.println("No Device with that id\n");
 		}
 		
 			

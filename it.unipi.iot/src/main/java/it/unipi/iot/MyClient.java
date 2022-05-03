@@ -33,6 +33,9 @@ public class MyClient {
 		/* User interface */
 		
 		reader = new BufferedReader(new InputStreamReader(System.in));
+		
+
+		System.out.println("Assign an area to each device before starting!\n");
 		showCommands();
 		
 		while(true) {
@@ -163,7 +166,7 @@ public class MyClient {
  * 
  */
 	
-	//Get the list of the sensors (area, address, resType)
+	//Get the list of the sensors (area, id, address, resType)
 	private static void getSensors() {
 		
 		if(handler.getHumiditySensors().isEmpty() && handler.getTempSensors().isEmpty()) {
@@ -177,7 +180,7 @@ public class MyClient {
 		System.out.println("");
 	}
 	
-	//Get the list of the actuators (area, address, resType, status)
+	//Get the list of the actuators (area, id, address, resType, status)
 	private static void getActuators() {
 		
 		if(handler.getSprinklers().isEmpty() && handler.getLights().isEmpty()) {
@@ -330,21 +333,21 @@ public class MyClient {
 	
 	//Set the area a device belongs to
 	private static void setDeviceArea() {
-		System.out.println("Type the address of the device");
+		System.out.println("Type the ID of the device");
 		System.out.println("Available Devices: ");
 		handler.devicesList();
 		
 		try {
-			String address = reader.readLine();
+			String id = reader.readLine();
 			
-			if(!handler.getDevice(address)) {
-				System.out.println("Error! This is not a device address.\n ");
+			if(!handler.getDevice(Integer.valueOf(id))) {
+				System.out.println("Error! This is not a device id.\n ");
 				return;
 			}
 			
 			System.out.println("Type the area");
 			String area = reader.readLine().toLowerCase();
-			handler.addDeviceArea(address, area);
+			handler.addDeviceArea(Integer.valueOf(id), area);
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -355,19 +358,19 @@ public class MyClient {
 	
 	//Remove the area a device belongs to
 	private static void removeDeviceArea() {
-		System.out.println("Type the address of the device");
+		System.out.println("Type the ID of the device");
 		System.out.println("Available Devices: ");
 		handler.devicesList();
 		
 		try {
-			String address = reader.readLine();
+			String id = reader.readLine();
 			
-			if(!handler.getDevice(address)) {
-				System.out.println("Error! This is not a device address.\n ");
+			if(!handler.getDevice(Integer.valueOf(id))) {
+				System.out.println("Error! This is not a device id.\n ");
 				return;
 			}
 			
-			handler.removeDeviceArea(address);
+			handler.removeDeviceArea(Integer.valueOf(id));
 			
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -8,6 +8,7 @@ public class ResourceDevice {
 	protected String deviceType;
 	protected String resourceType;
 	protected String area;
+	protected int id;
 	protected CoapClient client;
 	protected boolean observable;
 	
@@ -48,6 +49,15 @@ public class ResourceDevice {
 	public void setArea(String area) {
 		this.area = area;
 	}
+	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	
 	
 

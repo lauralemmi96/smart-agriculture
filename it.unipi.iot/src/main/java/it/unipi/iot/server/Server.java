@@ -7,6 +7,7 @@ public class Server extends CoapServer{
 	
 	public Server() {
 		this.add(new Registration("registration"));
+		this.add(new Registration("sprinkler_status"));
 		this.start();
 		CaliforniumLogger.disableLogging();
 		System.out.println("---- SERVER STARTED ----");
