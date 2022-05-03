@@ -33,6 +33,9 @@ public class MyClient {
 		/* User interface */
 		
 		reader = new BufferedReader(new InputStreamReader(System.in));
+		
+
+		System.out.println("Assign an area to each device before starting!\n");
 		showCommands();
 		
 		while(true) {

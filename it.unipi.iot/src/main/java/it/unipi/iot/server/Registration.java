@@ -22,7 +22,7 @@ public class Registration extends CoapResource{
 		System.out.println("[SERVER]: Handling Registration Request");
 		
 		exchange.accept();
-		
+		System.out.println("\nEXCHANGE: " + exchange.getRequestText() + "\n");
 		//	Get node address	 
 		String source_address = exchange.getSourceAddress().getHostAddress();
 		System.out.println("SRC ADDR: " + source_address);
@@ -34,7 +34,6 @@ public class Registration extends CoapResource{
 		
 		
 		String responseText = response.getResponseText();
-		//System.out.println("Client response: " + responseText);
 		
 		//Check the return code: Success 2.xx
 		if(!response.getCode().toString().startsWith("2")) {

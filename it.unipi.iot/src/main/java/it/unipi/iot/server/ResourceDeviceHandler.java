@@ -141,7 +141,7 @@ public class ResourceDeviceHandler {
 		return false;
 	}
 
-	// PRINT LIST OF AREAS WITH LIGHT DEVICES
+	// PRINT LIST OF AREAS
 	public void getAreasList() {
 		
 		if(areas.isEmpty()) {
@@ -369,7 +369,7 @@ public class ResourceDeviceHandler {
 		Actuator sprinkler = null;
 		
 		temp = tempSensors.get(address);
-		hum = tempSensors.get(address);
+		hum = humiditySensors.get(address);
 		light = lights.get(address);
 		sprinkler = sprinklers.get(address);
 		
