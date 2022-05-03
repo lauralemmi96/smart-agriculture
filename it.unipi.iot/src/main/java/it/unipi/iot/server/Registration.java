@@ -37,6 +37,7 @@ public class Registration extends CoapResource{
 		
 		
 		String responseText = response.getResponseText();
+		System.out.println("RESPONSE: " + responseText);
 		
 		//Check the return code: Success 2.xx
 		if(!response.getCode().toString().startsWith("2")) {
@@ -88,7 +89,7 @@ public class Registration extends CoapResource{
 		//Check if it is observable
 		String obs = splitSemicolon[splitSemicolon.length-1];
 		boolean observable = (obs.compareTo("obs") == 0);
-		
+		/*
 		ResourceDeviceHandler handler = ResourceDeviceHandler.getInstance();
 
 		//	Switch sensor/actuator. I instantiate a Sensor/Actuator. 
@@ -153,7 +154,7 @@ public class Registration extends CoapResource{
 		}
 		
 		
-		
+		*/
 		return registered;
 		
 		
