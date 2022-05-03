@@ -1,5 +1,7 @@
 package it.unipi.iot.resource_devices;
 
+import java.util.ArrayList;
+
 import org.eclipse.californium.core.CoapHandler;
 import org.eclipse.californium.core.CoapResponse;
 import org.eclipse.californium.core.coap.MediaTypeRegistry;
