@@ -310,7 +310,7 @@ public class ResourceDeviceHandler {
 	
 	// SET STATUS OF A SPRINKLER
 	public boolean setSprinklerStatus(Integer id, String newStatus) {
-		
+		System.out.println("SONO DENTRO setSprinklerStatus");
 		CoapClient c = sprinklers.get(id).getClient();
 		
 		//Prepare post payload
@@ -334,7 +334,7 @@ public class ResourceDeviceHandler {
 	
 	//	SET STATUS OF SPRINKLERS WITHIN A AREA
 	public boolean setAreaSprinklerStatus(String area, String status) {
-		
+		System.out.println("SONO DENTRO setAreaSprinklerStatus");
 		if(areas.containsKey(idArea.get(area))) {
 			ArrayList<ResourceDevice> device = areas.get(idArea.get(area));
 			for(ResourceDevice d: device) {
@@ -352,7 +352,7 @@ public class ResourceDeviceHandler {
 	
 	// SET STATUS OF A LIGHT 
 	public boolean setLightStatus(Integer id, String newStatus) {
-		
+		System.out.println("SONO DENTRO setLightStatus");
 		CoapClient c = lights.get(id).getClient();
 		
 		//Prepare post payload
@@ -376,6 +376,7 @@ public class ResourceDeviceHandler {
 	//	SET STATUS OF LIGHTS WITHIN A AREA
 	public boolean setAreaLightStatus(String area, String status) {
 		
+		System.out.println("SONO DENTRO setAreaLightStatus");
 		if(areas.containsKey(idArea.get(area))) {
 			ArrayList<ResourceDevice> device = areas.get(idArea.get(area));
 			for(ResourceDevice d: device) {

@@ -101,18 +101,19 @@ public class Sensor extends ResourceDevice{
 								}
 								//check if under/above tolerance
 								if(observed_values[index] > max_threshold) {
-									System.out.println(resourceType + ": Observed Value Above MAX! " + above);
 									above++;
+									System.out.println(resourceType + ": Observed Value :" + observed_values[index] + ", above counter: " + above);
 									if(above == 5) {
 										
 										
 										//Temperature too high, switch off the lights
 										if(resourceType.compareTo("temperature")==0) {
-					
+											System.out.println("Switch off lights in area " + area);
 											handler.setAreaLightStatus(area, "OFF");
 											
 										//Humidity too high, switch off the sprinklers	
 										}else if(resourceType.compareTo("humidity")==0) {
+											System.out.println("Switch off sprinklers in area " + area);
 											handler.setAreaSprinklerStatus(area, "OFF");
 										}
 										
@@ -121,19 +122,19 @@ public class Sensor extends ResourceDevice{
 								}
 								
 								if(observed_values[index] < min_threshold) {
-									System.out.println(resourceType + ": Observed Value Below MIN! " + below);
 									below++;
+									System.out.println(resourceType + ": Observed Value :" + observed_values[index] + ", below counter: " + below);
 									if(below == 5) {
 										
 										
 										//Temperature too low, switch on the lights
 										if(resourceType.compareTo("temperature")==0) {
-											
+											System.out.println("Switch on lights in area " + area);
 											handler.setAreaLightStatus(area, "ON");
 											
 										//Humidity too low, switch on the sprinklers	
 										}else if(resourceType.compareTo("humidity")==0) {
-											
+											System.out.println("Switch on sprinklers in area " + area);
 											handler.setAreaSprinklerStatus(area, "ON");
 										}
 										below = 0;
