@@ -1,7 +1,5 @@
 package it.unipi.iot.resource_devices;
 
-import java.util.ArrayList;
-
 import org.eclipse.californium.core.CoapHandler;
 import org.eclipse.californium.core.CoapResponse;
 import org.eclipse.californium.core.coap.MediaTypeRegistry;
@@ -16,7 +14,7 @@ public class Sensor extends ResourceDevice{
 	protected int []observed_values;
 	protected int index = 0;
 	
-	//Count the number of obs above/under threasholds
+	//Count the number of obs above/under thresholds
 	protected int above = 0;
 	protected int below = 0;
 	
@@ -73,7 +71,7 @@ public class Sensor extends ResourceDevice{
 							//System.out.println("res: " + resourceType + ", Value: " + observed_values[index]);
 							
 							//Take the ResourceDeviceHandler instance
-							ResourceDeviceHandler handler = ResourceDeviceHandler.getInstance();
+							final ResourceDeviceHandler handler = ResourceDeviceHandler.getInstance();
 							
 							/*
 							 * If the area is auto managed I must check 
@@ -105,16 +103,30 @@ public class Sensor extends ResourceDevice{
 									System.out.println(resourceType + ": Observed Value :" + observed_values[index] + ", above counter: " + above);
 									if(above == 5) {
 										
-										
+										System.out.println("SONO 5 ABOVE!");
 										//Temperature too high, switch off the lights
 										if(resourceType.compareTo("temperature")==0) {
+											
 											System.out.println("Switch off lights in area " + area);
-											handler.setAreaLightStatus(area, "OFF");
+											
+											new Thread() {
+												public void run() {
+													handler.setAreaLightStatus(area, "OFF");
+												}
+											}.start();
+											
 											
 										//Humidity too high, switch off the sprinklers	
 										}else if(resourceType.compareTo("humidity")==0) {
+											
 											System.out.println("Switch off sprinklers in area " + area);
-											handler.setAreaSprinklerStatus(area, "OFF");
+											
+											new Thread() {
+												public void run() {
+													handler.setAreaSprinklerStatus(area, "OFF");
+												}
+											}.start();
+											
 										}
 										
 										above = 0;
@@ -125,17 +137,28 @@ public class Sensor extends ResourceDevice{
 									below++;
 									System.out.println(resourceType + ": Observed Value :" + observed_values[index] + ", below counter: " + below);
 									if(below == 5) {
-										
+										System.out.println("SONO 5 BELOW!");
 										
 										//Temperature too low, switch on the lights
 										if(resourceType.compareTo("temperature")==0) {
 											System.out.println("Switch on lights in area " + area);
-											handler.setAreaLightStatus(area, "ON");
+											
+											new Thread() {
+												public void run() {
+													handler.setAreaLightStatus(area, "ON");
+												}
+											}.start();
+											
 											
 										//Humidity too low, switch on the sprinklers	
 										}else if(resourceType.compareTo("humidity")==0) {
 											System.out.println("Switch on sprinklers in area " + area);
-											handler.setAreaSprinklerStatus(area, "ON");
+											new Thread() {
+												public void run() {
+													handler.setAreaSprinklerStatus(area, "ON");
+												}
+											}.start();
+											
 										}
 										below = 0;
 									}

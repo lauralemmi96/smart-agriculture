@@ -69,6 +69,7 @@ static void res_get_handler(coap_message_t *request, coap_message_t *response, u
 
 static void res_post_put_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset){
 
+	printf("HO RICEVUTO UN MESSAGGIO!\n");
 	if(request == NULL){
 
 		LOG_INFO("[LIGHT]: Empty request\n");
@@ -89,7 +90,7 @@ static void res_post_put_handler(coap_message_t *request, coap_message_t *respon
 	}
 
 	pay_len = coap_get_payload(request, message);
-	//LOG_INFO("Message received: %s\n", (char *)*msg);
+	LOG_INFO("Message received: %s\n", (char *)*message);
 
 	if(pay_len > 0){
 		

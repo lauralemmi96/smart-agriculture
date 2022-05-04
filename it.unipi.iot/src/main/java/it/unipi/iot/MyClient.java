@@ -421,9 +421,9 @@ public class MyClient {
 				String auto = reader.readLine();
 				
 				
-				if(Integer.valueOf(auto) == 0)
+				if(auto.compareTo("0") == 0)
 					handler.getIdArea().get(area).setAutoManage(false);
-				if(Integer.valueOf(auto) == 1)
+				else if(auto.compareTo("1") == 0)
 					handler.getIdArea().get(area).setAutoManage(true);
 				else {
 					System.out.println("Error: value not valid\n");

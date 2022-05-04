@@ -84,13 +84,13 @@ static void res_post_put_handler(coap_message_t *request, coap_message_t *respon
 	message = malloc(request->payload_len);
 
 	if(message == NULL){
-		LOG_INFO("[LIGHT]: Empty payload\n");
+		LOG_INFO("[SPRINKLER]: Empty payload\n");
 		return;
 	}
 
 
 	pay_len = coap_get_payload(request, message);
-	//LOG_INFO("Message received: %s\n", (char *)*msg);
+	LOG_INFO("Message received: %s\n", (char *)*message);
 
 	if(pay_len > 0){
 		

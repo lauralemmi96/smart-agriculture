@@ -127,7 +127,7 @@ public class Registration extends CoapResource{
 			
 		}else if(deviceType.compareTo("actuator") == 0) {
 			
-			Actuator actuator = new Actuator(sourceAddress, deviceType, resType, observable);
+			final Actuator actuator = new Actuator(sourceAddress, deviceType, resType, observable);
 			
 			
 			//I take the last ID, I set mine, I increment the shared resource
@@ -146,7 +146,12 @@ public class Registration extends CoapResource{
 			handler.addResourceArea(actuator, "default");
 			
 			if(observable)
-				actuator.observeResource();
+				new Thread() {
+				public void run() {
+					actuator.observeResource();
+				}
+			}.start();
+				
 			
 			System.out.println("Resource: " + resType + ", Resource observable: " + observable);
 			
