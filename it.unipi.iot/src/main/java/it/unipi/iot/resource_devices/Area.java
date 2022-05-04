@@ -17,6 +17,7 @@ public class Area {
 		this.minTemp = minTemp;
 		this.maxHum = maxHum;
 		this.minHum = minHum;
+		System.out.println("New area " + id + " has been created");
 	}
 
 	public String getId() {
@@ -68,7 +69,7 @@ public class Area {
 	}
 	
 	public void printAreaInfo() {
-		System.out.println("Area: " + this.getId() + ", AutoMode: " + this.isAutoManage() + 
+		System.out.print("Area: " + this.getId() + ", AutoMode: " + this.isAutoManage() + 
 				", Min Temp: " + this.getMinTemp() + ", Max Temp: " + this.getMaxTemp() + 
 				", Min Hum: " + this.getMinHum() + ", Max Hum: " + this.getMaxHum());
 	}

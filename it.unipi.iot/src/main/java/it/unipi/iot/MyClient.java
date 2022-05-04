@@ -36,7 +36,7 @@ public class MyClient {
 		reader = new BufferedReader(new InputStreamReader(System.in));
 		
 
-		System.out.println("\nAssign an area to each device before starting!\n");
+		//System.out.println("\nAssign an area to each device before starting!\n");
 		System.out.println("Type \"!help\" to know the commands\n");
 		
 		//showCommands();
@@ -136,6 +136,7 @@ public class MyClient {
 		
 	}
 	
+
 	private static void showCommands() {
 		
 		System.out.println("");
@@ -155,7 +156,6 @@ public class MyClient {
 		System.out.println("!getAvgHumidity		-->	Get the Avg humidity of the last 10 measurements for all the sensors");
 		System.out.println("!getSprinklerStatus	-->	Get the status of the sprinklers");
 		System.out.println("!getLightStatus		-->	Get the status of the lights");
-		System.out.println("!getSprinklerStatus	-->	Get the status of the sprinklers");
 		
 		System.out.println("");
 		System.out.println("	--	POST COMMANDS	--	");
@@ -258,6 +258,7 @@ public class MyClient {
 		System.out.println("");
 	}
 	
+	
 /*
  * 
  * 		SET METHODS
@@ -267,13 +268,13 @@ public class MyClient {
 	//Get the status of sprinklers within the area
 	private static void setAreaSprinklerStatus() {
 		System.out.println("Type the area of the sprinkler you want to switch");
-		System.out.println("Available Sprinklers: ");
+		System.out.println("Available areas with Sprinklers: ");
 		handler.sprinklerAreasList();
 		try {
 			String area = reader.readLine();
 			boolean valid = true;
 			
-			if(!handler.getAreas().containsKey(area)) {
+			if(!handler.getAreas().containsKey(handler.getIdArea().get(area))) {
 				System.out.println("Error! This is not a valid area.\n ");
 				return;
 			}	
@@ -313,7 +314,7 @@ public class MyClient {
 			String area = reader.readLine();
 			boolean valid = true;
 			
-			if(!handler.getAreas().containsKey(area)) {
+			if(!handler.getAreas().containsKey(handler.getIdArea().get(area))) {
 				System.out.println("Error! This is not a valid area.\n ");
 				return;
 			}	
@@ -346,10 +347,10 @@ public class MyClient {
 	
 	//Set the area a device belongs to
 	private static void setDeviceArea() {
-		System.out.println("Type the ID of the device");
+		
 		System.out.println("Available Devices: ");
 		handler.devicesList();
-		
+		System.out.println("\nType the ID of the device");
 		try {
 			String id = reader.readLine();
 			
@@ -417,11 +418,12 @@ public class MyClient {
 				}
 				
 				System.out.println("Type the new management mode (Auto[1] / Manual[0]):");
-				Integer auto = reader.read();
+				String auto = reader.readLine();
 				
-				if(auto == 0)
+				
+				if(Integer.valueOf(auto) == 0)
 					handler.getIdArea().get(area).setAutoManage(false);
-				if(auto == 1)
+				if(Integer.valueOf(auto) == 1)
 					handler.getIdArea().get(area).setAutoManage(true);
 				else {
 					System.out.println("Error: value not valid\n");
@@ -438,6 +440,7 @@ public class MyClient {
 			
 		System.out.println("");
 	}
+	
 	
 	
 	

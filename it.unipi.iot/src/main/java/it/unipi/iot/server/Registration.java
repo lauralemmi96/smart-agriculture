@@ -59,6 +59,7 @@ public class Registration extends CoapResource{
 				System.out.println("Error in registering a resource\n");
 				registered = false;
 			}
+			System.out.println("");
 
 			
 		}

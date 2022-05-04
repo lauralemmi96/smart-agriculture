@@ -37,6 +37,8 @@ public class ResourceDeviceHandler {
     {
 		Area area = new Area("default", 30, 0, 100, 0);
         this.idArea.put("default", area);
+        ArrayList<ResourceDevice> devices = new ArrayList<ResourceDevice>();
+        this.areas.put(area, devices);
       
     }
 	
@@ -184,20 +186,20 @@ public class ResourceDeviceHandler {
 		}
 		
 		for(Area area_obj: areas.keySet()) {
-			String area = area_obj.getId();
+			
 			//print area name
-			System.out.print("[ " + area + " ] : [ ");
+			System.out.print("[ " + area_obj.getId() + " ] :");
 			
 			//get device list
 			ArrayList<ResourceDevice> device = areas.get(area_obj);
 			
 			for(ResourceDevice d: device) {
-					System.out.print("{ID: " + d.getId() + ", IP: " + d.getHostAddress() + ", type: " 
+					System.out.print("\n{ID: " + d.getId() + ", IP: " + d.getHostAddress() + ", type: " 
 							+ d.getDeviceType() + ", res: " + d.getResourceType() + " } " );
 					
 
 			}
-			System.out.println(" ]");
+			System.out.println("");
 					
 			
 		}
@@ -234,7 +236,8 @@ public class ResourceDeviceHandler {
 	public void getSprinklersStatus() {
 		for(Integer id: sprinklers.keySet()) {
 			Actuator act = sprinklers.get(id);
-			System.out.println("Actuator Area: " + act.getArea() + ", Address: " + id + 
+			System.out.println("Actuator Area: " + act.getArea() + ", ID: " + id +  
+					", Address: " + act.getHostAddress() +
 					", Status: " + act.getStatus());
 		}
 	}
@@ -243,7 +246,8 @@ public class ResourceDeviceHandler {
 	public void getLightsStatus() {
 		for(Integer id: lights.keySet()) {
 			Actuator act = lights.get(id);
-			System.out.println("Actuator Area: " + act.getArea() + ", Address: " + act.getHostAddress() + 
+			System.out.println("Actuator Area: " + act.getArea() + ", ID: " + id 
+					+ ", Address: " + act.getHostAddress() + 
 					", Status: " + act.getStatus());
 		}
 	}
@@ -305,9 +309,9 @@ public class ResourceDeviceHandler {
  */
 	
 	// SET STATUS OF A SPRINKLER
-	public boolean setSprinklerStatus(String address, String newStatus) {
+	public boolean setSprinklerStatus(Integer id, String newStatus) {
 		
-		CoapClient c = sprinklers.get(address).getClient();
+		CoapClient c = sprinklers.get(id).getClient();
 		
 		//Prepare post payload
 		String requestAttribute = "status=" + newStatus;
@@ -331,11 +335,11 @@ public class ResourceDeviceHandler {
 	//	SET STATUS OF SPRINKLERS WITHIN A AREA
 	public boolean setAreaSprinklerStatus(String area, String status) {
 		
-		if(areas.containsKey(area)) {
-			ArrayList<ResourceDevice> device = areas.get(area);
+		if(areas.containsKey(idArea.get(area))) {
+			ArrayList<ResourceDevice> device = areas.get(idArea.get(area));
 			for(ResourceDevice d: device) {
 				if(d.getResourceType().compareTo("sprinkler") == 0) {
-					if(!setSprinklerStatus(d.getHostAddress(), status))
+					if(!setSprinklerStatus(d.getId(), status))
 						return false;
 				}
 					
@@ -372,8 +376,8 @@ public class ResourceDeviceHandler {
 	//	SET STATUS OF LIGHTS WITHIN A AREA
 	public boolean setAreaLightStatus(String area, String status) {
 		
-		if(areas.containsKey(area)) {
-			ArrayList<ResourceDevice> device = areas.get(area);
+		if(areas.containsKey(idArea.get(area))) {
+			ArrayList<ResourceDevice> device = areas.get(idArea.get(area));
 			for(ResourceDevice d: device) {
 				if(d.getResourceType().compareTo("light") == 0) {
 					if(!setLightStatus(d.getId(), status))
@@ -398,8 +402,6 @@ public class ResourceDeviceHandler {
 	public void addDeviceArea(Integer id, String area) {
 		
 		boolean find = false;
-		for(Integer ident: idDeviceMap.keySet())
-			System.out.println(ident);
 		
 		ResourceDevice rd = idDeviceMap.get(id);
 		if(rd != null) {
@@ -425,12 +427,12 @@ public class ResourceDeviceHandler {
 			
 		//If a area was already set, remove the device from that list.
 		if(rd.getArea() != null) {
-			String old = rd.getArea();
-			areas.get(old).remove(rd);
+			areas.get(idArea.get(rd.getArea())).remove(rd);
 			
 			//If the area remains empty remove it 
-			if(areas.get(old).isEmpty())
-				areas.remove(old);
+			//if(areas.get(idArea.get(rd.getArea())).isEmpty() && area.compareTo("default")!= 0)
+			if(areas.get(idArea.get(rd.getArea())).isEmpty())
+				areas.remove(idArea.get(rd.getArea()));
 		}
 		
 		
@@ -438,10 +440,13 @@ public class ResourceDeviceHandler {
 
 		
 		if(!areas.containsKey(idArea.get(area))) {
+			System.out.println("The area " + area + " does not exist. Start creation.");
+			Area area_obj = generateArea(area);
 			ArrayList<ResourceDevice> list = new ArrayList<>();
 			list.add(rd);
-			areas.put(idArea.get(area), list);
+			areas.put(area_obj, list);
 		}else {
+			System.out.println("The area " + area + " already exists. Just add the device.");
 			if(!areas.get(idArea.get(area)).contains(rd)) {
 				areas.get(idArea.get(area)).add(rd);
 			}
@@ -449,7 +454,7 @@ public class ResourceDeviceHandler {
 			
 		}
 		
-		System.out.println("Device Area set for resource: " + rd.getResourceType());
+		System.out.println("Device Area set to: \"" +rd.getArea() + "\" for resource: " + rd.getResourceType());
 				
 		
 	}
@@ -480,15 +485,33 @@ public class ResourceDeviceHandler {
 	private void removeResourceArea(ResourceDevice rd) {
 		
 		//If a area was already set, remove the device from that list.
+		
+		String old = rd.getArea();
 		if(rd.getArea() != null) {
-			String old = rd.getArea();
-			areas.get(old).remove(rd);
+			areas.get(idArea.get(old)).remove(rd);
 			
 			//If the area remains empty remove it 
-			if(areas.get(old).isEmpty()) {
-				areas.remove(old);
+			if(areas.get(idArea.get(old)).isEmpty()) {
+				areas.remove(idArea.get(old));
 				idArea.remove(old);
 			}
+			
+			
+			//Reassign device to default area
+			rd.setArea("default");
+			Area def = idArea.get("default");
+			
+			if(def == null) {
+				def = generateArea("default");
+				idArea.put("default", def);
+				ArrayList<ResourceDevice> d = new ArrayList<ResourceDevice>();
+				d.add(rd);
+				areas.put(def, d);
+			}else {
+				areas.get(def).add(rd);
+			}
+			
+			
 			
 			System.out.println("Resource Device: " + rd.getResourceType() + " removed from area " + old + "\n");
 			return;
