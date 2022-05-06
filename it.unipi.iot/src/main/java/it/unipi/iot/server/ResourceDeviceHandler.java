@@ -320,7 +320,7 @@ public class ResourceDeviceHandler {
  */
 	
 	// SET STATUS OF A SPRINKLER
-	public boolean setSprinklerStatus(Integer id, String newStatus) {
+	public int setSprinklerStatus(Integer id, String newStatus) {
 		
 		CoapClient c = sprinklers.get(id).getClient();		
 		
