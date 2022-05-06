@@ -107,26 +107,30 @@ static void res_post_put_handler(coap_message_t *request, coap_message_t *respon
 		split = strtok((char*)*message, "=");
 		if((split && strcmp(split, "increase") == 0) || (split && strcmp(split, "decrease") == 0)){
 			variation_mode = split;
+			printf("variation_mode: %s\n", variation_mode);
 		}
-		/*
+
 		//Take the value
 		split = strtok(NULL, "=");
-		if(split && isdigit(split))
+		if(split && isdigit(split)){
 			value = atoi(split);
+			printf("value: %d\n", value);
+		}
 
+		/*
 		//Payload lenght wrong!
 		if(pay_len != strlen(variation_mode) + strlen(split) + 1){
 			variation_mode = NULL;
 			value = 0;
 		}
 		*/
-		value = 5;
+
 
 	}
 
 	LOG_INFO("Variation Type: %s, Value: %s\n", variation_mode, value);
 
-
+	/*
 	if(variation_mode != NULL && value != 0){	
 		if(strcmp(variation_mode, "increase") == 0) {
 			min_temp_value += value;
@@ -149,6 +153,6 @@ static void res_post_put_handler(coap_message_t *request, coap_message_t *respon
 	if(!good_req)
 		coap_set_status_code(response, BAD_REQUEST_4_00);
 	
-
+	*/
 
 }

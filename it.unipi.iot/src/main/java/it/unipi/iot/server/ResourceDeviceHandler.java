@@ -327,7 +327,7 @@ public class ResourceDeviceHandler {
 		//Check if the new status is equal to the previuos one: in case no request sent
 		if(newStatus.compareTo(sprinklers.get(id).getStatus()) == 0) {
 			System.out.println("The Sprinkler " + id + " is already " + newStatus);
-			return true;
+			return 0;
 		}
 		//Prepare post payload
 		String requestAttribute = "status=" + newStatus;
@@ -338,37 +338,43 @@ public class ResourceDeviceHandler {
 		//Check the return code: Success 2.xx
 		if(!response.getCode().toString().startsWith("2")) {
 			System.out.println("Error code: " + response.getCode().toString());
-			return false;
+			return -1;
 		}else
 			System.out.println("Sprinkler " + id + " set to " + newStatus);
-		return true;
+		return 1;
 		
 		
 	
 	}
 	
 	//	SET STATUS OF SPRINKLERS WITHIN A AREA
-	public boolean setAreaSprinklerStatus(String area, String status) {
+	public int setAreaSprinklerStatus(String area, String status) {
 
+		int howMany = 0;
+		int result = 0;
+		
 		if(areas.containsKey(idArea.get(area))) {
 			ArrayList<ResourceDevice> device = areas.get(idArea.get(area));
 			for(ResourceDevice d: device) {
+				result = 0;
 				if(d.getResourceType().compareTo("sprinkler") == 0) {
-					
-					if(!setSprinklerStatus(d.getId(), status))
-						return false;
+					result = setSprinklerStatus(d.getId(), status);
+					if(result == -1)
+						return -1;
+					else
+						howMany += result;
 				}
 					
 			}
 		}
 
-		return true;
+		return howMany;
 
 	}
 	
 	
 	// SET STATUS OF A LIGHT 
-	public boolean setLightStatus(Integer id, String newStatus) {
+	public int setLightStatus(Integer id, String newStatus) {
 		
 		CoapClient c = lights.get(id).getClient();
 
@@ -377,7 +383,7 @@ public class ResourceDeviceHandler {
 		//Check if the new status is equal to the previuos one: in case no request sent
 		if(newStatus.compareTo(lights.get(id).getStatus()) == 0) {
 			System.out.println("The Light " + id + " is already " + newStatus);
-			return true;
+			return 0;
 		}
 		
 		//Prepare post payload
@@ -389,31 +395,38 @@ public class ResourceDeviceHandler {
 		//Check the return code: Success 2.xx
 		if(!response.getCode().toString().startsWith("2")) {
 			System.out.println("Error code: " + response.getCode().toString());
-			return false;
+			return -1;
 		}else
 			System.out.println("Light " + id + " set to " + newStatus);
 		
-		return true;
+		return 1;
 		
 		
 	
 	}
 	
 	//	SET STATUS OF LIGHTS WITHIN A AREA
-	public boolean setAreaLightStatus(String area, String status) {
+	public int setAreaLightStatus(String area, String status) {
+		
+		int howMany = 0;
+		int result = 0;
 		
 		if(areas.containsKey(idArea.get(area))) {
 			ArrayList<ResourceDevice> device = areas.get(idArea.get(area));
 			for(ResourceDevice d: device) {
+				result = 0;
 				if(d.getResourceType().compareTo("light") == 0) {
-					if(!setLightStatus(d.getId(), status))
-						return false;
+					result = setLightStatus(d.getId(), status);
+					if(result == -1)
+						return -1;
+					else
+						howMany += result;
 				}
 					
 			}
 		}
 		
-		return true;
+		return howMany;
 
 	}
 	
