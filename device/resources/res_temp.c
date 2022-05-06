@@ -20,8 +20,8 @@ static void res_event_handler(void);
 EVENT_RESOURCE(res_temp,
          "title=\"Temperature Sensor\";rt=\"temperature\";if=\"sensor\";obs",
 	res_get_handler,
-         NULL,
-         NULL,
+        res_post_put_handler,
+        res_post_put_handler,
          NULL, 
 	res_event_handler);
         
@@ -63,5 +63,83 @@ static void res_get_handler(coap_message_t *request, coap_message_t *response, u
 	//coap_set_header_content_format(response, TEXT_PLAIN);
 	//coap_set_payload(response, buffer, snprintf((char *)buffer, preferred_size, "TEMPERATURE: %i\n", temp_value));
 	
+
+}
+
+
+// CHANGE THE MIN AND MAX VALUE OF TEMPERATURE WHEN LIGHT IS SWITCHED ON/OFF.
+
+static void res_post_put_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset){
+
+	if(request == NULL){
+
+		LOG_INFO("[TEMP]: Empty request\n");
+		return;
+	}
+
+	size_t pay_len = 0;
+	const char *variation_mode = NULL;
+	const char *value = NULL;
+	bool good_req = false;
+
+	const uint8_t **message;
+	message = malloc(request->payload_len);
+
+	if(message == NULL){
+		LOG_INFO("[TEMP]: Empty payload\n");
+		return;
+	}
+
+	pay_len = coap_get_payload(request, message);
+	LOG_INFO("Message received: %s\n", (char *)*message);
+
+	/*
+	if(pay_len > 0){
+		
+		//Splitting the payload
+		char *split;
+
+		//Take the variable
+		split = strtok((char*)*message, "=");
+		if(split && strcmp(split, "increase") == 0 || split && strcmp(split, "decrease") == 0){
+			variation_mode = split;
+		}
+
+		//Take the value
+		split = strtok(NULL, "=");
+		if(split && isnumber(split))
+			value = atoi(split);
+
+		//Payload lenght wrong!
+		if(pay_len != strlen(new_status) + strlen(var) + 1)
+			new_status = var = NULL;
+
+	}
+
+	LOG_INFO("VAR: %s, STATUS: %s\n", var, new_status);
+
+
+	if(variation_mode != NULL && new_status != NULL){	
+		if(strcmp(variation_mode, "increase") == 0) {
+			min_temp_value += value;
+			max_temp_value += value;
+			good_req = true;
+			
+			LOG_DBG("Max and Min temperature increased\n");	
+	
+		}else if(strcmp(variation_mode, "decrease")) {
+			min_temp_value -= value;
+			max_temp_value -= value;
+			good_req = true;
+	
+			LOG_DBG("Max and Min temperature decreased\n");
+		}
+
+	}
+
+	if(!good_req)
+		coap_set_status_code(response, BAD_REQUEST_4_00);
+	*/
+
 
 }
