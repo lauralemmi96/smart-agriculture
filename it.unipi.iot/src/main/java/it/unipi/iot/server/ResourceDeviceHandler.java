@@ -311,9 +311,7 @@ public class ResourceDeviceHandler {
 	// SET STATUS OF A SPRINKLER
 	public boolean setSprinklerStatus(Integer id, String newStatus) {
 		
-		CoapClient c = sprinklers.get(id).getClient();
-		System.out.println(c.getURI());
-		
+		CoapClient c = sprinklers.get(id).getClient();		
 		
 		//Check if the new status is equal to the previuos one: in case no request sent
 		if(newStatus.compareTo(sprinklers.get(id).getStatus()) == 0) {
@@ -331,7 +329,7 @@ public class ResourceDeviceHandler {
 			System.out.println("Error code: " + response.getCode().toString());
 			return false;
 		}else
-			System.out.println("Return code: " + response.getCode().toString() + ". New status has been set.");
+			System.out.println("Sprinkler " + id + " set to " + newStatus);
 		return true;
 		
 		
@@ -363,7 +361,6 @@ public class ResourceDeviceHandler {
 		
 		CoapClient c = lights.get(id).getClient();
 
-		System.out.println(c.getURI());
 		
 		
 		//Check if the new status is equal to the previuos one: in case no request sent
@@ -383,7 +380,7 @@ public class ResourceDeviceHandler {
 			System.out.println("Error code: " + response.getCode().toString());
 			return false;
 		}else
-			System.out.println("Return code: " + response.getCode().toString() + ". New status has been set.");
+			System.out.println("Light " + id + " set to " + newStatus);
 		
 		return true;
 		

@@ -35,7 +35,6 @@ public class Registration extends CoapResource{
 		
 		
 		String responseText = response.getResponseText();
-		//System.out.println("RESPONSE: " + responseText);
 		
 		//Check the return code: Success 2.xx
 		if(!response.getCode().toString().startsWith("2")) {

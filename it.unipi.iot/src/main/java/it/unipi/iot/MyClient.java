@@ -42,7 +42,6 @@ public class MyClient {
 		
 		while(true) {
 			System.out.println("Type a command\n");
-			System.out.println(">");
 			
 			try {
 				
@@ -272,7 +271,7 @@ public class MyClient {
 		handler.sprinklerAreasList();
 		
 		System.out.println("\nType the area of the sprinkler you want to switch");
-		System.out.print(">");
+		
 		try {
 			String area = reader.readLine();
 			boolean valid = true;
@@ -283,14 +282,14 @@ public class MyClient {
 			}	
 			
 			System.out.println("Type the new status: ON or OFF");
-			System.out.print(">");
+			
 			String status = reader.readLine().toUpperCase();
 			
 			while((status.compareTo("ON")!= 0) && (status.compareTo("OFF")!= 0)) {
 					System.out.println("Error! Invalid status.\n "
 							+ "Retry or type \"!Exit\" for a new operation");
 					
-					System.out.print(">");
+					
 					status = reader.readLine().toUpperCase();
 					if(status.compareTo("!Exit") == 0) {
 						valid = false;
@@ -317,7 +316,7 @@ public class MyClient {
 		handler.lightAreasList();
 		
 		System.out.println("\nType the area of the lights you want to switch");
-		System.out.print(">");
+		
 		try {
 			String area = reader.readLine();
 			boolean valid = true;
@@ -334,7 +333,7 @@ public class MyClient {
 					System.out.println("Error! Invalid status.\n "
 							+ "Retry or type \"!Exit\" for a new operation");
 					
-					System.out.print(">");
+					
 					status = reader.readLine().toUpperCase();
 					if(status.compareTo("!Exit") == 0) {
 						valid = false;
@@ -361,7 +360,7 @@ public class MyClient {
 		handler.devicesList();
 		
 		System.out.println("\nType the ID of the device");
-		System.out.print(">");
+		
 		try {
 			String id = reader.readLine();
 			
@@ -371,7 +370,7 @@ public class MyClient {
 			}
 			
 			System.out.println("Type the area");
-			System.out.print(">");
+		
 			String area = reader.readLine().toLowerCase();
 			handler.addDeviceArea(Integer.valueOf(id), area);
 			
@@ -389,7 +388,7 @@ public class MyClient {
 		handler.devicesList();
 		
 		System.out.println("\nType the ID of the device");
-		System.out.print(">");
+	
 		try {
 			String id = reader.readLine();
 			
@@ -426,7 +425,7 @@ public class MyClient {
 			try {
 				System.out.print("Type the area where management mode will be changed: ");
 				
-				System.out.print(">");
+			
 				String area = reader.readLine();
 				
 				if(handler.getIdArea().get(area) == null) {
@@ -435,7 +434,7 @@ public class MyClient {
 				}
 				
 				System.out.println("Type the new management mode (Auto[1] / Manual[0]):");
-				System.out.print(">");
+			
 				String auto = reader.readLine();
 				
 				
@@ -458,6 +457,9 @@ public class MyClient {
 			
 		System.out.println("");
 	}
+	
+	
+	
 	
 	
 	

@@ -100,7 +100,7 @@ public class Sensor extends ResourceDevice{
 								//check if under/above tolerance
 								if(observed_values[index] > max_threshold) {
 									above++;
-									System.out.println(resourceType + ": Observed Value :" + observed_values[index] + ", above counter: " + above);
+									//System.out.println(resourceType + ": Observed Value :" + observed_values[index] + ", above counter: " + above);
 									if(above == 5) {
 										
 										//Temperature too high, switch off the lights
@@ -134,7 +134,7 @@ public class Sensor extends ResourceDevice{
 								
 								if(observed_values[index] < min_threshold) {
 									below++;
-									System.out.println(resourceType + ": Observed Value :" + observed_values[index] + ", below counter: " + below);
+									//System.out.println(resourceType + ": Observed Value :" + observed_values[index] + ", below counter: " + below);
 									if(below == 5) {
 										
 										//Temperature too low, switch on the lights
