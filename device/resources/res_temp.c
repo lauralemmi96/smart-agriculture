@@ -74,6 +74,7 @@ static void res_get_handler(coap_message_t *request, coap_message_t *response, u
 
 static void res_post_put_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset){
 
+	
 	if(request == NULL){
 
 		LOG_INFO("[TEMP]: Empty request\n");
@@ -107,7 +108,7 @@ static void res_post_put_handler(coap_message_t *request, coap_message_t *respon
 		if((split && strcmp(split, "increase") == 0) || (split && strcmp(split, "decrease") == 0)){
 			variation_mode = split;
 		}
-
+		/*
 		//Take the value
 		split = strtok(NULL, "=");
 		if(split && isdigit(split))
@@ -118,6 +119,8 @@ static void res_post_put_handler(coap_message_t *request, coap_message_t *respon
 			variation_mode = NULL;
 			value = 0;
 		}
+		*/
+		value = 5;
 
 	}
 
@@ -132,7 +135,7 @@ static void res_post_put_handler(coap_message_t *request, coap_message_t *respon
 			
 			LOG_DBG("Max and Min temperature increased\n");	
 	
-		}else if(strcmp(variation_mode, "decrease")) {
+		}else if(strcmp(variation_mode, "decrease") == 0) {
 			min_temp_value -= value;
 			max_temp_value -= value;
 			good_req = true;

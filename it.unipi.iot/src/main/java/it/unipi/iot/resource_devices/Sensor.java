@@ -70,6 +70,13 @@ public class Sensor extends ResourceDevice{
 							
 							//System.out.println("res: " + resourceType + ", Value: " + observed_values[index]);
 							
+							//update the index
+							index = (index+1)%max_observations;
+							
+							//check if the array become full
+							if(!full && index == 0)
+								full = true;
+							
 							//Take the ResourceDeviceHandler instance
 							final ResourceDeviceHandler handler = ResourceDeviceHandler.getInstance();
 							
@@ -98,10 +105,11 @@ public class Sensor extends ResourceDevice{
 									
 								}
 								//check if under/above tolerance
-								if(observed_values[index] > max_threshold) {
-									above++;
+								//if(observed_values[index] > max_threshold) {
+								if(getLastAvgObservation() != 0 && getLastAvgObservation() > max_threshold) {
+									//above++;
 									//System.out.println(resourceType + ": Observed Value :" + observed_values[index] + ", above counter: " + above);
-									if(above == 5) {
+									//if(above == 5) {
 										
 										//Temperature too high, switch off the lights
 										if(resourceType.compareTo("temperature")==0) {
@@ -110,9 +118,11 @@ public class Sensor extends ResourceDevice{
 											
 											new Thread() {
 												public void run() {
-													if(handler.setAreaLightStatus(area, "OFF"))
+													if(handler.setAreaLightStatus(area, "OFF")) {
 														if(!handler.editSensorMinMax(id, false, true))
-															return;
+															System.out.println("Error in changing the range");
+													}else
+														System.out.println("Error in changing the status of Light " + id);
 												}
 											}.start();
 											
@@ -124,22 +134,25 @@ public class Sensor extends ResourceDevice{
 											
 											new Thread() {
 												public void run() {
-													if(handler.setAreaSprinklerStatus(area, "OFF"))
+													if(handler.setAreaSprinklerStatus(area, "OFF")) {
 														if(!handler.editSensorMinMax(id, false, true))
-															return;
+															System.out.println("Error in changing the range");
+													}else
+														System.out.println("Error in changing the status of Sprinkler " + id);
 												}
 											}.start();
 											
 										}
 										
-										above = 0;
-									}
+										//above = 0;
+									//}
 								}
 								
-								if(observed_values[index] < min_threshold) {
-									below++;
+								//if(observed_values[index] < min_threshold) {
+								if(getLastAvgObservation() != 0 && getLastAvgObservation() < min_threshold) {
+									//below++;
 									//System.out.println(resourceType + ": Observed Value :" + observed_values[index] + ", below counter: " + below);
-									if(below == 5) {
+									//if(below == 5) {
 										
 										//Temperature too low, switch on the lights
 										if(resourceType.compareTo("temperature")==0) {
@@ -147,9 +160,11 @@ public class Sensor extends ResourceDevice{
 											
 											new Thread() {
 												public void run() {
-													if(handler.setAreaLightStatus(area, "ON"))
+													if(handler.setAreaLightStatus(area, "ON")) {
 														if(!handler.editSensorMinMax(id, true, false))
-															return;
+															System.out.println("Error in changing the range");
+													}else
+														System.out.println("Error in changing the status of Light " + id);
 												}
 											}.start();
 											
@@ -159,23 +174,27 @@ public class Sensor extends ResourceDevice{
 											System.out.println("Switch on sprinklers in area " + area);
 											new Thread() {
 												public void run() {
-													if(handler.setAreaSprinklerStatus(area, "ON"))
+													if(handler.setAreaSprinklerStatus(area, "ON")) {
 														if(!handler.editSensorMinMax(id, true, false))
-															return;
+															System.out.println("Error in changing the range");
+													}else
+														System.out.println("Error in changing the status of Sprinkler " + id);
 												}
 											}.start();
 											
 										}
-										below = 0;
-									}
+										//below = 0;
+									//}
 								}
 							}	
+							/*
 							//update the index
 							index = (index+1)%max_observations;
 							
 							//check if the array become full
 							if(!full && index == 0)
 								full = true;
+							*/
 							
 							
 						}
