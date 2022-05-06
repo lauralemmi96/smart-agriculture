@@ -172,7 +172,7 @@ public class Sensor extends ResourceDevice{
 											new Thread() {
 												public void run() {
 													if(handler.setAreaSprinklerStatus(area, "ON") > 0) {
-														if(!handler.editSensorMinMax(id, true, false) > 0)
+														if(!handler.editSensorMinMax(id, true, false))
 															System.out.println("Error in changing the range");
 													}
 												}

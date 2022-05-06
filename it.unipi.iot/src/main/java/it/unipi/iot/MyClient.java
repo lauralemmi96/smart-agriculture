@@ -297,7 +297,7 @@ public class MyClient {
 					}
 				}
 			if(valid) {
-				if(!handler.setAreaSprinklerStatus(area, status))
+				if(handler.setAreaSprinklerStatus(area, status) < 0)
 					System.out.println("Something went wrong!\n");
 				else
 					System.out.println("Status Changed\n");
@@ -341,7 +341,7 @@ public class MyClient {
 					}
 				}
 			if(valid) {
-				if(!handler.setAreaLightStatus(area, status))
+				if(handler.setAreaLightStatus(area, status) < 0)
 					System.out.println("Something went wrong!\n");
 				else
 					System.out.println("Status Changed\n");
