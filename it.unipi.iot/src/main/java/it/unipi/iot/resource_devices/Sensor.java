@@ -103,7 +103,6 @@ public class Sensor extends ResourceDevice{
 									System.out.println(resourceType + ": Observed Value :" + observed_values[index] + ", above counter: " + above);
 									if(above == 5) {
 										
-										System.out.println("SONO 5 ABOVE!");
 										//Temperature too high, switch off the lights
 										if(resourceType.compareTo("temperature")==0) {
 											
@@ -137,7 +136,6 @@ public class Sensor extends ResourceDevice{
 									below++;
 									System.out.println(resourceType + ": Observed Value :" + observed_values[index] + ", below counter: " + below);
 									if(below == 5) {
-										System.out.println("SONO 5 BELOW!");
 										
 										//Temperature too low, switch on the lights
 										if(resourceType.compareTo("temperature")==0) {
@@ -177,14 +175,7 @@ public class Sensor extends ResourceDevice{
 								System.err.println("--- Orbservation Failed ---"); 
 							}
 					}, MediaTypeRegistry.APPLICATION_JSON);
-			/*
-			try {
-				Thread.sleep(5 * 1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			*/
+			
 		}else {
 			System.out.println("The resource " + resourceType + " is not observable");
 			return;

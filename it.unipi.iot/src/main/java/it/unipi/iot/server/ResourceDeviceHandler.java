@@ -310,7 +310,7 @@ public class ResourceDeviceHandler {
 	
 	// SET STATUS OF A SPRINKLER
 	public boolean setSprinklerStatus(Integer id, String newStatus) {
-		System.out.println("SONO DENTRO setSprinklerStatus");
+		
 		CoapClient c = sprinklers.get(id).getClient();
 		System.out.println(c.getURI());
 		
@@ -322,11 +322,10 @@ public class ResourceDeviceHandler {
 		}
 		//Prepare post payload
 		String requestAttribute = "status=" + newStatus;
-		System.out.println(requestAttribute);
+		
 		//send post request
 		CoapResponse response = c.post(requestAttribute, MediaTypeRegistry.TEXT_PLAIN);
-		
-		System.out.println(response.getResponseText()); 
+		 
 		//Check the return code: Success 2.xx
 		if(!response.getCode().toString().startsWith("2")) {
 			System.out.println("Error code: " + response.getCode().toString());
@@ -341,21 +340,19 @@ public class ResourceDeviceHandler {
 	
 	//	SET STATUS OF SPRINKLERS WITHIN A AREA
 	public boolean setAreaSprinklerStatus(String area, String status) {
-		
-		boolean result = true;
-		System.out.println("SONO DENTRO setAreaSprinklerStatus");
+
 		if(areas.containsKey(idArea.get(area))) {
 			ArrayList<ResourceDevice> device = areas.get(idArea.get(area));
 			for(ResourceDevice d: device) {
 				if(d.getResourceType().compareTo("sprinkler") == 0) {
-					System.out.println("Device id: " + d.getId() + ", type: " + d.getResourceType());
+					
 					if(!setSprinklerStatus(d.getId(), status))
-						result = false;
+						return false;
 				}
 					
 			}
 		}
-		System.out.println("RESULT: " + result);
+
 		return true;
 
 	}
@@ -363,7 +360,7 @@ public class ResourceDeviceHandler {
 	
 	// SET STATUS OF A LIGHT 
 	public boolean setLightStatus(Integer id, String newStatus) {
-		System.out.println("SONO DENTRO setLightStatus");
+		
 		CoapClient c = lights.get(id).getClient();
 
 		System.out.println(c.getURI());
@@ -377,10 +374,10 @@ public class ResourceDeviceHandler {
 		
 		//Prepare post payload
 		String requestAttribute = "status=" + newStatus;
-		System.out.println(requestAttribute);
+		
 		//send post request
 		CoapResponse response = c.post(requestAttribute, MediaTypeRegistry.TEXT_PLAIN);
-		System.out.println(response.getResponseText());
+		
 		//Check the return code: Success 2.xx
 		if(!response.getCode().toString().startsWith("2")) {
 			System.out.println("Error code: " + response.getCode().toString());
@@ -397,20 +394,17 @@ public class ResourceDeviceHandler {
 	//	SET STATUS OF LIGHTS WITHIN A AREA
 	public boolean setAreaLightStatus(String area, String status) {
 		
-		System.out.println("SONO DENTRO setAreaLightStatus");
-		boolean result = true;
 		if(areas.containsKey(idArea.get(area))) {
 			ArrayList<ResourceDevice> device = areas.get(idArea.get(area));
 			for(ResourceDevice d: device) {
 				if(d.getResourceType().compareTo("light") == 0) {
-					System.out.println("Device id: " + d.getId() + ", type: " + d.getResourceType());
 					if(!setLightStatus(d.getId(), status))
-						result =  false;
+						return false;
 				}
 					
 			}
 		}
-		System.out.println("RESULT: " + result);
+		
 		return true;
 
 	}

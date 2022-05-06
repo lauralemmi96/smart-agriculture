@@ -9,7 +9,7 @@
 
 int min_hum_value =	20;
 int max_hum_value =	80;
-int humidity_value = 10;
+int humidity_value = 50;
 static unsigned int accept = -1;
 
 static void res_get_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
