@@ -110,7 +110,9 @@ public class Sensor extends ResourceDevice{
 											
 											new Thread() {
 												public void run() {
-													handler.setAreaLightStatus(area, "OFF");
+													if(handler.setAreaLightStatus(area, "OFF"))
+														if(!handler.editSensorMinMax(id, false, true))
+															return;
 												}
 											}.start();
 											
@@ -122,7 +124,9 @@ public class Sensor extends ResourceDevice{
 											
 											new Thread() {
 												public void run() {
-													handler.setAreaSprinklerStatus(area, "OFF");
+													if(handler.setAreaSprinklerStatus(area, "OFF"))
+														if(!handler.editSensorMinMax(id, false, true))
+															return;
 												}
 											}.start();
 											
@@ -143,7 +147,9 @@ public class Sensor extends ResourceDevice{
 											
 											new Thread() {
 												public void run() {
-													handler.setAreaLightStatus(area, "ON");
+													if(handler.setAreaLightStatus(area, "ON"))
+														if(!handler.editSensorMinMax(id, true, false))
+															return;
 												}
 											}.start();
 											
@@ -153,7 +159,9 @@ public class Sensor extends ResourceDevice{
 											System.out.println("Switch on sprinklers in area " + area);
 											new Thread() {
 												public void run() {
-													handler.setAreaSprinklerStatus(area, "ON");
+													if(handler.setAreaSprinklerStatus(area, "ON"))
+														if(!handler.editSensorMinMax(id, true, false))
+															return;
 												}
 											}.start();
 											

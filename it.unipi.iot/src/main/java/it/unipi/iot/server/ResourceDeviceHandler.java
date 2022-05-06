@@ -15,13 +15,16 @@ import it.unipi.iot.resource_devices.Area;
 import it.unipi.iot.resource_devices.ResourceDevice;
 import it.unipi.iot.resource_devices.Sensor;
 
+
 public class ResourceDeviceHandler {
 	
 	//A single instance of this class is needed to maintain shared and consistent info of the devices
 	private static ResourceDeviceHandler single_instance = null;
 	
+	//ID counter to be assigned to devices
 	private static int deviceID = 0;
 	
+	/* DATA STRUCTURES TO HOLD DEVICES */
 	protected HashMap<Integer, Actuator> sprinklers = new HashMap<Integer, Actuator>();	//ID - sprinkler
 	protected HashMap<Integer, Actuator> lights = new HashMap<Integer, Actuator>();		//ID - light
 	protected HashMap<Integer, Sensor> tempSensors = new HashMap<Integer, Sensor>();		//ID - temp
@@ -29,13 +32,21 @@ public class ResourceDeviceHandler {
 	protected HashMap<Integer, ResourceDevice> idDeviceMap = new HashMap<Integer, ResourceDevice>();	//id - Device
 	
 	
+	/* CONSTATS DEFINITION */
+	static final int MIN_VARIATION = 1;
+	static final int MAX_VARIATION = 10;
+	static final int DEFAULT_AREA_MAX_TEMP = 30;
+	static final int DEFAULT_AREA_MIN_TEMP = 0;
+	static final int DEFAULT_AREA_MAX_HUM = 100;
+	static final int DEFAULT_AREA_MIN_HUM = 0;
+	
 	//Areas List 
 	protected HashMap<String, Area> idArea = new HashMap<String, Area>();
 	protected HashMap<Area, ArrayList<ResourceDevice>> areas = new HashMap<Area, ArrayList<ResourceDevice>>();
 
 	private ResourceDeviceHandler()
     {
-		Area area = new Area("default", 30, 0, 100, 0);
+		Area area = new Area("default", DEFAULT_AREA_MAX_TEMP, DEFAULT_AREA_MIN_TEMP, DEFAULT_AREA_MAX_HUM, DEFAULT_AREA_MIN_HUM);
         this.idArea.put("default", area);
         ArrayList<ResourceDevice> devices = new ArrayList<ResourceDevice>();
         this.areas.put(area, devices);
@@ -406,6 +417,38 @@ public class ResourceDeviceHandler {
 
 	}
 	
+
+	//Edit the range for generating temperature/humidity because light/sprinkler switched
+	public boolean editSensorMinMax(int id, boolean increase, boolean decrease) {
+		
+		if(!increase && !decrease || increase && decrease)
+			return false;
+		
+		CoapClient c = idDeviceMap.get(id).getClient();
+		
+		int randomInt = (int)Math.floor(Math.random()*(MAX_VARIATION-MIN_VARIATION+1)+MIN_VARIATION);
+		
+		String requestAttribute = null;
+		//Prepare post payload
+		if(increase)
+			requestAttribute = "increase=" + randomInt;
+		
+		if(decrease)
+			requestAttribute = "decrease=" + randomInt;
+		
+		//send post request
+		CoapResponse response = c.post(requestAttribute, MediaTypeRegistry.TEXT_PLAIN);
+		
+		//Check the return code: Success 2.xx
+		if(!response.getCode().toString().startsWith("2")) {
+			System.out.println("Error code: " + response.getCode().toString());
+			return false;
+		}
+		
+		return true;
+		
+	}
+	 
 	
 	/*
 	 * 
