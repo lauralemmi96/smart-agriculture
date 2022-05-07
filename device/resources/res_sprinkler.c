@@ -146,6 +146,9 @@ static void res_post_put_handler(coap_message_t *request, coap_message_t *respon
 		}	
 	}
 
+	if(good_req)
+		coap_set_status_code(response, CHANGED_2_04);
+
 	if(!good_req)
 		coap_set_status_code(response, BAD_REQUEST_4_00);
 

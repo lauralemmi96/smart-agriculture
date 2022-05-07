@@ -19,7 +19,7 @@ import it.unipi.iot.resource_devices.Sensor;
 public class ResourceDeviceHandler {
 	
 	//A single instance of this class is needed to maintain shared and consistent info of the devices
-	private static ResourceDeviceHandler single_instance = null;
+	private static ResourceDeviceHandler singleInstance = null;
 	
 	//ID counter to be assigned to devices
 	private static int deviceID = 0;
@@ -34,7 +34,7 @@ public class ResourceDeviceHandler {
 	
 	/* CONSTATS DEFINITION */
 	static final int MIN_VARIATION = 1;
-	static final int MAX_VARIATION = 10;
+	static final int MAX_VARIATION = 5;
 	static final int DEFAULT_AREA_MAX_TEMP = 30;
 	static final int DEFAULT_AREA_MIN_TEMP = 0;
 	static final int DEFAULT_AREA_MAX_HUM = 100;
@@ -54,11 +54,11 @@ public class ResourceDeviceHandler {
     }
 	
 	public static ResourceDeviceHandler getInstance(){
-		if (single_instance == null) {
-            single_instance = new ResourceDeviceHandler();
+		if (singleInstance == null) {
+            singleInstance = new ResourceDeviceHandler();
 		}
  
-        return single_instance;
+        return singleInstance;
     }
 	
 	public int getDeviceID() {
@@ -326,7 +326,7 @@ public class ResourceDeviceHandler {
 		
 		//Check if the new status is equal to the previuos one: in case no request sent
 		if(newStatus.compareTo(sprinklers.get(id).getStatus()) == 0) {
-			System.out.println("The Sprinkler " + id + " is already " + newStatus);
+			//System.out.println("The Sprinkler " + id + " is already " + newStatus);
 			return 0;
 		}
 		//Prepare post payload
@@ -382,7 +382,7 @@ public class ResourceDeviceHandler {
 		
 		//Check if the new status is equal to the previuos one: in case no request sent
 		if(newStatus.compareTo(lights.get(id).getStatus()) == 0) {
-			System.out.println("The Light " + id + " is already " + newStatus);
+			//System.out.println("The Light " + id + " is already " + newStatus);
 			return 0;
 		}
 		

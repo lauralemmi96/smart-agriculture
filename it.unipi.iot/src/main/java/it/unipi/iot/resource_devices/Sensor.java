@@ -10,8 +10,8 @@ import it.unipi.iot.server.ResourceDeviceHandler;
 
 public class Sensor extends ResourceDevice{
 
-	protected int max_observations = 10;
-	protected int []observed_values;
+	protected static final int MAX_OBSERVATIONS = 5;
+	protected int []observedValues;
 	protected int index = 0;
 	
 	//Count the number of obs above/under thresholds
@@ -26,7 +26,7 @@ public class Sensor extends ResourceDevice{
 		super(hostAddress, deviceType, resourceType, observable);
 		
 		//set vector dimension
-		observed_values = new int[max_observations];
+		observedValues = new int[MAX_OBSERVATIONS];
 		
 	}
 	
@@ -40,7 +40,7 @@ public class Sensor extends ResourceDevice{
 	}
 	
 	public int[] getLastObservations() {
-		return observed_values;
+		return observedValues;
 	}
 	
 	public float getLastAvgObservation() {
@@ -49,9 +49,9 @@ public class Sensor extends ResourceDevice{
 			return 0;
 		}
 		int avg = 0;
-		for(int i = 0; i < max_observations; i++)
-			avg += observed_values[i];
-		return avg/max_observations;
+		for(int i = 0; i < MAX_OBSERVATIONS; i++)
+			avg += observedValues[i];
+		return avg/MAX_OBSERVATIONS;
 	}
 	
 	public void observeResource() {
@@ -65,13 +65,13 @@ public class Sensor extends ResourceDevice{
 							
 	
 							//read and store the value in the array
-							observed_values[index] = responseJSON.getInt(resourceType);
+							observedValues[index] = responseJSON.getInt(resourceType);
 						
 							
 							//System.out.println("res: " + resourceType + ", Value: " + observed_values[index]);
 							
 							//update the index
-							index = (index+1)%max_observations;
+							index = (index+1)%MAX_OBSERVATIONS;
 							
 							//check if the array become full
 							if(!full && index == 0)
@@ -105,16 +105,14 @@ public class Sensor extends ResourceDevice{
 									
 								}
 								//check if under/above tolerance
-								//if(observed_values[index] > max_threshold) {
+								
 								if(getLastAvgObservation() != 0 && getLastAvgObservation() > max_threshold) {
-									//above++;
-									//System.out.println(resourceType + ": Observed Value :" + observed_values[index] + ", above counter: " + above);
-									//if(above == 5) {
+									
 										
 										//Temperature too high, switch off the lights
 										if(resourceType.compareTo("temperature")==0) {
 											
-											System.out.println("Switch off lights in area " + area);
+											//System.out.println("Switch off lights in area " + area);
 											
 											new Thread() {
 												public void run() {
@@ -129,7 +127,7 @@ public class Sensor extends ResourceDevice{
 										//Humidity too high, switch off the sprinklers	
 										}else if(resourceType.compareTo("humidity")==0) {
 											
-											System.out.println("Switch off sprinklers in area " + area);
+											//System.out.println("Switch off sprinklers in area " + area);
 											
 											new Thread() {
 												public void run() {
@@ -142,19 +140,16 @@ public class Sensor extends ResourceDevice{
 											
 										}
 										
-										//above = 0;
-									//}
+										
 								}
 								
-								//if(observed_values[index] < min_threshold) {
+								
 								if(getLastAvgObservation() != 0 && getLastAvgObservation() < min_threshold) {
-									//below++;
-									//System.out.println(resourceType + ": Observed Value :" + observed_values[index] + ", below counter: " + below);
-									//if(below == 5) {
+									
 										
 										//Temperature too low, switch on the lights
 										if(resourceType.compareTo("temperature")==0) {
-											System.out.println("Switch on lights in area " + area);
+											//System.out.println("Switch on lights in area " + area);
 											
 											new Thread() {
 												public void run() {
@@ -168,7 +163,7 @@ public class Sensor extends ResourceDevice{
 											
 										//Humidity too low, switch on the sprinklers	
 										}else if(resourceType.compareTo("humidity")==0) {
-											System.out.println("Switch on sprinklers in area " + area);
+											//System.out.println("Switch on sprinklers in area " + area);
 											new Thread() {
 												public void run() {
 													if(handler.setAreaSprinklerStatus(area, "ON") > 0) {
@@ -179,18 +174,10 @@ public class Sensor extends ResourceDevice{
 											}.start();
 											
 										}
-										//below = 0;
-									//}
+									
 								}
 							}	
-							/*
-							//update the index
-							index = (index+1)%max_observations;
 							
-							//check if the array become full
-							if(!full && index == 0)
-								full = true;
-							*/
 							
 							
 						}
