@@ -95,7 +95,7 @@ static void res_post_put_handler(coap_message_t *request, coap_message_t *respon
 	}
 
 	pay_len = coap_get_payload(request, message);
-	LOG_INFO("Message received: %s\n", (char *)*message);
+	//LOG_INFO("Message received: %s\n", (char *)*message);
 
 	
 	if(pay_len > 0){
@@ -105,32 +105,32 @@ static void res_post_put_handler(coap_message_t *request, coap_message_t *respon
 
 			//Take the variable
 			split = strtok((char*)*message, "=");
-			if((split && strcmp(split, "increase") == 0) || (split && strcmp(split, "decrease") == 0)){
+			if((split != NULL && strcmp(split, "increase") == 0) || (split != NULL && strcmp(split, "decrease") == 0)){
 				variation_mode = split;
-				printf("variation_mode: %s\n", variation_mode);
+				
 			}
 
 			//Take the value
 			split = strtok(NULL, "=");
-			if(split && isdigit(split)){
+			if(split != NULL){
 				value = atoi(split);
-				printf("value: %d\n", value);
+				
 			}
 
-			/*
+			
 			//Payload lenght wrong!
 			if(pay_len != strlen(variation_mode) + strlen(split) + 1){
 				variation_mode = NULL;
 				value = 0;
 			}
-			*/
+			
 
 
 		}
 
-	LOG_INFO("Variation Type: %s, Value: %s\n", variation_mode, value);
-
-	/*
+	LOG_INFO("Variation Type: %s, Value: %d\n", variation_mode, value);
+	free(message);
+	
 	if(variation_mode != NULL && value != 0){	
 		if(strcmp(variation_mode, "increase") == 0) {
 			min_hum_value += value;
@@ -146,13 +146,16 @@ static void res_post_put_handler(coap_message_t *request, coap_message_t *respon
 	
 			LOG_DBG("Max and Min humidity decreased\n");
 		}
-		LOG_INFO("New Max: %s, New Min: %s\n", max_hum_value, min_hum_value);
+		LOG_INFO("New Max: %d, New Min: %d\n", max_hum_value, min_hum_value);
 
 	}
+
+	if(good_req)
+		coap_set_status_code(response, CHANGED_2_04);
 
 	if(!good_req)
 		coap_set_status_code(response, BAD_REQUEST_4_00);
 	
-	*/
+	
 
 }
