@@ -116,9 +116,8 @@ public class Sensor extends ResourceDevice{
 											
 											new Thread() {
 												public void run() {
-													if(handler.setAreaLightStatus(area, "OFF") > 0) {
-														if(!handler.editSensorMinMax(id, false, true))
-															System.out.println("Error in changing the range");
+													if(handler.setAreaLightStatus(area, "OFF") < 0) {
+														System.out.println("Error during the POST");
 													}
 												}
 											}.start();
@@ -131,9 +130,8 @@ public class Sensor extends ResourceDevice{
 											
 											new Thread() {
 												public void run() {
-													if(handler.setAreaSprinklerStatus(area, "OFF") > 0) {
-														if(!handler.editSensorMinMax(id, false, true))
-															System.out.println("Error in changing the range");
+													if(handler.setAreaSprinklerStatus(area, "OFF") < 0) {
+														System.out.println("Error during the POST");
 													}
 												}
 											}.start();
@@ -153,9 +151,8 @@ public class Sensor extends ResourceDevice{
 											
 											new Thread() {
 												public void run() {
-													if(handler.setAreaLightStatus(area, "ON") > 0) {
-														if(!handler.editSensorMinMax(id, true, false))
-															System.out.println("Error in changing the range");
+													if(handler.setAreaLightStatus(area, "ON") < 0) {
+														System.out.println("Error during the POST");
 													}
 												}
 											}.start();
@@ -166,9 +163,8 @@ public class Sensor extends ResourceDevice{
 											//System.out.println("Switch on sprinklers in area " + area);
 											new Thread() {
 												public void run() {
-													if(handler.setAreaSprinklerStatus(area, "ON") > 0) {
-														if(!handler.editSensorMinMax(id, true, false))
-															System.out.println("Error in changing the range");
+													if(handler.setAreaSprinklerStatus(area, "ON") < 0) {
+														System.out.println("Error during the POST");
 													}
 												}
 											}.start();

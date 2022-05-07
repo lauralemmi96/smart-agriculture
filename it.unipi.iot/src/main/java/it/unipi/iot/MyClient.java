@@ -257,6 +257,21 @@ public class MyClient {
 		System.out.println("");
 	}
 	
+	private static boolean showAreasInfo() {
+		System.out.println("Available areas: ");
+		for(String areaId: handler.getIdArea().keySet()) {
+			System.out.print("[ ");
+			handler.getIdArea().get(areaId).printAreaInfo();
+			System.out.println(" ]");
+		}
+		System.out.println("");
+		
+		if(handler.getIdArea().keySet().size() == 0)
+			return false;
+		return true;
+		
+	}
+	
 	
 /*
  * 
@@ -404,20 +419,6 @@ public class MyClient {
 		}
 	}
 	
-	private static boolean showAreasInfo() {
-		System.out.println("Available areas: ");
-		for(String areaId: handler.getIdArea().keySet()) {
-			System.out.print("[ ");
-			handler.getIdArea().get(areaId).printAreaInfo();
-			System.out.println(" ]");
-		}
-		System.out.println("");
-		
-		if(handler.getIdArea().keySet().size() == 0)
-			return false;
-		return true;
-		
-	}
 	
 	private static void switchAreaMode() {
 		
@@ -449,12 +450,68 @@ public class MyClient {
 		
 					
 			} catch(IOException e) {
+				
 				e.printStackTrace();
 			}
 		}else {
 			return;
 		}
 			
+		System.out.println("");
+	}
+	
+	private static void editAreaThreshold() {
+		
+		if(showAreaInfo()) {
+			
+			try {
+				
+				System.out.print("Type the area where management mode will be changed: ");
+				
+				
+				String area = reader.readLine();
+				
+				if(handler.getIdArea().get(area) == null) {
+					System.out.println("Error! Area Id present in the system");
+					return;
+				}
+				
+				Area area = handler.getIdArea().get(area);
+				
+				System.out.print("Insert max temperature tolerated in this area: ");
+				int max_t = Integer.valueOf(reader.readLine());
+				
+				System.out.print("Insert min temperature tolerated in this area: ");
+				int min_t = Integer.valueOf(reader.readLine());
+				
+				System.out.print("Insert max humidity tolerated in this area: ");
+				int max_h = Integer.valueOf(reader.readLine());
+				
+				System.out.print("Insert min humidity tolerated in this area: ");
+				int min_h = Integer.valueOf(reader.readLine());
+				
+				if((max_t < min_t) || (max_h < min_h)) {
+					System.out.println("Error in typing parameters. No modification done\n");
+					return null;
+				}
+				
+				area.setMaxTemp(max_t);
+				area.setMinTemp(min_t);
+				area.setMaxHum(max_h);
+				area.setMinHum(min_h);
+				
+				System.out.println("Modifications done");
+				
+				
+			}catch(IOException e) {
+				
+				e.printStackTrace();
+			}
+			
+			
+		}else
+			return;
+		
 		System.out.println("");
 	}
 	

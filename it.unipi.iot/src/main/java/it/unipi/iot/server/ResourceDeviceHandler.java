@@ -40,7 +40,7 @@ public class ResourceDeviceHandler {
 	static final int DEFAULT_AREA_MAX_HUM = 100;
 	static final int DEFAULT_AREA_MIN_HUM = 0;
 	
-	//Areas List 
+	/* DATA STRUCTURES FOR AREAS */
 	protected HashMap<String, Area> idArea = new HashMap<String, Area>();
 	protected HashMap<Area, ArrayList<ResourceDevice>> areas = new HashMap<Area, ArrayList<ResourceDevice>>();
 
@@ -352,6 +352,8 @@ public class ResourceDeviceHandler {
 
 		int howMany = 0;
 		int result = 0;
+		boolean increase = status.compareTo("ON") ? true : false;
+		boolean decrease = status.compareTo("OFF") ? true : false;
 		
 		if(areas.containsKey(idArea.get(area))) {
 			ArrayList<ResourceDevice> device = areas.get(idArea.get(area));
@@ -365,6 +367,14 @@ public class ResourceDeviceHandler {
 						howMany += result;
 				}
 					
+			}
+			if(howMany > 0) {
+				for(ResourceDevice d: device) {
+					if(d.getResourceType().compareTo("humidity") == 0) {
+						if(!editSensorMinMax(d.getId(), increase, decrease))
+							return -1;
+					}
+				}
 			}
 		}
 
@@ -410,6 +420,8 @@ public class ResourceDeviceHandler {
 		
 		int howMany = 0;
 		int result = 0;
+		boolean increase = status.compareTo("ON") ? true : false;
+		boolean decrease = status.compareTo("OFF") ? true : false;
 		
 		if(areas.containsKey(idArea.get(area))) {
 			ArrayList<ResourceDevice> device = areas.get(idArea.get(area));
@@ -423,6 +435,14 @@ public class ResourceDeviceHandler {
 						howMany += result;
 				}
 					
+			}
+			if(howMany > 0) {
+				for(ResourceDevice d: device) {
+					if(d.getResourceType().compareTo("temperature") == 0) {
+						if(!editSensorMinMax(d.getId(), increase, decrease))
+							return -1;
+					}
+				}
 			}
 		}
 		
@@ -514,6 +534,11 @@ public class ResourceDeviceHandler {
 		if(!areas.containsKey(idArea.get(area))) {
 			System.out.println("The area " + area + " does not exist. Start creation.");
 			Area area_obj = generateArea(area);
+			
+			if(area_obj == null) {
+				System.out.println("Error in generating the area\n");
+				return;
+			}
 			ArrayList<ResourceDevice> list = new ArrayList<>();
 			list.add(rd);
 			areas.put(area_obj, list);
@@ -652,13 +677,18 @@ public class ResourceDeviceHandler {
 				System.out.print("Insert min humidity tolerated in this area: ");
 				int min_h = Integer.valueOf(reader.readLine());
 				
+				if((max_t < min_t) || (max_h < min_h)) {
+					System.out.println("Error in typing parameters\n");
+					return null;
+				}
+					
+				
 				Area area = new Area(id, max_t, min_t, max_h, min_h);
 				idArea.put(id, area);
 				
 				return area;
 				
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

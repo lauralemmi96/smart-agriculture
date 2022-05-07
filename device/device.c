@@ -26,7 +26,7 @@ extern coap_resource_t res_light;
 static struct etimer e_timer;	//Timer
 char *reg_service_url = "/registration";	//Resource URL for registration
 static bool registration_status = false;
-static int device_type = 0;	//0: sensor;	1: actuator
+static int device_type = 0;	//0: sensor;	1: actuator;	2: both
 
 
 /* Declare and auto-start this file's process */
@@ -40,7 +40,6 @@ AUTOSTART_PROCESSES(&device_process);
 
 void client_chunk_handler(coap_message_t *response) {
  
-	//const uint8_t *chunk;
 	if(response == NULL) { 
 		printf("Request timed out\n"); 
 		return;
@@ -48,8 +47,6 @@ void client_chunk_handler(coap_message_t *response) {
 
 	registration_status = true;
 
-	//int len = coap_get_payload(response, &chunk);
-	//LOG_DBG("RESPONSE LEN: %i\nCONTENT: %s\n", len, chunk); 
 
 }
 
@@ -64,6 +61,7 @@ PROCESS_THREAD(device_process, ev, data){
 
 	/*	Get device type from command line and activate the related resources	*/
 	while(1){
+		printf("\nType the kind of device you want to deploy: \"sensor\", \"actuator\", \"\"\n");
 		PROCESS_WAIT_EVENT_UNTIL(ev == serial_line_event_message);
 		if(strcmp(data, "sensor") == 0){
 			//No led needed
@@ -81,6 +79,22 @@ PROCESS_THREAD(device_process, ev, data){
 			coap_activate_resource(&res_sprinkler, "sprinkler");
 			coap_activate_resource(&res_light, "light");
 			//Activate RED led - sprinkler && light off 
+			leds_set(LEDS_NUM_TO_MASK(LEDS_RED));
+			break;
+		}
+		else if(strcmp(data, "") == 0){
+			device_type = 2;
+
+			/*	Resource activation	*/
+
+			//sensors
+			coap_activate_resource(&res_humidity, "humidity");
+			coap_activate_resource(&res_temp, "temperature");
+
+			//actuators
+			coap_activate_resource(&res_sprinkler, "sprinkler");
+			coap_activate_resource(&res_light, "light");
+			//Activate RED led - sprinkler && light off
 			leds_set(LEDS_NUM_TO_MASK(LEDS_RED));
 			break;
 		}
@@ -110,10 +124,10 @@ PROCESS_THREAD(device_process, ev, data){
 		PROCESS_WAIT_EVENT();
 		if(ev == PROCESS_EVENT_TIMER){
 		    //printf("Triggered resource observation\n");
-		  	if(device_type == 0){
+		  	if((device_type == 0) || (device_type == 2)){
 				res_humidity.trigger();
 				res_temp.trigger();
-			}else{
+			}else if((device_type == 1) || (device_type == 2)){
 				res_sprinkler.trigger();
 				res_light.trigger();
 			}
