@@ -117,7 +117,7 @@ static void res_post_put_handler(coap_message_t *request, coap_message_t *respon
 
 	if(var != NULL && new_status != NULL){	
 		if(strcmp(new_status, "ON") == 0 && !sprinkler_status) {
-			good_req = true;
+
 			sprinkler_status = true;
 
 			//check light status
@@ -131,7 +131,7 @@ static void res_post_put_handler(coap_message_t *request, coap_message_t *respon
 			
 			LOG_DBG("Sprinkler switched ON\n");		
 		}else if(strcmp(new_status, "OFF") == 0 && sprinkler_status) {
-			good_req = true;
+
 			sprinkler_status = false;
 
 			//check light status
@@ -143,7 +143,8 @@ static void res_post_put_handler(coap_message_t *request, coap_message_t *respon
 				leds_set(LEDS_NUM_TO_MASK(LEDS_RED));
 
 			LOG_DBG("Sprinkler switched OFF\n");
-		}	
+		}
+		good_req = true;	
 	}
 
 	if(good_req)

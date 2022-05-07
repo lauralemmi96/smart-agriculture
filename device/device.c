@@ -61,7 +61,7 @@ PROCESS_THREAD(device_process, ev, data){
 
 	/*	Get device type from command line and activate the related resources	*/
 	while(1){
-		printf("\nType the kind of device you want to deploy: \"sensor\", \"actuator\", \"\"\n");
+		printf("\nType the kind of device you want to deploy: \"sensor\", \"actuator\", \"both\"\n");
 		PROCESS_WAIT_EVENT_UNTIL(ev == serial_line_event_message);
 		if(strcmp(data, "sensor") == 0){
 			//No led needed
@@ -82,7 +82,7 @@ PROCESS_THREAD(device_process, ev, data){
 			leds_set(LEDS_NUM_TO_MASK(LEDS_RED));
 			break;
 		}
-		else if(strcmp(data, "") == 0){
+		else if(strcmp(data, "both") == 0){
 			device_type = 2;
 
 			/*	Resource activation	*/

@@ -139,18 +139,18 @@ static void res_post_put_handler(coap_message_t *request, coap_message_t *respon
 		if(strcmp(variation_mode, "increase") == 0) {
 			min_temp_value += value;
 			max_temp_value += value;
-			good_req = true;
+			
 			
 			LOG_DBG("Max and Min temperature increased\n");	
 	
 		}else if(strcmp(variation_mode, "decrease") == 0) {
 			min_temp_value -= value;
 			max_temp_value -= value;
-			good_req = true;
+			
 	
 			LOG_DBG("Max and Min temperature decreased\n");
 		}	
-		
+		good_req = true;
 		LOG_INFO("New Max: %d, New Min: %d\n", max_temp_value, min_temp_value);
 		
 	}

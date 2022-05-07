@@ -7,6 +7,8 @@ public class Area {
 	protected int minTemp = 0;
 	protected int maxHum = 0;
 	protected int minHum = 0;
+	protected String sprinklersStatus = "OFF";
+	protected String lightsStatus = "OFF";
 	protected boolean autoManage = false;
 	
 	
@@ -67,6 +69,23 @@ public class Area {
 	public void setAutoManage(boolean autoManage) {
 		this.autoManage = autoManage;
 	}
+	
+	public String getSprinklersStatus() {
+		return sprinklersStatus;
+	}
+
+	public void setSprinklersStatus(String sprinklersStatus) {
+		this.sprinklersStatus = sprinklersStatus;
+	}
+
+	public String getLightsStatus() {
+		return lightsStatus;
+	}
+
+	public void setLightsStatus(String lightsStatus) {
+		this.lightsStatus = lightsStatus;
+	}
+
 	
 	public void printAreaInfo() {
 		System.out.print("Area: " + this.getId() + ", AutoMode: " + this.isAutoManage() + 

@@ -339,8 +339,10 @@ public class ResourceDeviceHandler {
 		if(!response.getCode().toString().startsWith("2")) {
 			System.out.println("Error code: " + response.getCode().toString());
 			return -1;
-		}else
+		}else {
+			sprinklers.get(id).setStatus(newStatus);
 			System.out.println("Sprinkler " + id + " set to " + newStatus);
+		}
 		return 1;
 		
 		
@@ -352,8 +354,8 @@ public class ResourceDeviceHandler {
 
 		int howMany = 0;
 		int result = 0;
-		boolean increase = status.compareTo("ON") ? true : false;
-		boolean decrease = status.compareTo("OFF") ? true : false;
+		boolean increase = (status.compareTo("ON") == 0) ? true : false;
+		boolean decrease = (status.compareTo("OFF") == 0) ? true : false;
 		
 		if(areas.containsKey(idArea.get(area))) {
 			ArrayList<ResourceDevice> device = areas.get(idArea.get(area));
@@ -376,6 +378,7 @@ public class ResourceDeviceHandler {
 					}
 				}
 			}
+			idArea.get(area).setSprinklersStatus(status);
 		}
 
 		return howMany;
@@ -406,8 +409,10 @@ public class ResourceDeviceHandler {
 		if(!response.getCode().toString().startsWith("2")) {
 			System.out.println("Error code: " + response.getCode().toString());
 			return -1;
-		}else
+		}else {
+			lights.get(id).setStatus(newStatus);
 			System.out.println("Light " + id + " set to " + newStatus);
+		}
 		
 		return 1;
 		
@@ -420,8 +425,8 @@ public class ResourceDeviceHandler {
 		
 		int howMany = 0;
 		int result = 0;
-		boolean increase = status.compareTo("ON") ? true : false;
-		boolean decrease = status.compareTo("OFF") ? true : false;
+		boolean increase = (status.compareTo("ON") == 0) ? true : false;
+		boolean decrease = (status.compareTo("OFF") == 0) ? true : false;
 		
 		if(areas.containsKey(idArea.get(area))) {
 			ArrayList<ResourceDevice> device = areas.get(idArea.get(area));
@@ -444,6 +449,7 @@ public class ResourceDeviceHandler {
 					}
 				}
 			}
+			idArea.get(area).setLightsStatus(status);
 		}
 		
 		return howMany;
@@ -498,6 +504,20 @@ public class ResourceDeviceHandler {
 		ResourceDevice rd = idDeviceMap.get(id);
 		if(rd != null) {
 			addResourceArea(rd, area);
+			
+			//if sprinkler I switch the resource based on the area
+			if(rd.getResourceType().compareTo("sprinkler") == 0) {
+				String status = idArea.get(rd.getArea()).getSprinklersStatus();
+				if(setSprinklerStatus(rd.getId(), status) < 0)
+					System.out.println("Error in changing the sprinkler status accordingly to the area");
+			}
+			
+			//if light I switch the resource based on the area
+			if(rd.getResourceType().compareTo("light") == 0) {
+				String status = idArea.get(rd.getArea()).getLightsStatus();
+				if(setLightStatus(rd.getId(), status) < 0)
+					System.out.println("Error in changing the sprinkler status accordingly to the area");
+			}
 			find = true;
 		}
 		
@@ -515,25 +535,21 @@ public class ResourceDeviceHandler {
 	//Add the resource to the area
 	public void addResourceArea(ResourceDevice rd, String area) {
 		
-		
+		Area old = null;
 			
-		//If a area was already set, remove the device from that list.
+		//If a area was already set, take the area. If no error, the device will be removed from that list.
 		if(rd.getArea() != null) {
-			areas.get(idArea.get(rd.getArea())).remove(rd);
-			
-			//If the area remains empty remove it 
-			//if(areas.get(idArea.get(rd.getArea())).isEmpty() && area.compareTo("default")!= 0)
-			if(areas.get(idArea.get(rd.getArea())).isEmpty())
-				areas.remove(idArea.get(rd.getArea()));
+			old = idArea.get(rd.getArea());
 		}
 		
 		
-		rd.setArea(area);
-
-		
 		if(!areas.containsKey(idArea.get(area))) {
 			System.out.println("The area " + area + " does not exist. Start creation.");
-			Area area_obj = generateArea(area);
+			Area area_obj = null;
+			if(idArea.containsKey(area))
+				area_obj = idArea.get(area);
+			else
+				area_obj = generateArea(area);
 			
 			if(area_obj == null) {
 				System.out.println("Error in generating the area\n");
@@ -551,7 +567,21 @@ public class ResourceDeviceHandler {
 			
 		}
 		
+		rd.setArea(area);
 		System.out.println("Device Area set to: \"" +rd.getArea() + "\" for resource: " + rd.getResourceType());
+		
+		//If a area was already set, remove the device from that list.
+		if(old != null) {
+			areas.get(old).remove(rd);
+			
+			//If the area remains empty remove it 
+			//if(areas.get(idArea.get(rd.getArea())).isEmpty() && area.compareTo("default")!= 0)
+			if(areas.get(old).isEmpty()){
+				areas.remove(old);
+				if(old.getId().compareTo("default") != 0)
+					idArea.remove(old.getId());
+			}
+		}
 				
 		
 	}
@@ -605,7 +635,12 @@ public class ResourceDeviceHandler {
 				d.add(rd);
 				areas.put(def, d);
 			}else {
-				areas.get(def).add(rd);
+				if(!areas.containsKey(def)) {
+					ArrayList<ResourceDevice> d = new ArrayList<ResourceDevice>();
+					d.add(rd);
+					areas.put(def, d);
+				}else
+					areas.get(def).add(rd);
 			}
 			
 			

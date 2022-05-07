@@ -113,6 +113,10 @@ public class MyClient {
 						switchAreaMode();
 						break;
 						
+					case "!editAreaThreshold":
+						editAreaThreshold();
+						break;
+						
 					default:
 						System.out.println("Command not defined\n");
 						break;
@@ -163,6 +167,8 @@ public class MyClient {
 		System.out.println("!setDeviceArea		-->	Set the area the device belongs to");
 		System.out.println("!removeDeviceArea		-->	Remove the area the device belongs to");
 		System.out.println("!switchAreaMode		-->	Set the management mode of an area");
+		System.out.println("!editAreaThreshold		-->	Modify the min/max thresholds for temp and humidity");
+		
 
 		
 		
@@ -462,7 +468,7 @@ public class MyClient {
 	
 	private static void editAreaThreshold() {
 		
-		if(showAreaInfo()) {
+		if(showAreasInfo()) {
 			
 			try {
 				
@@ -476,7 +482,7 @@ public class MyClient {
 					return;
 				}
 				
-				Area area = handler.getIdArea().get(area);
+				Area area_obj = handler.getIdArea().get(area);
 				
 				System.out.print("Insert max temperature tolerated in this area: ");
 				int max_t = Integer.valueOf(reader.readLine());
@@ -492,13 +498,13 @@ public class MyClient {
 				
 				if((max_t < min_t) || (max_h < min_h)) {
 					System.out.println("Error in typing parameters. No modification done\n");
-					return null;
+					return;
 				}
 				
-				area.setMaxTemp(max_t);
-				area.setMinTemp(min_t);
-				area.setMaxHum(max_h);
-				area.setMinHum(min_h);
+				area_obj.setMaxTemp(max_t);
+				area_obj.setMinTemp(min_t);
+				area_obj.setMaxHum(max_h);
+				area_obj.setMinHum(min_h);
 				
 				System.out.println("Modifications done");
 				
