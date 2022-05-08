@@ -12,7 +12,8 @@
 int min_temp_value =	5;
 int max_temp_value =	25;
 int temp_value = 10;
-static unsigned int accept = -1;
+static unsigned int get_accept = -1;
+//static unsigned int post_accept = -1;
 
 static void res_get_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
 static void res_post_put_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
@@ -44,9 +45,9 @@ static void res_get_handler(coap_message_t *request, coap_message_t *response, u
 	char response_message[COAP_MAX_CHUNK_SIZE];
 	temp_value = (rand() % (max_temp_value - min_temp_value + 1)) + min_temp_value;
 
-	coap_get_header_accept(request, &accept);
+	coap_get_header_accept(request, &get_accept);
 	
-	if(accept == APPLICATION_JSON){
+	if(get_accept == APPLICATION_JSON){
 
 		coap_set_header_content_format(response, APPLICATION_JSON);
 		

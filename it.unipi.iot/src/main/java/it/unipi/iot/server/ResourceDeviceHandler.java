@@ -9,6 +9,7 @@ import java.util.HashMap;
 import org.eclipse.californium.core.CoapClient;
 import org.eclipse.californium.core.CoapResponse;
 import org.eclipse.californium.core.coap.MediaTypeRegistry;
+import org.json.JSONObject;
 
 import it.unipi.iot.resource_devices.Actuator;
 import it.unipi.iot.resource_devices.Area;
@@ -330,10 +331,13 @@ public class ResourceDeviceHandler {
 			return 0;
 		}
 		//Prepare post payload
-		String requestAttribute = "status=" + newStatus;
+		//String requestAttribute = "status=" + newStatus;
+		JSONObject json = new JSONObject();
+		json.put("status", newStatus);
 		
 		//send post request
-		CoapResponse response = c.post(requestAttribute, MediaTypeRegistry.TEXT_PLAIN);
+		//CoapResponse response = c.post(requestAttribute, MediaTypeRegistry.TEXT_PLAIN);
+		CoapResponse response = c.post(json.toString(), MediaTypeRegistry.APPLICATION_JSON);
 		 
 		//Check the return code: Success 2.xx
 		if(!response.getCode().toString().startsWith("2")) {
@@ -400,10 +404,13 @@ public class ResourceDeviceHandler {
 		}
 		
 		//Prepare post payload
-		String requestAttribute = "status=" + newStatus;
+		//String requestAttribute = "status=" + newStatus;
+		JSONObject json = new JSONObject();
+		json.put("status", newStatus);
 		
 		//send post request
-		CoapResponse response = c.post(requestAttribute, MediaTypeRegistry.TEXT_PLAIN);
+		//CoapResponse response = c.post(requestAttribute, MediaTypeRegistry.TEXT_PLAIN);
+		CoapResponse response = c.post(json.toString(), MediaTypeRegistry.APPLICATION_JSON);
 		
 		//Check the return code: Success 2.xx
 		if(!response.getCode().toString().startsWith("2")) {
