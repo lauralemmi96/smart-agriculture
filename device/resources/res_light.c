@@ -71,15 +71,15 @@ static void res_get_handler(coap_message_t *request, coap_message_t *response, u
 static void res_post_put_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset){
 
 
-	coap_get_header_accept(request, &post_accept);
-
-	if(post_accept == APPLICATION_JSON){
-
-		if(request == NULL){
+	if(request == NULL){
 
 			LOG_INFO("[LIGHT]: Empty request\n");
 			return;
 		}
+
+	coap_get_header_accept(request, &post_accept);
+
+	if(post_accept == APPLICATION_JSON){
 
 		size_t pay_len = 0;
 		char *new_status = NULL;

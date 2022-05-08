@@ -12,8 +12,8 @@
 int min_temp_value =	5;
 int max_temp_value =	25;
 int temp_value = 10;
-static unsigned int get_accept = -1;
-//static unsigned int post_accept = -1;
+static unsigned int get_accept = APPLICATION_JSON;
+static unsigned int post_accept = APPLICATION_JSON;
 
 static void res_get_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
 static void res_post_put_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
@@ -64,10 +64,7 @@ static void res_get_handler(coap_message_t *request, coap_message_t *response, u
 	    	coap_set_payload(response, msg, strlen(msg));
 	}
 	
-	//coap_set_header_content_format(response, TEXT_PLAIN);
-	//coap_set_payload(response, buffer, snprintf((char *)buffer, preferred_size, "TEMPERATURE: %i\n", temp_value));
 	
-
 }
 
 
@@ -82,85 +79,105 @@ static void res_post_put_handler(coap_message_t *request, coap_message_t *respon
 		return;
 	}
 
-	size_t pay_len = 0;
-	const char *variation_mode = NULL;
-	int value = 0;
-	bool good_req = false;
-
-	const uint8_t **message;
-	message = malloc(request->payload_len);
-
-	if(message == NULL){
-		LOG_INFO("[TEMP]: Empty payload\n");
-		return;
-	}
-
-	pay_len = coap_get_payload(request, message);
-	//LOG_INFO("Message received: %s\n", (char *)*message);
-
+	coap_get_header_accept(request, &post_accept);
 	
-	if(pay_len > 0){
-		
-		//Splitting the payload
-		char *split;
+	if(post_accept == APPLICATION_JSON){
 
-		//Take the variable
-		split = strtok((char*)*message, "=");
+		size_t pay_len = 0;
+		char *variation_mode = NULL;
+		int value = 0;
+		bool good_req = false;
+
+		const uint8_t **message;
+		message = malloc(request->payload_len);
+
+		if(message == NULL){
+			LOG_INFO("[TEMP]: Empty payload\n");
+			return;
+		}
+
+		pay_len = coap_get_payload(request, message);
+		LOG_INFO("Message received: %s\n", (char *)*message);
+
 		
+		if(pay_len > 0){
+			
+			//Splitting the payload
+			char *split;
+
+			//Take the variable
+			split = strtok((char*)*message, ":");	//	{"increase" / {"decrease"
+			const char* start = split + 2;
+			const char* end = split + strlen(split)-1;
+			size_t size = end - start;
+
+			if(size == 0) {
+				LOG_INFO("Size equal to 0.\n");
+				return;
+			} else {
+				variation_mode = malloc(size);
+				strncpy(variation_mode, start, size);
+				variation_mode[size] = '\0';
+			}
+
+			
+			//Take the value
+			split = strtok(NULL, "=");	//	1} / 2} / 5}
+
+			start = split;
+			end = split + strlen(split) - 1;
+			size = end - start;
+			
+			if(size == 0) {
+				LOG_INFO("Size equal to 0.\n");
+				return;
+			} else {
+				char *new_value = malloc(size);
+				strncpy(new_value, start, size);
+				new_value[size] = '\0';
+				value = atoi(new_value);
+			}
+
+			
+
+		}		
+
+		LOG_INFO("Variation Type: %s, Value: %d\n", variation_mode, value);
+		free(message);
 		
-		if((split != NULL && strcmp(split, "increase") == 0) || (split != NULL && strcmp(split, "decrease") == 0)){
-			variation_mode = split;
+		if(variation_mode != NULL && value != 0){
+				
+			if(strcmp(variation_mode, "increase") == 0) {
+				min_temp_value += value;
+				max_temp_value += value;
+				
+				
+				LOG_DBG("Max and Min temperature increased\n");	
+		
+			}else if(strcmp(variation_mode, "decrease") == 0) {
+				min_temp_value -= value;
+				max_temp_value -= value;
+				
+		
+				LOG_DBG("Max and Min temperature decreased\n");
+			}	
+			good_req = true;
+			LOG_INFO("New Max: %d, New Min: %d\n", max_temp_value, min_temp_value);
 			
 		}
 
-		//Take the value
-		split = strtok(NULL, "=");
-		
-		if(split != NULL){
-			value = atoi(split);
-			
-		}	
+		if(good_req)
+			coap_set_status_code(response, CHANGED_2_04);
 
-		
-		//Payload lenght wrong!
-		if(pay_len != strlen(variation_mode) + strlen(split) + 1){
-			variation_mode = NULL;
-			value = 0;
-		}
-		
-
-
-	}
-
-	LOG_INFO("Variation Type: %s, Value: %d\n", variation_mode, value);
-	free(message);
-	
-	if(variation_mode != NULL && value != 0){
-			
-		if(strcmp(variation_mode, "increase") == 0) {
-			min_temp_value += value;
-			max_temp_value += value;
-			
-			
-			LOG_DBG("Max and Min temperature increased\n");	
-	
-		}else if(strcmp(variation_mode, "decrease") == 0) {
-			min_temp_value -= value;
-			max_temp_value -= value;
-			
-	
-			LOG_DBG("Max and Min temperature decreased\n");
-		}	
-		good_req = true;
-		LOG_INFO("New Max: %d, New Min: %d\n", max_temp_value, min_temp_value);
-		
-	}
-
-	if(good_req)
+		if(!good_req)
+			coap_set_status_code(response, BAD_REQUEST_4_00);	
 		coap_set_status_code(response, CHANGED_2_04);
-
-	if(!good_req)
-		coap_set_status_code(response, BAD_REQUEST_4_00);
+	
+	}else{
+		coap_set_status_code(response, NOT_ACCEPTABLE_4_06);
+	   	const char *msg = "Supported content-types:application/json";
+	    	coap_set_payload(response, msg, strlen(msg));
+	}
 	
 	
 
