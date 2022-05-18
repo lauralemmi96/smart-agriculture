@@ -362,6 +362,7 @@ public class ResourceDeviceHandler {
 		boolean decrease = (status.compareTo("OFF") == 0) ? true : false;
 		
 		if(areas.containsKey(idArea.get(area))) {
+			System.out.println("Set Sprinklers of area " + area + " to " + status);
 			ArrayList<ResourceDevice> device = areas.get(idArea.get(area));
 			for(ResourceDevice d: device) {
 				result = 0;
@@ -383,6 +384,10 @@ public class ResourceDeviceHandler {
 				}
 			}
 			idArea.get(area).setSprinklersStatus(status);
+			if(howMany == 0)
+				System.out.println("Sprinklers of area " + area + " are already " + status);
+			
+			System.out.println("");
 		}
 
 		return howMany;
@@ -436,6 +441,7 @@ public class ResourceDeviceHandler {
 		boolean decrease = (status.compareTo("OFF") == 0) ? true : false;
 		
 		if(areas.containsKey(idArea.get(area))) {
+			System.out.println("Set Lights of area " + area + " to " + status);
 			ArrayList<ResourceDevice> device = areas.get(idArea.get(area));
 			for(ResourceDevice d: device) {
 				result = 0;
@@ -457,6 +463,10 @@ public class ResourceDeviceHandler {
 				}
 			}
 			idArea.get(area).setLightsStatus(status);
+			if(howMany == 0)
+				System.out.println("Lights of area " + area + " are already " + status);
+			
+			System.out.println("");
 		}
 		
 		return howMany;
@@ -586,7 +596,6 @@ public class ResourceDeviceHandler {
 			areas.get(old).remove(rd);
 			
 			//If the area remains empty remove it 
-			//if(areas.get(idArea.get(rd.getArea())).isEmpty() && area.compareTo("default")!= 0)
 			if(areas.get(old).isEmpty()){
 				areas.remove(old);
 				if(old.getId().compareTo("default") != 0)
@@ -712,17 +721,44 @@ public class ResourceDeviceHandler {
 			try {
 				
 				System.out.print("Insert max temperature tolerated in this area: ");
-				int max_t = Integer.valueOf(reader.readLine());
-				
+				int max_t = 0;
+				try{
+					max_t = Integer.parseInt(reader.readLine());
+				} catch(NumberFormatException e) {
+					System.out.println("The input must be a number\n");
+					return null;
+				}
+			        
+			    
 				System.out.print("Insert min temperature tolerated in this area: ");
-				int min_t = Integer.valueOf(reader.readLine());
-				
+				int min_t = 0;
+				try{
+					min_t = Integer.parseInt(reader.readLine());
+				} catch(NumberFormatException e) {
+					System.out.println("The input must be a number\n");
+					return null;
+				}
+			        
+			    
 				System.out.print("Insert max humidity tolerated in this area: ");
-				int max_h = Integer.valueOf(reader.readLine());
-				
+				int max_h = 0;
+				try{
+					max_h = Integer.parseInt(reader.readLine());
+				} catch(NumberFormatException e) {
+					System.out.println("The input must be a number\n");
+					return null;
+				}
+			        
+			    
 				System.out.print("Insert min humidity tolerated in this area: ");
-				int min_h = Integer.valueOf(reader.readLine());
-				
+				int min_h = 0;
+				try{
+					min_h = Integer.parseInt(reader.readLine());
+				} catch(NumberFormatException e) {
+					System.out.println("The input must be a number\n");
+					return null;
+				}
+			   
 				if((max_t < min_t) || (max_h < min_h)) {
 					System.out.println("Error in typing parameters\n");
 					return null;

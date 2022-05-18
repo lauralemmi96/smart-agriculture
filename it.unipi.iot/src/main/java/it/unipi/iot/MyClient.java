@@ -385,7 +385,16 @@ public class MyClient {
 		try {
 			String id = reader.readLine();
 			
-			if(!handler.getDevice(Integer.valueOf(id))) {
+			int deviceID = 0;
+			try{
+				deviceID = Integer.parseInt(id);
+			} catch(NumberFormatException e) {
+				System.out.println("The input must be a number\\n");
+				return;
+			}
+		        
+		    
+			if(!handler.getDevice(deviceID)) {
 				System.out.println("Error! This is not a device id.\n ");
 				return;
 			}
@@ -393,11 +402,11 @@ public class MyClient {
 			System.out.println("Type the area");
 		
 			String area = reader.readLine().toLowerCase();
-			handler.addDeviceArea(Integer.valueOf(id), area);
+			handler.addDeviceArea(deviceID, area);
 			
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
+		} 
 
 		
 	}
@@ -413,16 +422,23 @@ public class MyClient {
 		try {
 			String id = reader.readLine();
 			
-			if(!handler.getDevice(Integer.valueOf(id))) {
+			int deviceID = 0;
+			try{
+				deviceID = Integer.parseInt(id);
+			} catch(NumberFormatException e) {
+				System.out.println("The input must be a number\\n");
+				return;
+			}
+			if(!handler.getDevice(deviceID)) {
 				System.out.println("Error! This is not a device id.\n ");
 				return;
 			}
 			
-			handler.removeDeviceArea(Integer.valueOf(id));
+			handler.removeDeviceArea(deviceID);
 			
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
+		} 
 	}
 	
 	
@@ -485,17 +501,45 @@ public class MyClient {
 				Area area_obj = handler.getIdArea().get(area);
 				
 				System.out.print("Insert max temperature tolerated in this area: ");
-				int max_t = Integer.valueOf(reader.readLine());
+				int max_t = 0;
+				try{
+					max_t = Integer.parseInt(reader.readLine());
+				} catch(NumberFormatException e) {
+					System.out.println("The input must be a number\\n");
+					return;
+				}
+			        
 				
 				System.out.print("Insert min temperature tolerated in this area: ");
-				int min_t = Integer.valueOf(reader.readLine());
-				
+				int min_t  = 0;
+				try{
+					min_t = Integer.parseInt(reader.readLine());
+				} catch(NumberFormatException e) {
+					System.out.println("The input must be a number\\n");
+					return;
+				}
+			        
+			  
 				System.out.print("Insert max humidity tolerated in this area: ");
-				int max_h = Integer.valueOf(reader.readLine());
-				
+				int max_h = 0;
+				try{
+					max_h = Integer.parseInt(reader.readLine());
+				} catch(NumberFormatException e) {
+					System.out.println("The input must be a number\\n");
+					return;
+				}
+			        
+			   
 				System.out.print("Insert min humidity tolerated in this area: ");
-				int min_h = Integer.valueOf(reader.readLine());
-				
+				int min_h = 0;
+				try{
+					min_h = Integer.parseInt(reader.readLine());
+				}catch(NumberFormatException e) {
+					System.out.println("The input must be a number\\n");
+					return;
+				}
+			        
+			    
 				if((max_t < min_t) || (max_h < min_h)) {
 					System.out.println("Error in typing parameters. No modification done\n");
 					return;
