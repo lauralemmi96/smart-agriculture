@@ -68,8 +68,6 @@ public class Sensor extends ResourceDevice{
 							observedValues[index] = responseJSON.getInt(resourceType);
 						
 							
-							//System.out.println("res: " + resourceType + ", Value: " + observed_values[index]);
-							
 							//update the index
 							index = (index+1)%MAX_OBSERVATIONS;
 							

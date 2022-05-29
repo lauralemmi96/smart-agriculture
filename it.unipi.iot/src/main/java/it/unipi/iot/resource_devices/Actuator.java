@@ -12,7 +12,7 @@ public class Actuator extends ResourceDevice{
 	
 	public Actuator(String hostAddress, String deviceType, String resourceType, boolean observable) {
 		super(hostAddress, deviceType, resourceType, observable);
-		// TODO Auto-generated constructor stub
+
 	}
 	
 	public String getStatus() {

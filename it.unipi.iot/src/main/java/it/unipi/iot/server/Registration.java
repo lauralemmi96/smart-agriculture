@@ -4,7 +4,9 @@ package it.unipi.iot.server;
 import org.eclipse.californium.core.CoapClient;
 import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.CoapResponse;
+import org.eclipse.californium.core.coap.CoAP.ResponseCode;
 import org.eclipse.californium.core.coap.MediaTypeRegistry;
+import org.eclipse.californium.core.coap.Response;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 
 import it.unipi.iot.resource_devices.Actuator;
@@ -21,7 +23,7 @@ public class Registration extends CoapResource{
 		
 		System.out.println("[SERVER]: Handling Registration Request");
 		
-		exchange.accept();
+		//exchange.accept();
 		
 
 		//	Get node address	 
@@ -63,9 +65,19 @@ public class Registration extends CoapResource{
 			
 		}
 		
-				
-		if(registered)
+			
+		Response accept = new Response(ResponseCode.CONTENT);
+		String payload = null;
+		if(registered) {
 			System.out.println("[SERVER]: Device Registered\n");
+
+			
+	        payload = "Accept";
+		}else {
+			payload = "Reject";
+		}
+	    accept.setPayload(payload);
+	    exchange.respond(accept);
 			
 		
 		

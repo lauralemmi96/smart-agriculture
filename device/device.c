@@ -44,9 +44,13 @@ void client_chunk_handler(coap_message_t *response) {
 		printf("Request timed out\n"); 
 		return;
 	}
-
-	registration_status = true;
-
+	const uint8_t *chunk;
+	coap_get_payload(response, &chunk);
+	printf("Received Response: %s\n", (char *)chunk);
+	if(strcmp( (char *)chunk, "Accept") == 0)
+		registration_status = true;
+	else
+		registration_status = false;
 
 }
 
@@ -115,7 +119,7 @@ PROCESS_THREAD(device_process, ev, data){
 		COAP_BLOCKING_REQUEST(&server_ep, request, client_chunk_handler);
 	}
 
-	printf("Registration status: %s\n", registration_status ? "true" : "false");
+	printf("Registration status: %s\n", registration_status ? "true" : "false");		
 	etimer_set(&e_timer, CLOCK_SECOND * REQ_INTERVAL);
 	
 

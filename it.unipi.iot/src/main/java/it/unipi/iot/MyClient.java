@@ -37,9 +37,7 @@ public class MyClient {
 		
 
 		System.out.println("Type \"!help\" to know the commands\n");
-		
-		//showCommands();
-		
+				
 		while(true) {
 			System.out.println("Type a command\n");
 			

@@ -331,12 +331,11 @@ public class ResourceDeviceHandler {
 			return 0;
 		}
 		//Prepare post payload
-		//String requestAttribute = "status=" + newStatus;
 		JSONObject json = new JSONObject();
 		json.put("status", newStatus);
 		
 		//send post request
-		//CoapResponse response = c.post(requestAttribute, MediaTypeRegistry.TEXT_PLAIN);
+		
 		CoapResponse response = c.post(json.toString(), MediaTypeRegistry.APPLICATION_JSON);
 		 
 		//Check the return code: Success 2.xx
@@ -409,12 +408,10 @@ public class ResourceDeviceHandler {
 		}
 		
 		//Prepare post payload
-		//String requestAttribute = "status=" + newStatus;
 		JSONObject json = new JSONObject();
 		json.put("status", newStatus);
 		
 		//send post request
-		//CoapResponse response = c.post(requestAttribute, MediaTypeRegistry.TEXT_PLAIN);
 		CoapResponse response = c.post(json.toString(), MediaTypeRegistry.APPLICATION_JSON);
 		
 		//Check the return code: Success 2.xx
@@ -484,17 +481,17 @@ public class ResourceDeviceHandler {
 		
 		int randomInt = (int)Math.floor(Math.random()*(MAX_VARIATION-MIN_VARIATION+1)+MIN_VARIATION);
 		
-		//String requestAttribute = null;
+		
 		JSONObject json = new JSONObject();
 		
 		//Prepare post payload
 		if(increase)
 			json.put("increase", randomInt);
-			//requestAttribute = "increase=" + randomInt;
+			
 		
 		if(decrease)
 			json.put("decrease", randomInt);
-			//requestAttribute = "decrease=" + randomInt;
+			
 		
 		//send post request
 		CoapResponse response = c.post(json.toString(), MediaTypeRegistry.APPLICATION_JSON);
