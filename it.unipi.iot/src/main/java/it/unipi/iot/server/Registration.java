@@ -1,6 +1,8 @@
 package it.unipi.iot.server;
 
 
+import java.util.ArrayList;
+
 import org.eclipse.californium.core.CoapClient;
 import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.CoapResponse;
@@ -10,6 +12,7 @@ import org.eclipse.californium.core.coap.Response;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 
 import it.unipi.iot.resource_devices.Actuator;
+import it.unipi.iot.resource_devices.ResourceDevice;
 import it.unipi.iot.resource_devices.Sensor;
 
 public class Registration extends CoapResource{
@@ -23,9 +26,7 @@ public class Registration extends CoapResource{
 		
 		System.out.println("[SERVER]: Handling Registration Request");
 		
-		//exchange.accept();
 		
-
 		//	Get node address	 
 		String source_address = exchange.getSourceAddress().getHostAddress();
 		System.out.println("SRC ADDR: " + source_address);
@@ -53,6 +54,7 @@ public class Registration extends CoapResource{
 
 		boolean registered = true;
 		
+		
 		String []fragment = responseText.split(",");
 		for(int i = 1; i < fragment.length; i++) {
 			
@@ -65,7 +67,7 @@ public class Registration extends CoapResource{
 			
 		}
 		
-			
+		//Prepare and set response to the node
 		Response accept = new Response(ResponseCode.CONTENT);
 		String payload = null;
 		if(registered) {
@@ -74,6 +76,10 @@ public class Registration extends CoapResource{
 			
 	        payload = "Accept";
 		}else {
+			
+			// REMOVE ALL THE ALREADY REGISTERED RESOURCE DEVICES FOR THE NODE
+			ResourceDeviceHandler handler = ResourceDeviceHandler.getInstance();
+			handler.removeDevicesAddress(source_address);
 			payload = "Reject";
 		}
 	    accept.setPayload(payload);
@@ -136,6 +142,15 @@ public class Registration extends CoapResource{
 			System.out.println("Resource: " + resType + ", Resource observable: " + observable);
 			registered = true;
 			
+			
+			if(handler.getAddressIDs().containsKey(sourceAddress))
+				handler.getAddressIDs().get(sourceAddress).add(myId);
+			else {
+				ArrayList<Integer> resIDs = new ArrayList<>();
+				resIDs.add(myId);
+				handler.getAddressIDs().put(sourceAddress, resIDs);
+			}
+			
 		}else if(deviceType.compareTo("actuator") == 0) {
 			
 			final Actuator actuator = new Actuator(sourceAddress, deviceType, resType, observable);
@@ -167,6 +182,14 @@ public class Registration extends CoapResource{
 			System.out.println("Resource: " + resType + ", Resource observable: " + observable);
 			
 			registered = true;
+			
+			if(handler.getAddressIDs().containsKey(sourceAddress))
+				handler.getAddressIDs().get(sourceAddress).add(myId);
+			else {
+				ArrayList<Integer> resIDs = new ArrayList<>();
+				resIDs.add(myId);
+				handler.getAddressIDs().put(sourceAddress, resIDs);
+			}
 		}
 		
 		
@@ -178,6 +201,7 @@ public class Registration extends CoapResource{
 		
 		
 	}
+	
 	
 	
 

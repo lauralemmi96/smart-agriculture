@@ -115,6 +115,14 @@ public class MyClient {
 						editAreaThreshold();
 						break;
 						
+					case "!removeDevice":
+						removeDevice();
+						break;
+					
+					case "!removeDevicesAddress":
+						removeDevicesAddress();
+						break;
+						
 					default:
 						System.out.println("Command not defined\n");
 						break;
@@ -166,6 +174,8 @@ public class MyClient {
 		System.out.println("!removeDeviceArea		-->	Remove the area the device belongs to");
 		System.out.println("!switchAreaMode		-->	Set the management mode of an area");
 		System.out.println("!editAreaThreshold		-->	Modify the min/max thresholds for temp and humidity");
+		System.out.println("!removeDevice		-->	Remove the device with given ID");
+		System.out.println("!removeDevicesAddress		-->	Remove the devices with given address");
 		
 
 		
@@ -562,6 +572,59 @@ public class MyClient {
 		
 		System.out.println("");
 	}
+	
+	//Remove a device
+	private static void removeDevice() {
+		
+		System.out.println("Available Devices: ");
+		handler.devicesList();
+		
+		System.out.println("\nType the ID of the device");
+	
+		try {
+			String id = reader.readLine();
+			
+			int deviceID = 0;
+			try{
+				deviceID = Integer.parseInt(id);
+			} catch(NumberFormatException e) {
+				System.out.println("The input must be a number\\n");
+				return;
+			}
+			if(!handler.getDevice(deviceID)) {
+				System.out.println("Error! This is not a device id.\n ");
+				return;
+			}
+			
+			handler.removeDevice(deviceID);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
+	}
+	
+	//Remove devices with given address
+		private static void removeDevicesAddress() {
+			
+			System.out.println("Available Devices: ");
+			handler.devicesList();
+			
+			System.out.println("\nType the address of the devices");
+		
+			try {
+				String address = reader.readLine();
+				
+				if(!handler.getAddressIDs().containsKey(address)) {
+					System.out.println("Error! This is not a device address.\n ");
+					return;
+				}
+				
+				handler.removeDevicesAddress(address);
+				
+			} catch (IOException e) {
+				e.printStackTrace();
+			} 
+		}
 	
 	
 	

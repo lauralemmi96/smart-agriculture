@@ -31,6 +31,7 @@ public class ResourceDeviceHandler {
 	protected HashMap<Integer, Sensor> tempSensors = new HashMap<Integer, Sensor>();		//ID - temp
 	protected HashMap<Integer, Sensor> humiditySensors = new HashMap<Integer, Sensor>();	//ID - humidity
 	protected HashMap<Integer, ResourceDevice> idDeviceMap = new HashMap<Integer, ResourceDevice>();	//id - Device
+	protected HashMap<String, ArrayList<Integer>> addressIDs = new HashMap<String, ArrayList<Integer>>();
 	
 	
 	/* CONSTATS DEFINITION */
@@ -114,10 +115,18 @@ public class ResourceDeviceHandler {
 
 	public HashMap<Integer,ResourceDevice> getIdDeviceMap(){
 		return this.idDeviceMap;
-	}
+	}	
 	
 	public void setIdDeviceMap(Integer id, ResourceDevice rd){
 		this.idDeviceMap.put(id, rd);
+	}
+	
+	public HashMap<String, ArrayList<Integer>> getAddressIDs() {
+		return addressIDs;
+	}
+
+	public void setAddressIDs(HashMap<String, ArrayList<Integer>> addressIDs) {
+		this.addressIDs = addressIDs;
 	}
 	
 	public HashMap<String, Area> getIdArea() {
@@ -401,7 +410,7 @@ public class ResourceDeviceHandler {
 
 		
 		
-		//Check if the new status is equal to the previuos one: in case no request sent
+		//Check if the new status is equal to the previous one: in case no request sent
 		if(newStatus.compareTo(lights.get(id).getStatus()) == 0) {
 			//System.out.println("The Light " + id + " is already " + newStatus);
 			return 0;
@@ -774,5 +783,63 @@ public class ResourceDeviceHandler {
 		return null;
 			
 	}
+	
+	
+	/*
+	 * REMOVE DEVICES
+	 */
+	
+	public void removeDevicesAddress(String address) {
+		
+		for(Integer id: this.addressIDs.get(address)) {
+			removeDevice(id);
+		}
+		
+		System.out.println("Removed devices with address: " + address);
+			
+	}
+	
+	
+	//remove device with given ID
+	public boolean removeDevice(Integer id) {
+		
+		ResourceDevice rd = idDeviceMap.get(id);
+		String address = rd.getHostAddress();
+		
+		switch(rd.getResourceType()) {
+		case "humidity":
+			removeDeviceArea(id);
+			humiditySensors.remove(id);
+			idDeviceMap.remove(id);
+			break;
+		case "temperature":
+			removeDeviceArea(id);
+			tempSensors.remove(id);
+			idDeviceMap.remove(id);
+			break;
+		case "sprinkler":
+			removeDeviceArea(id);
+			sprinklers.remove(id);
+			idDeviceMap.remove(id);
+			break;
+		case "light":
+			removeDeviceArea(id);
+			lights.remove(id);
+			idDeviceMap.remove(id);
+			break;
+		default:
+			return false;
+		}
+		
+		this.addressIDs.get(address).remove(id);
+		if(this.addressIDs.get(address).isEmpty())
+			this.addressIDs.remove(address);
+		
+		System.out.println("Device " + id + " removed\n");
+		return true;
+		
+	}
+
+	
 	
 }
