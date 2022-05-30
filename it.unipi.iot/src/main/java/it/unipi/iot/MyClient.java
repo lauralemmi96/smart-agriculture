@@ -59,6 +59,10 @@ public class MyClient {
 						getActuators();
 						break;
 						
+					case "!getAddressResources":
+						getAddressResources();
+						break;
+						
 					case "!getAreasList":
 						getAreasList();
 						break;
@@ -69,14 +73,6 @@ public class MyClient {
 						
 					case "!getAvgTemperature":
 						getAvgTemperature();
-						break;
-						
-					case "!getLastTemp":
-						getLastTemp();
-						break;
-					
-					case "!getLastHum":
-						getLastHum();
 						break;
 					
 					case "!getAvgHumidity":
@@ -115,12 +111,12 @@ public class MyClient {
 						editAreaThreshold();
 						break;
 						
-					case "!removeDevice":
-						removeDevice();
-						break;
-					
 					case "!removeDevicesAddress":
 						removeDevicesAddress();
+						break;
+						
+					case "!stop":
+						stop();
 						break;
 						
 					default:
@@ -144,7 +140,7 @@ public class MyClient {
 		
 		
 	}
-	
+
 
 	private static void showCommands() {
 		
@@ -157,10 +153,9 @@ public class MyClient {
 		
 		System.out.println("!getSensors 		-->	Get the list of registered sensors");
 		System.out.println("!getActuators 		-->	Get the list of registered actuators");	
-		System.out.println("!getAreasInfo			--> Get the list of areas and their info");
-		System.out.println("!getAreasList			--> Get the list of areas and their devices");
-		//System.out.println("!getLastTemp		-->	Get the list of the last temp measurements");
-		//System.out.println("!getLastHum		-->	Get the list of the last humidity measurements");
+		System.out.println("!getAddressResources	-->	Get the list of registered IDs with a given address");	
+		System.out.println("!getAreasInfo		-->	Get the list of areas and their info");
+		System.out.println("!getAreasList		-->	Get the list of areas and their devices");
 		System.out.println("!getAvgTemperature	-->	Get the Avg temperature of the last 10 measurements for all the sensors");
 		System.out.println("!getAvgHumidity		-->	Get the Avg humidity of the last 10 measurements for all the sensors");
 		System.out.println("!getSprinklerStatus	-->	Get the status of the sprinklers");
@@ -169,14 +164,15 @@ public class MyClient {
 		System.out.println("");
 		System.out.println("	--	POST COMMANDS	--	");
 		System.out.println("!setAreaSprinklerStatus	-->	Set the status of sprinklers in a area");
-		System.out.println("!setAreaLightStatus		-->	Set the status of lights in a area");
+		System.out.println("!setAreaLightStatus	-->	Set the status of lights in a area");
 		System.out.println("!setDeviceArea		-->	Set the area the device belongs to");
-		System.out.println("!removeDeviceArea		-->	Remove the area the device belongs to");
+		System.out.println("!removeDeviceArea	-->	Remove the area the device belongs to");
 		System.out.println("!switchAreaMode		-->	Set the management mode of an area");
-		System.out.println("!editAreaThreshold		-->	Modify the min/max thresholds for temp and humidity");
-		System.out.println("!removeDevice		-->	Remove the device with given ID");
-		System.out.println("!removeDevicesAddress		-->	Remove the devices with given address");
+		System.out.println("!editAreaThreshold	-->	Modify the min/max thresholds for temp and humidity");
+		System.out.println("!removeDevicesAddress	-->	Remove the devices with given address");
 		
+		System.out.println("");
+		System.out.println("!stop			-->	Stop the application");
 
 		
 		
@@ -219,21 +215,7 @@ public class MyClient {
 		handler.lightActuatorList();
 		System.out.println("");
 	}
-	
-	//For all the temp sensors, get the last (max 10) measurements
-	private static void getLastTemp() {
-		System.out.println("	--	Last Temperatures Detected	--	");
-		handler.getLastSensorsTemperatures();
-		System.out.println("");
-	}
-	
-	//For all the hum sensors, get the last (max 10) measurements
-	private static void getLastHum() {
-		System.out.println("	--	Last Humidities Detected	--	");
-		handler.getLastSensorsHumidities();
-		System.out.println("");
-	}
-	
+
 	//For all the temp sensors, get the avg of the last 10 measurements
 	private static void getAvgTemperature() {
 		
@@ -271,6 +253,7 @@ public class MyClient {
 		System.out.println("");
 	}
 	
+	//IT SHOWS THE INFO OF AN AREA (THRESHOLDS, MANAGEMENT MODE)
 	private static boolean showAreasInfo() {
 		System.out.println("Available areas: ");
 		for(String areaId: handler.getIdArea().keySet()) {
@@ -286,6 +269,29 @@ public class MyClient {
 		
 	}
 	
+	//IT SHOWS ALL THE RESOURCES WITH A GIVEN ADDRESS
+	private static void getAddressResources() {
+		
+		System.out.println("Available Devices: ");
+		handler.getAddressesList();;
+		
+		System.out.println("\nType the address of the devices");
+	
+		try {
+			//GET THE ADDRESS
+			String address = reader.readLine();
+			
+			if(!handler.getAddressIDs().containsKey(address)) {
+				System.out.println("Error! This is not a device address.\n ");
+				return;
+			}
+			
+			handler.getAddressIDs(address);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
+	}
 	
 /*
  * 
@@ -302,6 +308,7 @@ public class MyClient {
 		System.out.println("\nType the area of the sprinkler you want to switch");
 		
 		try {
+			//GET THE AREA ID
 			String area = reader.readLine();
 			boolean valid = true;
 			
@@ -310,6 +317,7 @@ public class MyClient {
 				return;
 			}	
 			
+			//GET THE NEW STATUS
 			System.out.println("Type the new status: ON or OFF");
 			
 			String status = reader.readLine().toUpperCase();
@@ -338,7 +346,7 @@ public class MyClient {
 		}
 	}
 	
-	//Get the status of the Lights within the area
+	//SET the status of the Lights within the area
 	private static void setAreaLightStatus() {
 		
 		System.out.println("Available Areas with Lights: ");
@@ -347,6 +355,7 @@ public class MyClient {
 		System.out.println("\nType the area of the lights you want to switch");
 		
 		try {
+			//GET THE AREA ID
 			String area = reader.readLine();
 			boolean valid = true;
 			
@@ -355,6 +364,7 @@ public class MyClient {
 				return;
 			}	
 			
+			//GET THE NEW STATUS
 			System.out.println("Type the new status: ON or OFF");
 			String status = reader.readLine().toUpperCase();
 			
@@ -390,6 +400,7 @@ public class MyClient {
 		
 		System.out.println("\nType the ID of the device");
 		
+		//Get the device ID and check the validity
 		try {
 			String id = reader.readLine();
 			
@@ -409,6 +420,7 @@ public class MyClient {
 			
 			System.out.println("Type the area");
 		
+			//Get area ID
 			String area = reader.readLine().toLowerCase();
 			handler.addDeviceArea(deviceID, area);
 			
@@ -419,6 +431,7 @@ public class MyClient {
 		
 	}
 	
+	//REMOVE DEVICE FROM GIVEN AREA
 	//Remove the area a device belongs to
 	private static void removeDeviceArea() {
 		
@@ -427,6 +440,7 @@ public class MyClient {
 		
 		System.out.println("\nType the ID of the device");
 	
+		//Get the Device ID and check the validity
 		try {
 			String id = reader.readLine();
 			
@@ -449,7 +463,9 @@ public class MyClient {
 		} 
 	}
 	
+	//GIVEN AN AREA IT ALLOWS TO SWITCH AUTO/MANUAL MANAGEMENT
 	
+	//SWITCH AREA MANAGEMENT MODE: AUTO/MANUAL
 	private static void switchAreaMode() {
 		
 		if(showAreasInfo()) {
@@ -490,6 +506,9 @@ public class MyClient {
 		System.out.println("");
 	}
 	
+	//GIVEN AN AREA IT ALLOWS TO CHANGE THE THRESHOLDS
+	
+	//EDIT THE AREA THRESHOLDS
 	private static void editAreaThreshold() {
 		
 		if(showAreasInfo()) {
@@ -553,6 +572,7 @@ public class MyClient {
 					return;
 				}
 				
+				//set the new values
 				area_obj.setMaxTemp(max_t);
 				area_obj.setMinTemp(min_t);
 				area_obj.setMaxHum(max_h);
@@ -573,60 +593,44 @@ public class MyClient {
 		System.out.println("");
 	}
 	
-	//Remove a device
-	private static void removeDevice() {
+	//Remove devices with given address
+	
+	//REMOVE AND UNREGISTER DEVICES WITH GIVEN ADDRESS
+	private static void removeDevicesAddress() {
 		
 		System.out.println("Available Devices: ");
 		handler.devicesList();
 		
-		System.out.println("\nType the ID of the device");
+		System.out.println("\nType the address of the devices");
 	
 		try {
-			String id = reader.readLine();
+			String address = reader.readLine();
 			
-			int deviceID = 0;
-			try{
-				deviceID = Integer.parseInt(id);
-			} catch(NumberFormatException e) {
-				System.out.println("The input must be a number\\n");
-				return;
-			}
-			if(!handler.getDevice(deviceID)) {
-				System.out.println("Error! This is not a device id.\n ");
+			if(!handler.getAddressIDs().containsKey(address)) {
+				System.out.println("Error! This is not a device address.\n ");
 				return;
 			}
 			
-			handler.removeDevice(deviceID);
+			handler.removeDevicesAddress(address);
 			
 		} catch (IOException e) {
 			e.printStackTrace();
 		} 
 	}
 	
-	//Remove devices with given address
-		private static void removeDevicesAddress() {
-			
-			System.out.println("Available Devices: ");
-			handler.devicesList();
-			
-			System.out.println("\nType the address of the devices");
+
+	//STOP THE APPLICATION
+	private static void stop() {
 		
-			try {
-				String address = reader.readLine();
-				
-				if(!handler.getAddressIDs().containsKey(address)) {
-					System.out.println("Error! This is not a device address.\n ");
-					return;
-				}
-				
-				handler.removeDevicesAddress(address);
-				
-			} catch (IOException e) {
-				e.printStackTrace();
-			} 
-		}
-	
-	
+		handler.removeAllDevices();
+		
+		System.out.println("Stopping the application...\n");
+		server.stop();
+		server.destroy();
+		System.exit(0);
+		
+	}
+
 	
 	
 	

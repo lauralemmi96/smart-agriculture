@@ -107,7 +107,7 @@ static void res_post_put_handler(coap_message_t *request, coap_message_t *respon
 			
 
 			//Take the variable
-			split = strtok((char*)*message, ":");	//	{"status"
+			split = strtok((char*)*message, ":");	//	{"status" 
 			const char* start = split + 2;
 			const char* end = split + strlen(split)-1;
 			size_t size = end - start;
@@ -122,6 +122,8 @@ static void res_post_put_handler(coap_message_t *request, coap_message_t *respon
 			}
 
 		
+
+
 			//Take the value
 			split = strtok(NULL, ":");	//"ON"} or "OFF"}
 			start = split + 1;
@@ -138,9 +140,7 @@ static void res_post_put_handler(coap_message_t *request, coap_message_t *respon
 			}
 
 			
-
 		}
-
 		LOG_INFO("VAR: %s, STATUS: %s\n", var, new_status);
 
 		
@@ -173,7 +173,9 @@ static void res_post_put_handler(coap_message_t *request, coap_message_t *respon
 
 				LOG_DBG("Sprinkler switched OFF\n");
 			}
-			good_req = true;	
+			good_req = true;
+				
+			
 		}
 
 		if(good_req)

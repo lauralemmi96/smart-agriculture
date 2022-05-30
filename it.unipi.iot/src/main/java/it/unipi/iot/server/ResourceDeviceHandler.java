@@ -43,8 +43,8 @@ public class ResourceDeviceHandler {
 	static final int DEFAULT_AREA_MIN_HUM = 0;
 	
 	/* DATA STRUCTURES FOR AREAS */
-	protected HashMap<String, Area> idArea = new HashMap<String, Area>();
-	protected HashMap<Area, ArrayList<ResourceDevice>> areas = new HashMap<Area, ArrayList<ResourceDevice>>();
+	protected HashMap<String, Area> idArea = new HashMap<String, Area>();	//Area ID - Area object
+	protected HashMap<Area, ArrayList<ResourceDevice>> areas = new HashMap<Area, ArrayList<ResourceDevice>>();	//Area - List of devices
 
 	private ResourceDeviceHandler()
     {
@@ -87,7 +87,6 @@ public class ResourceDeviceHandler {
 		humiditySensors.put(id, sensor);
 	}
 	
-	
 	public HashMap<Integer, Actuator> getSprinklers() {
 		return sprinklers;
 	}
@@ -103,7 +102,6 @@ public class ResourceDeviceHandler {
 	public HashMap<Integer, Sensor> getHumiditySensors() {
 		return humiditySensors;
 	}
-	
 	
 	public HashMap<Area, ArrayList<ResourceDevice>> getAreas(){
 		return areas;
@@ -123,10 +121,6 @@ public class ResourceDeviceHandler {
 	
 	public HashMap<String, ArrayList<Integer>> getAddressIDs() {
 		return addressIDs;
-	}
-
-	public void setAddressIDs(HashMap<String, ArrayList<Integer>> addressIDs) {
-		this.addressIDs = addressIDs;
 	}
 	
 	public HashMap<String, Area> getIdArea() {
@@ -198,6 +192,29 @@ public class ResourceDeviceHandler {
 		return false;
 	}
 
+	//PRINT ADDRESSES
+	public void getAddressesList() {
+		
+		System.out.print("[");
+		for(String addr: addressIDs.keySet()) {
+			System.out.print(" " + addr);
+		}
+		System.out.println(" ]\n");
+	}
+	
+	//PRINT THE LIST OF IDs FOR A GIVEN ADDRESS
+	public void getAddressIDs(String address){
+		
+		if(!addressIDs.containsKey(address))
+			System.out.println("[" + address + "]: []");
+		else
+			System.out.println("[" + address + "]:");
+		for(Integer id: addressIDs.get(address)) {
+			System.out.println("[ ID: " + id + ", Resource: " + idDeviceMap.get(id).getResourceType() + " ]");
+		}
+		
+	}
+	
 	// PRINT LIST OF AREAS
 	public void getAreasList() {
 		
@@ -321,7 +338,6 @@ public class ResourceDeviceHandler {
 		
 	}
 	
-
 	
 /*
  * 
@@ -401,8 +417,7 @@ public class ResourceDeviceHandler {
 		return howMany;
 
 	}
-	
-	
+
 	// SET STATUS OF A LIGHT 
 	public int setLightStatus(Integer id, String newStatus) {
 		
@@ -478,7 +493,6 @@ public class ResourceDeviceHandler {
 		return howMany;
 
 	}
-	
 
 	//Edit the range for generating temperature/humidity because light/sprinkler switched
 	public boolean editSensorMinMax(int id, boolean increase, boolean decrease) {
@@ -514,6 +528,31 @@ public class ResourceDeviceHandler {
 		return true;
 		
 	}
+	
+	//Unregister Device
+	public boolean unRegisterDevice(String address) {
+		
+		CoapClient c = new CoapClient("coap://[" + address + "]:5683/unregister");
+		
+		JSONObject json = new JSONObject();
+		
+		
+		json.put("unregister", "true");
+			
+		
+		//send post request
+		CoapResponse response = c.post(json.toString(), MediaTypeRegistry.APPLICATION_JSON);
+		
+		//Check the return code: Success 2.xx
+		if(!response.getCode().toString().startsWith("2")) {
+			System.out.println("Error code: " + response.getCode().toString());
+			return false;
+		}
+		
+		return true;
+		
+	}
+	
 	 
 	
 	/*
@@ -612,8 +651,6 @@ public class ResourceDeviceHandler {
 		
 	}
 	
-	
-	
 	//REMOVE DEVICE FROM AREA
 	public void removeDeviceArea(Integer id) {
 		
@@ -640,7 +677,7 @@ public class ResourceDeviceHandler {
 		//If a area was already set, remove the device from that list.
 		
 		String old = rd.getArea();
-		if(rd.getArea() != null) {
+		if(rd.getArea().compareTo("default") != 0) {
 			areas.get(idArea.get(old)).remove(rd);
 			
 			//If the area remains empty remove it 
@@ -675,7 +712,7 @@ public class ResourceDeviceHandler {
 			return;
 		}
 		
-		System.out.println("Resource Device " + rd.getResourceType() + ": Area was not set\n");
+		System.out.println("Resource Device " + rd.getResourceType() + ": was already in \"default\" area\n");
 		return;
 	}
 
@@ -717,7 +754,7 @@ public class ResourceDeviceHandler {
 		
 	}
 
-
+	// CREATE A NEW AREA
 	public Area generateArea(String id) {
 		if(!idArea.containsKey(id)) {
 			System.out.println("	--Generating Area " + id + "--	");
@@ -786,21 +823,36 @@ public class ResourceDeviceHandler {
 	
 	
 	/*
+	 * 
 	 * REMOVE DEVICES
+	 * 
 	 */
 	
-	public void removeDevicesAddress(String address) {
+	//REMOVE ALL DEVICES WITH GIVEN ADDRESS
+	public boolean removeDevicesAddress(String address) {
 		
-		for(Integer id: this.addressIDs.get(address)) {
-			removeDevice(id);
+		//I take all the IDs of the device with the given address
+		ArrayList<Integer> ids = new ArrayList<>();
+		for(Integer el: this.getAddressIDs().get(address))
+			ids.add(el);
+
+		
+		for(Integer id: ids) {
+			if(!removeDevice(id))
+				return false;
 		}
 		
+		ids.clear();
 		System.out.println("Removed devices with address: " + address);
+		
+		//Notify the device that has been unregistered from the application
+		if(unRegisterDevice(address))
+			System.out.println("Unregister devices with address: " + address + "\n");
+		return true;
 			
 	}
 	
-	
-	//remove device with given ID
+	//REMOVE DEVICE WITH A GIVE ID
 	public boolean removeDevice(Integer id) {
 		
 		ResourceDevice rd = idDeviceMap.get(id);
@@ -808,38 +860,68 @@ public class ResourceDeviceHandler {
 		
 		switch(rd.getResourceType()) {
 		case "humidity":
-			removeDeviceArea(id);
+			removeDeviceArea(id);	//remove from an area and put it in the default one
+			areas.get(idArea.get("default")).remove(rd);	//remove also from default area
 			humiditySensors.remove(id);
 			idDeviceMap.remove(id);
 			break;
 		case "temperature":
-			removeDeviceArea(id);
+			removeDeviceArea(id);	//remove from an area and put it in the default one
+			areas.get(idArea.get("default")).remove(rd);	//remove also from default area
 			tempSensors.remove(id);
 			idDeviceMap.remove(id);
 			break;
 		case "sprinkler":
-			removeDeviceArea(id);
+			setSprinklerStatus(id, "OFF");	//switch off before unregister
+			removeDeviceArea(id);	//remove from an area and put it in the default one
+			areas.get(idArea.get("default")).remove(rd);	//remove also from default area
 			sprinklers.remove(id);
 			idDeviceMap.remove(id);
 			break;
 		case "light":
-			removeDeviceArea(id);
+			setLightStatus(id, "OFF");	//switch off before unregister
+			removeDeviceArea(id);	//remove from an area and put it in the default one
+			areas.get(idArea.get("default")).remove(rd);	//remove also from default area
 			lights.remove(id);
 			idDeviceMap.remove(id);
 			break;
 		default:
+			System.out.println("Error in removing device " + id + "\n");
 			return false;
 		}
 		
-		this.addressIDs.get(address).remove(id);
-		if(this.addressIDs.get(address).isEmpty())
-			this.addressIDs.remove(address);
+		//Remove the ID for the list 
+		int index = this.getAddressIDs().get(address).indexOf(id);
+		this.getAddressIDs().get(address).remove(index);
+
 		
 		System.out.println("Device " + id + " removed\n");
+		
+		//remove the address from the map
+		if(this.getAddressIDs().get(address).isEmpty()) {
+			System.out.println("No more devices with the address: " + address + ". Remove it\n");
+			this.getAddressIDs().remove(address);
+		}
+		
 		return true;
 		
 	}
 
-	
+	//REMOVE ALL DEVICES
+	public boolean removeAllDevices() {
+		
+		System.out.println("Removing all the Devices...");
+		
+		ArrayList<String> addresses = new ArrayList<>();
+		for(String address: addressIDs.keySet())
+			addresses.add(address);
+		
+		for(String address: addresses)
+			if(!removeDevicesAddress(address))
+				return false;
+		
+		System.out.println("All devices have been unregistered and removed\n");
+		return true;
+	}
 	
 }

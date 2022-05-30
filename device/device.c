@@ -21,6 +21,9 @@ extern coap_resource_t res_humidity;
 extern coap_resource_t res_sprinkler;
 extern coap_resource_t res_temp;
 extern coap_resource_t res_light;
+extern coap_resource_t res_unregister;
+
+extern process_event_t UNREGISTER;
 
 
 static struct etimer e_timer;	//Timer
@@ -74,6 +77,7 @@ PROCESS_THREAD(device_process, ev, data){
 			/*	Resource activation	*/
 			coap_activate_resource(&res_humidity, "humidity");
 			coap_activate_resource(&res_temp, "temperature");
+			coap_activate_resource(&res_unregister, "unregister");
 			break;
 		}
 		else if(strcmp(data, "actuator") == 0){
@@ -82,6 +86,7 @@ PROCESS_THREAD(device_process, ev, data){
 			/*	Resource activation	*/
 			coap_activate_resource(&res_sprinkler, "sprinkler");
 			coap_activate_resource(&res_light, "light");
+			coap_activate_resource(&res_unregister, "unregister");
 			//Activate RED led - sprinkler && light off 
 			leds_set(LEDS_NUM_TO_MASK(LEDS_RED));
 			break;
@@ -100,34 +105,19 @@ PROCESS_THREAD(device_process, ev, data){
 			coap_activate_resource(&res_light, "light");
 			//Activate RED led - sprinkler && light off
 			leds_set(LEDS_NUM_TO_MASK(LEDS_RED));
+
+			coap_activate_resource(&res_unregister, "unregister");
 			break;
 		}
 	}
 
 	
-	/*	Node Registration	*/
-
-	// Populate the coap_endpoint_t data structure
-	coap_endpoint_parse(SERVER_EP, strlen(SERVER_EP), &server_ep);
-	// Prepare the message
-	coap_init_message(request, COAP_TYPE_CON, COAP_GET, 0);
-	coap_set_header_uri_path(request, reg_service_url);
-
-	//printf("SERVER_EP %s\nRequest: %s\n",server_ep, request); 
-	while(!registration_status){
-		LOG_INFO("Sending registration request to the server\n");
-		COAP_BLOCKING_REQUEST(&server_ep, request, client_chunk_handler);
-	}
-
-	printf("Registration status: %s\n", registration_status ? "true" : "false");		
-	etimer_set(&e_timer, CLOCK_SECOND * REQ_INTERVAL);
-	
+	printf("Type \"register\" for registering to the cloud application\n"); 
 
 	while(1){
 
-		PROCESS_WAIT_EVENT();
-		if(ev == PROCESS_EVENT_TIMER){
-		    //printf("Triggered resource observation\n");
+		PROCESS_WAIT_EVENT_UNTIL(ev == PROCESS_EVENT_TIMER || ev == UNREGISTER || ev == serial_line_event_message);
+		if(ev == PROCESS_EVENT_TIMER && registration_status){
 		  	if((device_type == 0) || (device_type == 2)){
 				res_humidity.trigger();
 				res_temp.trigger();
@@ -137,6 +127,34 @@ PROCESS_THREAD(device_process, ev, data){
 			}
 			
 			etimer_reset(&e_timer);
+		}
+		else if(ev == serial_line_event_message && !registration_status){
+			if(strcmp(data, "register") == 0){
+				/*	Node Registration	*/
+
+				// Populate the coap_endpoint_t data structure
+				coap_endpoint_parse(SERVER_EP, strlen(SERVER_EP), &server_ep);
+				// Prepare the message
+				coap_init_message(request, COAP_TYPE_CON, COAP_GET, 0);
+				coap_set_header_uri_path(request, reg_service_url);
+
+				while(!registration_status){
+					LOG_INFO("Sending registration request to the server\n");
+					COAP_BLOCKING_REQUEST(&server_ep, request, client_chunk_handler);
+				}
+
+				printf("Registration status: %s\n", registration_status ? "true" : "false");		
+				etimer_set(&e_timer, CLOCK_SECOND * REQ_INTERVAL);
+				
+
+			}
+		}
+		else if(ev == UNREGISTER){
+
+			registration_status = false;
+			etimer_stop(&e_timer);
+			printf("Registration status set to: %s\n", registration_status ? "true" : "false");
+			printf("\nType \"register\" for registering to the cloud application\n");
 		}
 	}
   	PROCESS_END();

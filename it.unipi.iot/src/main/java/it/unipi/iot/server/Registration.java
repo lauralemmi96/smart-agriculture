@@ -108,9 +108,13 @@ public class Registration extends CoapResource{
 		
 		ResourceDeviceHandler handler = ResourceDeviceHandler.getInstance();
 
-		//	Switch sensor/actuator. I instantiate a Sensor/Actuator. 
+		//	Switch sensor/actuator/unregister. I instantiate a Sensor/Actuator. 
 		//	Add it to the data structure base on the res
-		if(deviceType.compareTo("sensor") == 0) {
+		if(deviceType.compareTo("unregister") == 0) {
+			System.out.println("Resource: " + resType + ", Resource observable: " + observable);
+			return true;
+		}
+		else if(deviceType.compareTo("sensor") == 0) {
 			
 			
 			final Sensor sensor = new Sensor(sourceAddress, deviceType, resType, observable);
@@ -191,6 +195,10 @@ public class Registration extends CoapResource{
 				handler.getAddressIDs().put(sourceAddress, resIDs);
 			}
 		}
+		
+		System.out.print("Address: " + sourceAddress + " IDs:");
+		for(Integer id: handler.getAddressIDs().get(sourceAddress))
+			System.out.print(" " + id);
 		
 		
 		

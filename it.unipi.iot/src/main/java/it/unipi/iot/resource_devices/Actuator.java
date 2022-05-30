@@ -39,7 +39,7 @@ public class Actuator extends ResourceDevice{
 							
 						}
 							public void onError() {
-								System.err.println("--- Orbservation Failed ---"); 
+								System.err.println("--- Observation Failed ---"); 
 							}
 					}, MediaTypeRegistry.APPLICATION_JSON);
 			
