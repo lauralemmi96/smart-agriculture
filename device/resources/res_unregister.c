@@ -8,7 +8,9 @@
 #define LOG_MODULE "Sprinkler"
 #define LOG_LEVEL LOG_LEVEL_APP
 
+//DEFINE EVENT UNREGISTER
 process_event_t UNREGISTER;
+//take the process where the event must be posted
 extern struct process device_process;
 
 static unsigned int post_accept = APPLICATION_JSON;
@@ -40,7 +42,7 @@ static void res_post_put_handler(coap_message_t *request, coap_message_t *respon
 
 
 	coap_get_header_accept(request, &post_accept);
-	
+	//Handler only JSON format request
 	if(post_accept == APPLICATION_JSON){
 		
 		size_t pay_len = 0;
@@ -81,12 +83,12 @@ static void res_post_put_handler(coap_message_t *request, coap_message_t *respon
 				var[size] = '\0';
 			}
 
-		
+			//I don't care the value
 
 			//UNREGISTER DEVICE
 			if(strcmp(var, "unregister") == 0){
 
-
+				//POST THE EVENT
 				process_post(&device_process, UNREGISTER, NULL);
 				good_req = true;
 				
@@ -94,7 +96,7 @@ static void res_post_put_handler(coap_message_t *request, coap_message_t *respon
 			}
 			
 		}
-
+		//send response
 		if(good_req)
 			coap_set_status_code(response, CHANGED_2_04);
 

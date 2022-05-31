@@ -55,9 +55,11 @@ public class Registration extends CoapResource{
 		boolean registered = true;
 		
 		
+		//Take each resource
 		String []fragment = responseText.split(",");
 		for(int i = 1; i < fragment.length; i++) {
 			
+			//for each, register in the application
 			if(!deviceRegistration(source_address, fragment[i])) {
 				System.out.println("Error in registering a resource\n");
 				registered = false;
@@ -72,12 +74,12 @@ public class Registration extends CoapResource{
 		String payload = null;
 		if(registered) {
 			System.out.println("[SERVER]: Device Registered\n");
-
 			
 	        payload = "Accept";
 		}else {
 			
-			// REMOVE ALL THE ALREADY REGISTERED RESOURCE DEVICES FOR THE NODE
+			// Registration of one or mode resources failed. 
+			//REMOVE ALL THE ALREADY REGISTERED RESOURCE DEVICES FOR THE NODE
 			ResourceDeviceHandler handler = ResourceDeviceHandler.getInstance();
 			handler.removeDevicesAddress(source_address);
 			payload = "Reject";
@@ -110,10 +112,13 @@ public class Registration extends CoapResource{
 
 		//	Switch sensor/actuator/unregister. I instantiate a Sensor/Actuator. 
 		//	Add it to the data structure base on the res
+		
+		//This is the unregister resource. Not necessary to be stored in the system
 		if(deviceType.compareTo("unregister") == 0) {
 			System.out.println("Resource: " + resType + ", Resource observable: " + observable);
 			return true;
 		}
+		//Sensor device
 		else if(deviceType.compareTo("sensor") == 0) {
 			
 			
@@ -132,9 +137,12 @@ public class Registration extends CoapResource{
 			else if(resType.compareTo("temperature") == 0)
 				handler.addTempSens(myId, sensor);
 			
+			//Add in the map: id - sensor
 			handler.setIdDeviceMap(myId, sensor);
+			//Put device in default area
 			handler.addResourceArea(sensor, "default");
 			
+			//If the resource is observable, start observing.
 			if(observable) {
 				new Thread() {
 					public void run() {
@@ -146,7 +154,7 @@ public class Registration extends CoapResource{
 			System.out.println("Resource: " + resType + ", Resource observable: " + observable);
 			registered = true;
 			
-			
+			//Add the deviceID in the list related to its address  
 			if(handler.getAddressIDs().containsKey(sourceAddress))
 				handler.getAddressIDs().get(sourceAddress).add(myId);
 			else {
@@ -155,7 +163,9 @@ public class Registration extends CoapResource{
 				handler.getAddressIDs().put(sourceAddress, resIDs);
 			}
 			
-		}else if(deviceType.compareTo("actuator") == 0) {
+		}
+		//Actuator
+		else if(deviceType.compareTo("actuator") == 0) {
 			
 			final Actuator actuator = new Actuator(sourceAddress, deviceType, resType, observable);
 			
@@ -166,15 +176,17 @@ public class Registration extends CoapResource{
 			handler.setDeviceID(myId);
 			
 			
-//			add the actuator in the ResourceDeviceHandler map
+			//add the actuator in the ResourceDeviceHandler map
 			if(resType.compareTo("sprinkler") == 0)
 				handler.addSprinklers(myId, actuator);
 			else if(resType.compareTo("light") == 0)
 				handler.addLights(myId, actuator);
 			
 			handler.setIdDeviceMap(myId, actuator);
+			//put the resource in the default area
 			handler.addResourceArea(actuator, "default");
 			
+			//If observable then start to observe
 			if(observable)
 				new Thread() {
 				public void run() {
@@ -187,6 +199,7 @@ public class Registration extends CoapResource{
 			
 			registered = true;
 			
+			//Add the deviceID in the IDs list of its address
 			if(handler.getAddressIDs().containsKey(sourceAddress))
 				handler.getAddressIDs().get(sourceAddress).add(myId);
 			else {

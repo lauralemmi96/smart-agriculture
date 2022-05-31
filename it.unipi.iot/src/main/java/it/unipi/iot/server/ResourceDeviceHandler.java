@@ -31,7 +31,8 @@ public class ResourceDeviceHandler {
 	protected HashMap<Integer, Sensor> tempSensors = new HashMap<Integer, Sensor>();		//ID - temp
 	protected HashMap<Integer, Sensor> humiditySensors = new HashMap<Integer, Sensor>();	//ID - humidity
 	protected HashMap<Integer, ResourceDevice> idDeviceMap = new HashMap<Integer, ResourceDevice>();	//id - Device
-	protected HashMap<String, ArrayList<Integer>> addressIDs = new HashMap<String, ArrayList<Integer>>();
+	protected HashMap<String, ArrayList<Integer>> addressIDs = new HashMap<String, ArrayList<Integer>>();	//address - List of IDs
+	
 	
 	
 	/* CONSTATS DEFINITION */
@@ -48,6 +49,7 @@ public class ResourceDeviceHandler {
 
 	private ResourceDeviceHandler()
     {
+		//Create the "default" area and set its parameters
 		Area area = new Area("default", DEFAULT_AREA_MAX_TEMP, DEFAULT_AREA_MIN_TEMP, DEFAULT_AREA_MAX_HUM, DEFAULT_AREA_MIN_HUM);
         this.idArea.put("default", area);
         ArrayList<ResourceDevice> devices = new ArrayList<ResourceDevice>();
@@ -55,6 +57,7 @@ public class ResourceDeviceHandler {
       
     }
 	
+	//Get the instance of ResourceDeviceHandler. Only one instance atomically shared between everyone
 	public static ResourceDeviceHandler getInstance(){
 		if (singleInstance == null) {
             singleInstance = new ResourceDeviceHandler();
@@ -388,6 +391,7 @@ public class ResourceDeviceHandler {
 		if(areas.containsKey(idArea.get(area))) {
 			System.out.println("Set Sprinklers of area " + area + " to " + status);
 			ArrayList<ResourceDevice> device = areas.get(idArea.get(area));
+			//For each sprinkler in the area I call setSprinklerStatus to set the status
 			for(ResourceDevice d: device) {
 				result = 0;
 				if(d.getResourceType().compareTo("sprinkler") == 0) {
@@ -399,6 +403,7 @@ public class ResourceDeviceHandler {
 				}
 					
 			}
+			//Only if at least one sprinkler in the area changes its status then the humidity ranges are changed
 			if(howMany > 0) {
 				for(ResourceDevice d: device) {
 					if(d.getResourceType().compareTo("humidity") == 0) {
@@ -407,6 +412,7 @@ public class ResourceDeviceHandler {
 					}
 				}
 			}
+			//For that area I change the status of its sprinklers
 			idArea.get(area).setSprinklersStatus(status);
 			if(howMany == 0)
 				System.out.println("Sprinklers of area " + area + " are already " + status);
@@ -464,6 +470,7 @@ public class ResourceDeviceHandler {
 		if(areas.containsKey(idArea.get(area))) {
 			System.out.println("Set Lights of area " + area + " to " + status);
 			ArrayList<ResourceDevice> device = areas.get(idArea.get(area));
+			//For each light in the area I call setLightStatus to set the status
 			for(ResourceDevice d: device) {
 				result = 0;
 				if(d.getResourceType().compareTo("light") == 0) {
@@ -475,6 +482,7 @@ public class ResourceDeviceHandler {
 				}
 					
 			}
+			//Only if at least one light in the area changes its status then the temperature ranges are changed
 			if(howMany > 0) {
 				for(ResourceDevice d: device) {
 					if(d.getResourceType().compareTo("temperature") == 0) {
@@ -612,9 +620,11 @@ public class ResourceDeviceHandler {
 		if(!areas.containsKey(idArea.get(area))) {
 			System.out.println("The area " + area + " does not exist. Start creation.");
 			Area area_obj = null;
-			if(idArea.containsKey(area))
+			
+			
+			if(idArea.containsKey(area))	//Area already exists
 				area_obj = idArea.get(area);
-			else
+			else							//Area must be created
 				area_obj = generateArea(area);
 			
 			if(area_obj == null) {
@@ -677,7 +687,7 @@ public class ResourceDeviceHandler {
 		//If a area was already set, remove the device from that list.
 		
 		String old = rd.getArea();
-		if(rd.getArea().compareTo("default") != 0) {
+		if(rd.getArea().compareTo("default") != 0) {	//If is already in default area, do nothing
 			areas.get(idArea.get(old)).remove(rd);
 			
 			//If the area remains empty remove it 
@@ -836,7 +846,7 @@ public class ResourceDeviceHandler {
 		for(Integer el: this.getAddressIDs().get(address))
 			ids.add(el);
 
-		
+		//For each device, I remove it
 		for(Integer id: ids) {
 			if(!removeDevice(id))
 				return false;
@@ -862,27 +872,27 @@ public class ResourceDeviceHandler {
 		case "humidity":
 			removeDeviceArea(id);	//remove from an area and put it in the default one
 			areas.get(idArea.get("default")).remove(rd);	//remove also from default area
-			humiditySensors.remove(id);
+			humiditySensors.remove(id);		//remove from humiditySens map
 			idDeviceMap.remove(id);
 			break;
 		case "temperature":
 			removeDeviceArea(id);	//remove from an area and put it in the default one
 			areas.get(idArea.get("default")).remove(rd);	//remove also from default area
-			tempSensors.remove(id);
+			tempSensors.remove(id);		//remove from tempSensors map
 			idDeviceMap.remove(id);
 			break;
 		case "sprinkler":
 			setSprinklerStatus(id, "OFF");	//switch off before unregister
 			removeDeviceArea(id);	//remove from an area and put it in the default one
 			areas.get(idArea.get("default")).remove(rd);	//remove also from default area
-			sprinklers.remove(id);
+			sprinklers.remove(id);		//remove from sprinklers map
 			idDeviceMap.remove(id);
 			break;
 		case "light":
 			setLightStatus(id, "OFF");	//switch off before unregister
 			removeDeviceArea(id);	//remove from an area and put it in the default one
 			areas.get(idArea.get("default")).remove(rd);	//remove also from default area
-			lights.remove(id);
+			lights.remove(id);			//remove from light map
 			idDeviceMap.remove(id);
 			break;
 		default:
@@ -891,7 +901,7 @@ public class ResourceDeviceHandler {
 		}
 		
 		//Remove the ID for the list 
-		int index = this.getAddressIDs().get(address).indexOf(id);
+		int index = this.getAddressIDs().get(address).indexOf(id);	//take the index position
 		this.getAddressIDs().get(address).remove(index);
 
 		
@@ -912,14 +922,17 @@ public class ResourceDeviceHandler {
 		
 		System.out.println("Removing all the Devices...");
 		
+		//I take all the devices addresses in the system
 		ArrayList<String> addresses = new ArrayList<>();
 		for(String address: addressIDs.keySet())
 			addresses.add(address);
 		
+		//For each address, I call the remove function
 		for(String address: addresses)
 			if(!removeDevicesAddress(address))
 				return false;
 		
+		addresses.clear();
 		System.out.println("All devices have been unregistered and removed\n");
 		return true;
 	}

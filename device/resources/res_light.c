@@ -43,12 +43,14 @@ static void res_get_handler(coap_message_t *request, coap_message_t *response, u
 	char response_message[COAP_MAX_CHUNK_SIZE];
 
 	coap_get_header_accept(request, &get_accept);
+	//Handler only JSON format
 	if(get_accept == APPLICATION_JSON){
 		
 		coap_set_header_content_format(response, APPLICATION_JSON);
-		
+		//take the status
 		int len = snprintf(response_message, COAP_MAX_CHUNK_SIZE, "{\"light\":%s}", light_status ? "ON" : "OFF");
 		if(len > 0){
+			//prepare the message
 			memcpy(buffer, (uint8_t*)response_message, len);
             		coap_set_payload(response, buffer, len); 
 		}else
@@ -58,9 +60,6 @@ static void res_get_handler(coap_message_t *request, coap_message_t *response, u
 	   	const char *msg = "Supported content-types:application/json";
 	    	coap_set_payload(response, msg, strlen(msg));
 	}
-	
-	//coap_set_header_content_format(response, TEXT_PLAIN);
-	//coap_set_payload(response, buffer, snprintf((char *)buffer, preferred_size, "LIGHT STATUS: %s\n", light_status ? "ON" : "OFF"));
 	
 
 }
@@ -138,7 +137,9 @@ static void res_post_put_handler(coap_message_t *request, coap_message_t *respon
 
 		LOG_INFO("VAR: %s, STATUS: %s\n", var, new_status);
 
-		if(var != NULL && new_status != NULL){	
+		//Check if variable and new_status are not null
+		if(var != NULL && new_status != NULL){
+			//SET NEW STATUS AND CHANGE THE LEDS
 			if(strcmp(new_status, "ON") == 0 && !light_status) {
 
 				light_status = true;
@@ -169,7 +170,7 @@ static void res_post_put_handler(coap_message_t *request, coap_message_t *respon
 			good_req = true;
 
 		}
-
+		//Send the response
 		if(good_req)
 			coap_set_status_code(response, CHANGED_2_04);
 

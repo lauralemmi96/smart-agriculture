@@ -43,6 +43,7 @@ public class Sensor extends ResourceDevice{
 		return observedValues;
 	}
 	
+	//The average is computed only when the observation vector is full
 	public float getLastAvgObservation() {
 		if(!full) {
 			System.out.println("Wait some time, not enough observations made yet");
@@ -109,9 +110,7 @@ public class Sensor extends ResourceDevice{
 										
 										//Temperature too high, switch off the lights
 										if(resourceType.compareTo("temperature")==0) {
-											
-											//System.out.println("Switch off lights in area " + area);
-											
+		
 											new Thread() {
 												public void run() {
 													if(handler.setAreaLightStatus(area, "OFF") < 0) {
@@ -124,7 +123,6 @@ public class Sensor extends ResourceDevice{
 										//Humidity too high, switch off the sprinklers	
 										}else if(resourceType.compareTo("humidity")==0) {
 											
-											//System.out.println("Switch off sprinklers in area " + area);
 											
 											new Thread() {
 												public void run() {
@@ -145,7 +143,7 @@ public class Sensor extends ResourceDevice{
 										
 										//Temperature too low, switch on the lights
 										if(resourceType.compareTo("temperature")==0) {
-											//System.out.println("Switch on lights in area " + area);
+											
 											
 											new Thread() {
 												public void run() {
@@ -158,7 +156,7 @@ public class Sensor extends ResourceDevice{
 											
 										//Humidity too low, switch on the sprinklers	
 										}else if(resourceType.compareTo("humidity")==0) {
-											//System.out.println("Switch on sprinklers in area " + area);
+											
 											new Thread() {
 												public void run() {
 													if(handler.setAreaSprinklerStatus(area, "ON") < 0) {
