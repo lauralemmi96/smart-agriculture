@@ -57,8 +57,9 @@ static void res_get_handler(coap_message_t *request, coap_message_t *response, u
 		//Prepare the message
 		if(len > 0){
 			memcpy(buffer, (uint8_t*)response_message, len);
+			coap_set_header_etag(response, (uint8_t *)&len, 1);
             		coap_set_payload(response, buffer, len); 
-
+			
 		}else
 			LOG_INFO("Error: Response message not formed\n");
 	}else{
@@ -176,7 +177,6 @@ static void res_post_put_handler(coap_message_t *request, coap_message_t *respon
 
 		if(!good_req)
 			coap_set_status_code(response, BAD_REQUEST_4_00);	
-		coap_set_status_code(response, CHANGED_2_04);
 	
 	}else{
 		coap_set_status_code(response, NOT_ACCEPTABLE_4_06);

@@ -8,7 +8,7 @@ import org.json.JSONObject;
 
 public class Actuator extends ResourceDevice{
 
-	protected String status;
+	protected String status = "OFF";
 	
 	public Actuator(String hostAddress, String deviceType, String resourceType, boolean observable) {
 		super(hostAddress, deviceType, resourceType, observable);

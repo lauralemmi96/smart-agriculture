@@ -1,6 +1,5 @@
 package it.unipi.iot;
 
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -408,13 +407,13 @@ public class MyClient {
 			try{
 				deviceID = Integer.parseInt(id);
 			} catch(NumberFormatException e) {
-				System.out.println("The input must be a number\\n");
+				System.out.println("The input must be a number\n");
 				return;
 			}
 		        
 		    
 			if(!handler.getDevice(deviceID)) {
-				System.out.println("Error! This is not a device id.\n ");
+				System.out.println("Error! This is not a device id.\n");
 				return;
 			}
 			
@@ -448,7 +447,7 @@ public class MyClient {
 			try{
 				deviceID = Integer.parseInt(id);
 			} catch(NumberFormatException e) {
-				System.out.println("The input must be a number\\n");
+				System.out.println("The input must be a number\n");
 				return;
 			}
 			if(!handler.getDevice(deviceID)) {
@@ -515,7 +514,7 @@ public class MyClient {
 			
 			try {
 				
-				System.out.print("Type the area where management mode will be changed: ");
+				System.out.print("Type the area where threshold values will be changed: ");
 				
 				
 				String area = reader.readLine();
@@ -532,7 +531,7 @@ public class MyClient {
 				try{
 					max_t = Integer.parseInt(reader.readLine());
 				} catch(NumberFormatException e) {
-					System.out.println("The input must be a number\\n");
+					System.out.println("The input must be a number\n");
 					return;
 				}
 			        
@@ -542,7 +541,7 @@ public class MyClient {
 				try{
 					min_t = Integer.parseInt(reader.readLine());
 				} catch(NumberFormatException e) {
-					System.out.println("The input must be a number\\n");
+					System.out.println("The input must be a number\n");
 					return;
 				}
 			        
@@ -552,7 +551,7 @@ public class MyClient {
 				try{
 					max_h = Integer.parseInt(reader.readLine());
 				} catch(NumberFormatException e) {
-					System.out.println("The input must be a number\\n");
+					System.out.println("The input must be a number\n");
 					return;
 				}
 			        
@@ -562,7 +561,7 @@ public class MyClient {
 				try{
 					min_h = Integer.parseInt(reader.readLine());
 				}catch(NumberFormatException e) {
-					System.out.println("The input must be a number\\n");
+					System.out.println("The input must be a number\n");
 					return;
 				}
 			        

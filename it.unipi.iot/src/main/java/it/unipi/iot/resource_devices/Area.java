@@ -89,6 +89,7 @@ public class Area {
 	
 	public void printAreaInfo() {
 		System.out.print("Area: " + this.getId() + ", AutoMode: " + this.isAutoManage() + 
+				", Sprinklers: " + this.sprinklersStatus + ", Lights: " + this.lightsStatus +
 				", Min Temp: " + this.getMinTemp() + ", Max Temp: " + this.getMaxTemp() + 
 				", Min Hum: " + this.getMinHum() + ", Max Hum: " + this.getMaxHum());
 	}

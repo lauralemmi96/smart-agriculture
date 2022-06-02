@@ -210,10 +210,12 @@ public class ResourceDeviceHandler {
 		
 		if(!addressIDs.containsKey(address))
 			System.out.println("[" + address + "]: []");
-		else
+		else {
 			System.out.println("[" + address + "]:");
-		for(Integer id: addressIDs.get(address)) {
-			System.out.println("[ ID: " + id + ", Resource: " + idDeviceMap.get(id).getResourceType() + " ]");
+			for(Integer id: addressIDs.get(address)) {
+				System.out.println("[ ID: " + id + ", Resource: " + idDeviceMap.get(id).getResourceType() + " ]");
+			}
+			System.out.println("");
 		}
 		
 	}
@@ -612,7 +614,7 @@ public class ResourceDeviceHandler {
 		Area old = null;
 			
 		//If a area was already set, take the area. If no error, the device will be removed from that list.
-		if(rd.getArea() != null) {
+		if(rd.getArea() != null && (rd.getArea().compareTo(area)!=0)) {
 			old = idArea.get(rd.getArea());
 		}
 		
@@ -644,7 +646,7 @@ public class ResourceDeviceHandler {
 		}
 		
 		rd.setArea(area);
-		System.out.println("Device Area set to: \"" +rd.getArea() + "\" for resource: " + rd.getResourceType());
+		System.out.println("Device Area set to: \"" +rd.getArea() + "\" for resource: " + rd.getResourceType() + "\n");
 		
 		//If a area was already set, remove the device from that list.
 		if(old != null) {
@@ -688,35 +690,8 @@ public class ResourceDeviceHandler {
 		
 		String old = rd.getArea();
 		if(rd.getArea().compareTo("default") != 0) {	//If is already in default area, do nothing
-			areas.get(idArea.get(old)).remove(rd);
-			
-			//If the area remains empty remove it 
-			if(areas.get(idArea.get(old)).isEmpty()) {
-				areas.remove(idArea.get(old));
-				idArea.remove(old);
-			}
-			
-			
-			//Reassign device to default area
-			rd.setArea("default");
-			Area def = idArea.get("default");
-			
-			if(def == null) {
-				def = generateArea("default");
-				idArea.put("default", def);
-				ArrayList<ResourceDevice> d = new ArrayList<ResourceDevice>();
-				d.add(rd);
-				areas.put(def, d);
-			}else {
-				if(!areas.containsKey(def)) {
-					ArrayList<ResourceDevice> d = new ArrayList<ResourceDevice>();
-					d.add(rd);
-					areas.put(def, d);
-				}else
-					areas.get(def).add(rd);
-			}
-			
-			
+			addDeviceArea(rd.getId(), "default");
+	
 			
 			System.out.println("Resource Device: " + rd.getResourceType() + " removed from area " + old + "\n");
 			return;
@@ -882,16 +857,16 @@ public class ResourceDeviceHandler {
 			idDeviceMap.remove(id);
 			break;
 		case "sprinkler":
-			setSprinklerStatus(id, "OFF");	//switch off before unregister
 			removeDeviceArea(id);	//remove from an area and put it in the default one
 			areas.get(idArea.get("default")).remove(rd);	//remove also from default area
+			setSprinklerStatus(id, "OFF");	//switch off before unregister
 			sprinklers.remove(id);		//remove from sprinklers map
 			idDeviceMap.remove(id);
 			break;
 		case "light":
-			setLightStatus(id, "OFF");	//switch off before unregister
 			removeDeviceArea(id);	//remove from an area and put it in the default one
 			areas.get(idArea.get("default")).remove(rd);	//remove also from default area
+			setLightStatus(id, "OFF");	//switch off before unregister
 			lights.remove(id);			//remove from light map
 			idDeviceMap.remove(id);
 			break;

@@ -47,11 +47,13 @@ static void res_get_handler(coap_message_t *request, coap_message_t *response, u
 	if(get_accept == APPLICATION_JSON){
 		
 		coap_set_header_content_format(response, APPLICATION_JSON);
+
 		//take the status
 		int len = snprintf(response_message, COAP_MAX_CHUNK_SIZE, "{\"sprinkler\":%s}", sprinkler_status ? "ON" : "OFF");
 		if(len > 0){
 			//prepare the message
 			memcpy(buffer, (uint8_t*)response_message, len);
+			coap_set_header_etag(response, (uint8_t *)&len, 1);
             		coap_set_payload(response, buffer, len); 
 		}else
 			LOG_INFO("Error: Response message not formed\n");
