@@ -12,7 +12,7 @@ Place the smart-agriculture directory in contiki/example/
 &nbsp;&nbsp;&nbsp;| <br />
 &nbsp;&nbsp;&nbsp;&nbsp;-- simulation.csc <br />
 &nbsp;&nbsp;&nbsp;&nbsp;-- app.sh <br />
-&nbsp;&nbsp;&nbsp;&nbsp;-- br.sh <br />            
+&nbsp;&nbsp;&nbsp;&nbsp;-- br.sh <br />
 &nbsp;&nbsp;&nbsp;&nbsp;-- device <br />
 &nbsp;&nbsp;&nbsp;&nbsp;-- rpl-border-router <br />
 &nbsp;&nbsp;&nbsp;&nbsp;-- it.unipi.iot <br />
