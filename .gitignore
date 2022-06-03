@@ -7,6 +7,7 @@
 /build
 **/build
 **/run
+!target/*.jar
 
 # Files to be ignored
 *.cooja
