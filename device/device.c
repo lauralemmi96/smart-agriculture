@@ -147,7 +147,7 @@ PROCESS_THREAD(device_process, ev, data){
 				// Populate the coap_endpoint_t data structure
 				coap_endpoint_parse(SERVER_EP, strlen(SERVER_EP), &server_ep);
 				// Prepare the message
-				coap_init_message(request, COAP_TYPE_CON, COAP_GET, 0);
+				coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
 				coap_set_header_uri_path(request, reg_service_url);
 
 				while(!registration_status){

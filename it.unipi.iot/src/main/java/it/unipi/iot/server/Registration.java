@@ -12,7 +12,6 @@ import org.eclipse.californium.core.coap.Response;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 
 import it.unipi.iot.resource_devices.Actuator;
-import it.unipi.iot.resource_devices.ResourceDevice;
 import it.unipi.iot.resource_devices.Sensor;
 
 public class Registration extends CoapResource{
@@ -22,7 +21,7 @@ public class Registration extends CoapResource{
 		System.out.println("Registration Resource created\n");
 	}
 	
-	public void handleGET(CoapExchange exchange) {
+	public void handlePOST(CoapExchange exchange) {
 		
 		System.out.println("[SERVER]: Handling Registration Request");
 		
@@ -49,7 +48,8 @@ public class Registration extends CoapResource{
 		/*
 		 * Client response: </.well-known/core>;ct=40,
 		 * </humidity>;title="Humidity Sensor";rt="humidity";if="sensor";obs,
-		 * </temperature>;"title=\"Temperature Sensor\";rt=\"temperature\";if=\"sensor\";obs 
+		 * </temperature>;"title=\"Temperature Sensor\";rt=\"temperature\";if=\"sensor\";obs,
+		 * </unregister>;"title=\"Unregister\";rt=\"unregister\";if=\"unregister\""
 		 */
 
 		boolean registered = true;
@@ -70,7 +70,7 @@ public class Registration extends CoapResource{
 		}
 		
 		//Prepare and set response to the node
-		Response accept = new Response(ResponseCode.CONTENT);
+		Response accept = new Response(ResponseCode.CREATED);
 		String payload = null;
 		if(registered) {
 			System.out.println("[SERVER]: Device Registered\n");

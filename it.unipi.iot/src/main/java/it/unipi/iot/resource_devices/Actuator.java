@@ -1,7 +1,6 @@
 package it.unipi.iot.resource_devices;
 
 import org.eclipse.californium.core.CoapHandler;
-import org.eclipse.californium.core.CoapObserveRelation;
 import org.eclipse.californium.core.CoapResponse;
 import org.eclipse.californium.core.coap.MediaTypeRegistry;
 import org.json.JSONObject;

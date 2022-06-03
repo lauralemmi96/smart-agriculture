@@ -19,13 +19,12 @@ static void res_post_put_handler(coap_message_t *request, coap_message_t *respon
 
 /*----------------------------------------------------------------------------------------------*/
 
-EVENT_RESOURCE(res_unregister,
+RESOURCE(res_unregister,
          "title=\"Unregister\";rt=\"unregister\";if=\"unregister\"",
 	 NULL,
          res_post_put_handler,
          res_post_put_handler,
-         NULL, 
-	 NULL);
+         NULL);
         
 /*----------------------------------------------------------------------------------------------*/
 

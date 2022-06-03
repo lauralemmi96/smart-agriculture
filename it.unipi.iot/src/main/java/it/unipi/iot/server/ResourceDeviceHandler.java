@@ -391,7 +391,7 @@ public class ResourceDeviceHandler {
 		boolean decrease = (status.compareTo("OFF") == 0) ? true : false;
 		
 		if(areas.containsKey(idArea.get(area))) {
-			System.out.println("Set Sprinklers of area " + area + " to " + status);
+			//System.out.println("Set Sprinklers of area " + area + " to " + status);
 			ArrayList<ResourceDevice> device = areas.get(idArea.get(area));
 			//For each sprinkler in the area I call setSprinklerStatus to set the status
 			for(ResourceDevice d: device) {
@@ -416,8 +416,9 @@ public class ResourceDeviceHandler {
 			}
 			//For that area I change the status of its sprinklers
 			idArea.get(area).setSprinklersStatus(status);
-			if(howMany == 0)
-				System.out.println("Sprinklers of area " + area + " are already " + status);
+			if(howMany == 0) {
+				//System.out.println("Sprinklers of area " + area + " are already " + status);
+			}
 			
 			System.out.println("");
 		}
@@ -470,7 +471,7 @@ public class ResourceDeviceHandler {
 		boolean decrease = (status.compareTo("OFF") == 0) ? true : false;
 		
 		if(areas.containsKey(idArea.get(area))) {
-			System.out.println("Set Lights of area " + area + " to " + status);
+			//System.out.println("Set Lights of area " + area + " to " + status);
 			ArrayList<ResourceDevice> device = areas.get(idArea.get(area));
 			//For each light in the area I call setLightStatus to set the status
 			for(ResourceDevice d: device) {
@@ -494,8 +495,9 @@ public class ResourceDeviceHandler {
 				}
 			}
 			idArea.get(area).setLightsStatus(status);
-			if(howMany == 0)
-				System.out.println("Lights of area " + area + " are already " + status);
+			if(howMany == 0) {
+				//System.out.println("Lights of area " + area + " are already " + status);
+			}
 			
 			System.out.println("");
 		}
