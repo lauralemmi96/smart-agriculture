@@ -7,7 +7,7 @@ Place the smart-agriculture directory in contiki/example/
 1) Import the maven project. It must be placed in contiki-ng/examples/smart-agriculture
 
 
-____ contiki-ng/examples/smart-agriculture <br />
+   contiki-ng/examples/smart-agriculture <br />
 ____| <br />
 ____| <br />
 ________-- device <br />
