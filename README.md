@@ -7,9 +7,8 @@ Place the smart-agriculture directory in contiki/example/
 1) Import the maven project. It must be placed in contiki-ng/examples/smart-agriculture
 
 
-<space>
-            &nbsp;contiki-ng/examples/smart-agriculture <br />
-&nbsp;&nbsp;&nbsp;| <br />
+<space>contiki-ng/examples/smart-agriculture <br />
+<space><space>| <br />
 &nbsp;&nbsp;&nbsp;| <br />
 &nbsp;&nbsp;&nbsp;&nbsp;-- device <br />
 &nbsp;&nbsp;&nbsp;&nbsp;-- rpl-border-router <br />
