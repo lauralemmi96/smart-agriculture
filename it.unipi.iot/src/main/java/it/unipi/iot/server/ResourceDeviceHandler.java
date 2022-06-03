@@ -374,7 +374,7 @@ public class ResourceDeviceHandler {
 			return -1;
 		}else {
 			sprinklers.get(id).setStatus(newStatus);
-			System.out.println("Sprinkler " + id + " set to " + newStatus);
+			System.out.println("Area: " + sprinklers.get(id).getArea() + ", Sprinkler " + id + " set to " + newStatus + "\n");
 		}
 		return 1;
 		
@@ -420,7 +420,7 @@ public class ResourceDeviceHandler {
 				//System.out.println("Sprinklers of area " + area + " are already " + status);
 			}
 			
-			System.out.println("");
+			//System.out.println("");
 		}
 
 		return howMany;
@@ -453,7 +453,7 @@ public class ResourceDeviceHandler {
 			return -1;
 		}else {
 			lights.get(id).setStatus(newStatus);
-			System.out.println("Light " + id + " set to " + newStatus);
+			System.out.println("Area: "+ lights.get(id).getArea() + ", Light " + id + " set to " + newStatus + "\n");
 		}
 		
 		return 1;
@@ -499,7 +499,7 @@ public class ResourceDeviceHandler {
 				//System.out.println("Lights of area " + area + " are already " + status);
 			}
 			
-			System.out.println("");
+			//System.out.println("");
 		}
 		
 		return howMany;
