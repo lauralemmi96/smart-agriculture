@@ -8,15 +8,15 @@ Place the smart-agriculture directory in contiki/example/
 
 
 <space>contiki-ng/examples/smart-agriculture <br />
-<space><space>| <br />
+&nbsp;&nbsp;&nbsp;| <br />
 &nbsp;&nbsp;&nbsp;| <br />
 &nbsp;&nbsp;&nbsp;&nbsp;-- device <br />
 &nbsp;&nbsp;&nbsp;&nbsp;-- rpl-border-router <br />
 &nbsp;&nbsp;&nbsp;&nbsp;-- it.unipi.iot <br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| <br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| <br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- src/main/java/it/unipi/iot <br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- target <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- src/main/java/it/unipi/iot <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- target <br />
 &nbsp;&nbsp;&nbsp;&nbsp;-- simulation.csc <br />
 &nbsp;&nbsp;&nbsp;&nbsp;-- app.sh <br />
 &nbsp;&nbsp;&nbsp;&nbsp;-- br.sh <br />
