@@ -7,19 +7,19 @@ Place the smart-agriculture directory in contiki/example/
 1) Import the maven project. It must be placed in contiki-ng/examples/smart-agriculture
 
 
-   contiki-ng/examples/smart-agriculture <br />
-____| <br />
-____| <br />
-________-- device <br />
-________-- rpl-border-router <br />
-________-- it.unipi.iot <br />
-_________| <br />
-_________| <br />
-__________-- src/main/java/it/unipi/iot <br />
-__________-- target <br />
-________-- simulation.csc <br />
-________-- app.sh <br />
-________-- br.sh <br />
+&nbsp;&nbsp;contiki-ng/examples/smart-agriculture <br />
+&nbsp;&nbsp;&nbsp;| <br />
+&nbsp;&nbsp;&nbsp;| <br />
+&nbsp;&nbsp;&nbsp;&nbsp;-- device <br />
+&nbsp;&nbsp;&nbsp;&nbsp;-- rpl-border-router <br />
+&nbsp;&nbsp;&nbsp;&nbsp;-- it.unipi.iot <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- src/main/java/it/unipi/iot <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- target <br />
+&nbsp;&nbsp;&nbsp;&nbsp;-- simulation.csc <br />
+&nbsp;&nbsp;&nbsp;&nbsp;-- app.sh <br />
+&nbsp;&nbsp;&nbsp;&nbsp;-- br.sh <br />
             
 
 3) Deploy the network (simulation.csc) in Cooja simulator
